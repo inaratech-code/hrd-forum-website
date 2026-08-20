@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRD Forum Nepal | Protecting Rights and Empowering Defenders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary-navy: #0e2a47;
+      --secondary-navy: #091d31;
+      --accent-blue: #0284c7;
+      --accent-light-blue: #00a8e8;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --border-color: #e2e8f0;
+      --card-bg: #f8fafc;
+      --radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-white);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background-color: var(--secondary-navy);
+      color: var(--text-light);
+      font-size: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .top-bar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-info {
+      display: flex;
+      gap: 20px;
+    }
+    .top-info span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .top-socials {
+      display: flex;
+      gap: 14px;
+    }
+    .top-socials a:hover {
+      color: #fff;
+    }
+
+    /* Main Navigation */
+    .navbar {
+      background-color: var(--primary-navy);
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+    .brand-logo i {
+      color: var(--accent-light-blue);
+      font-size: 24px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #ffffff;
+    }
+    .btn-nav {
+      background-color: var(--accent-light-blue);
+      color: #ffffff !important;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .btn-nav:hover {
+      opacity: 0.9;
+    }
+    .btn-alert {
+      background-color: #ef4444;
+      color: #ffffff !important;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-alert:hover {
+      background-color: #dc2626;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(180deg, var(--primary-navy) 0%, #081a2f 100%);
+      color: #ffffff;
+      padding: 90px 0 110px 0;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      color: var(--accent-light-blue);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 800;
+      max-width: 820px;
+      margin: 0 auto 20px;
+      line-height: 1.25;
+    }
+    .hero p {
+      font-size: 15px;
+      color: #94a3b8;
+      max-width: 680px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+    .btn-primary {
+      background-color: var(--accent-light-blue);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-outline {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Shared Section Headers */
+    .section-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      margin-bottom: 12px;
+    }
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 80px 0;
+      background-color: #ffffff;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .about-text p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .stats-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+    .stat-item h3 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary-navy);
+    }
+    .stat-item p {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .feature-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .feature-card {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .feature-icon {
+      background: #e0f2fe;
+      color: var(--accent-blue);
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+    .feature-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 4px;
+    }
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Provincial Network Section */
+    .provinces-section {
+      padding: 70px 0;
+      background-color: #ffffff;
+      border-top: 1px solid var(--border-color);
+    }
+    .province-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .province-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .province-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .province-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 8px;
+    }
+    .province-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* News & Resources Section */
+    .news-resources {
+      padding: 70px 0;
+      background-color: #ffffff;
+      border-top: 1px solid var(--border-color);
+    }
+    .news-resources-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 48px;
+      margin-top: 24px;
+    }
+    .column-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 20px;
+    }
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .news-item {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 12px;
+      background-color: #ffffff;
+    }
+    .news-thumb {
+      width: 100px;
+      height: 70px;
+      border-radius: 4px;
+      object-fit: cover;
+      background-color: #e2e8f0;
+      flex-shrink: 0;
+    }
+    .news-date {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      background-color: #e0f2fe;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    .news-item h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.35;
+    }
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .resource-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background-color: #ffffff;
+    }
+    .resource-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .resource-icon {
+      color: var(--accent-blue);
+      font-size: 20px;
+    }
+    .resource-left h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .resource-left span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .download-btn {
+      color: var(--accent-blue);
+      font-size: 16px;
+      padding: 6px;
+    }
+
+    /* Blue CTA Banner */
+    .cta-banner {
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      padding: 40px 0;
+    }
+    .cta-banner .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cta-text h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .cta-text p {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .btn-banner {
+      background-color: #ffffff;
+      color: var(--primary-navy);
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    /* Map Section */
+    .map-section {
+      padding: 70px 0;
+      background-color: #ffffff;
+    }
+    .map-box {
+      width: 100%;
+      height: 280px;
+      background-color: #e5edf5;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .map-tag {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .map-tag i {
+      color: #ef4444;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: var(--secondary-navy);
+      color: var(--text-light);
+      padding: 60px 0 24px;
+      font-size: 13px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-col h4 {
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .footer-col p {
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col ul a {
+      color: var(--text-light);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .footer-col ul a:hover {
+      color: #ffffff;
+    }
+    .visitor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #ffffff;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* Modal Overlay & Forms */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(9, 29, 49, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      padding: 28px;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .modal-close:hover {
+      color: var(--text-dark);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text-dark);
+      background-color: var(--bg-light);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--accent-blue);
+      background-color: #ffffff;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .btn-submit {
+      width: 100%;
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: var(--primary-navy);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: #0e2a47;
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+      border-left: 4px solid var(--accent-light-blue);
+    }
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .about-grid, .news-resources-grid { grid-template-columns: 1fr; }
+      .province-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .province-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .cta-banner .container { flex-direction: column; gap: 16px; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Top Info Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-info">
+        <span><i class="fa-solid fa-phone"></i> +977-01-55511400</span>
+        <span><i class="fa-solid fa-envelope"></i> info@hrdforum.org</span>
+      </div>
+      <div class="top-socials">
+        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <a href="#" class="brand-logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>HRD FORUM <small style="font-size: 10px; display: block; font-weight: 500; opacity: 0.8;">NEPAL</small></span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#provinces">PROVINCE NETWORK</a></li>
+          <li><a href="#news">News & Updates</a></li>
+          <li><a href="#resources">Resources</a></li>
+          <li><a onclick="openIncidentModal()" class="btn-alert"><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</a></li>
+          <li><a onclick="openMembershipModal()" class="btn-nav">Become a Member</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-badge">ESTABLISHED NATIONAL COALITION</span>
+      <h1>Protecting Rights and Empowering Defenders Across Nepal</h1>
+      <p>Strengthening provincial networks, monitoring protection status, and advocating for civic safety to secure constitutional liberties for every human rights defender.</p>
+      <div class="hero-actions">
+        <button onclick="openMembershipModal()" class="btn-primary">Apply for Membership</button>
+        <button onclick="openIncidentModal()" class="btn-outline">Report an Incident Alert</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-badge">ORGANIZATIONAL BACKGROUND</div>
+          <h2 class="section-title">About HRD Forum Nepal</h2>
+          <p>Human Rights Defenders Forum (HRD Forum) Nepal functions as a united national NGO committed to creating a secure and empowering environment for civic activists. Operating under constitutional mandates and universal declarations, we monitor safety, investigate violations, and empower vulnerable actors.</p>
+          <p>Through our strategic presence across all seven provinces of Nepal, we bridge critical gaps between local defenders and international protective structures. We believe that securing the rights of defenders is the first step toward safeguarding democratic freedom for all Nepalese citizens.</p>
+          
+          <div class="stats-row">
+            <div class="stat-item">
+              <h3 id="statProvinces">7</h3>
+              <p>Provincial Networks</p>
+            </div>
+            <div class="stat-item">
+              <h3 id="statDefenders">1,200+</h3>
+              <p>Monitored Defenders</p>
+            </div>
+            <div class="stat-item">
+              <h3 id="statCases">150+</h3>
+              <p>Resolved Cases</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <div>
+              <h4>Human Rights Advocacy</h4>
+              <p>Lobbying for domestic policies that recognize, respect, and defend critical civic workers under legal frameworks.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-shield"></i></div>
+            <div>
+              <h4>Defender Protection</h4>
+              <p>Providing urgent helpline support, secure relocations, legal aid, and safety training to threatened grassroots actors.</p>
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div>
+              <h4>Policy & Research</h4>
+              <p>Compiling annual status reports, monitoring judicial actions, and conducting fact-finding missions to update risk datasets.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Provincial Reach Directory -->
+  <section class="provinces-section" id="provinces">
+    <div class="container">
+      <div class="section-badge">OUR NATIONAL REACH</div>
+      <h2 class="section-title">Provincial Protection Desk Directory</h2>
+      <p class="section-subtitle">Active helpdesks monitored daily by regional human rights attorneys and volunteers to process immediate incident alerts.</p>
+
+      <div class="province-grid" id="provinceGrid">
+        <!-- Dynamically loaded from REST API -->
+      </div>
+    </div>
+  </section>
+
+  <!-- News & Resources -->
+  <section class="news-resources" id="news">
+    <div class="container">
+      <div class="section-badge">LATEST UPDATES</div>
+      <h2 class="section-title">News & Resources</h2>
+
+      <div class="news-resources-grid">
+        <!-- News Column -->
+        <div>
+          <div class="column-title">News & Updates</div>
+          <div class="news-list" id="newsList">
+            <!-- Dynamically loaded from REST API -->
+          </div>
+        </div>
+
+        <!-- Resources Column -->
+        <div id="resources">
+          <div class="column-title">Resource Library</div>
+          <div class="resource-list" id="resourceList">
+            <!-- Dynamically loaded from REST API -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-text">
+        <h3>Stand with human rights defenders across all 7 provinces</h3>
+        <p>Join our coalition today to strengthen the protection of local and civic activists.</p>
+      </div>
+      <button onclick="openMembershipModal()" class="btn-banner">Fill Membership Form</button>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="container">
+      <h2 class="section-title">Find us on the map</h2>
+      <p class="section-subtitle">Locate the HRD Forum Central Office in Kathmandu, Nepal.</p>
+      <div class="map-box">
+        <div class="map-tag">
+          <i class="fa-solid fa-location-dot"></i>
+          HRD Forum Central Office, Kathmandu, Nepal
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>HRD FORUM NEPAL</h4>
+          <p>A national coalition defending human rights activists and empowering local watchdogs to secure democratic processes under rule of law.</p>
+          <div class="visitor-badge">
+            <i class="fa-regular fa-eye"></i>
+            Total Visitors: <span id="totalVisitors">14,230</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>GET INVOLVED</h4>
+          <ul>
+            <li><a onclick="openIncidentModal()">Report an Incident Alert</a></li>
+            <li><a onclick="openMembershipModal()">Become a Member</a></li>
+            <li><a href="#about">Institutional Partners</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>RESOURCES</h4>
+          <ul>
+            <li><a href="#resources">Annual Risk Report 2025</a></li>
+            <li><a href="#resources">Advocacy Blueprints</a></li>
+            <li><a href="#resources">Legal Guidelines</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>REGIONAL BASES</h4>
+          <ul>
+            <li><a href="#provinces">Kathmandu Central Desk</a></li>
+            <li><a href="#provinces">Pokhara Desk</a></li>
+            <li><a href="#provinces">Biratnagar Desk</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Human Rights Defenders Forum Nepal. All rights reserved.</div>
+        <div>Powered by Python Flask REST API & SQLite Backend</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Membership Application Modal -->
+  <div class="modal-backdrop" id="membershipModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-id-card" style="color: var(--accent-blue);"></i> Apply for Membership</h3>
+        <button class="modal-close" onclick="closeMembershipModal()">&times;</button>
+      </div>
+      <form id="membershipForm" onsubmit="handleMembershipSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="mFullName" class="form-control" placeholder="e.g. Sita Sharma" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="mEmail" class="form-control" placeholder="sita@example.org" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="mPhone" class="form-control" placeholder="+977-9800000000">
+          </div>
+          <div class="form-group">
+            <label>Province *</label>
+            <select id="mProvince" class="form-control" required>
+              <option value="">Select Province</option>
+              <option value="Bagmati Province">Bagmati Province</option>
+              <option value="Koshi Province">Koshi Province</option>
+              <option value="Madhesh Province">Madhesh Province</option>
+              <option value="Gandaki Province">Gandaki Province</option>
+              <option value="Lumbini Province">Lumbini Province</option>
+              <option value="Karnali Province">Karnali Province</option>
+              <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Organization</label>
+            <input type="text" id="mOrg" class="form-control" placeholder="NGO / Civil Body Name">
+          </div>
+          <div class="form-group">
+            <label>Role / Position</label>
+            <input type="text" id="mRole" class="form-control" placeholder="Human Rights Defender / Legal Aid">
+          </div>
+        </div>
+        <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Incident Reporting Modal -->
+  <div class="modal-backdrop" id="incidentModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Report Incident Alert</h3>
+        <button class="modal-close" onclick="closeIncidentModal()">&times;</button>
+      </div>
+      <form id="incidentForm" onsubmit="handleIncidentSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reporter / Defender Name *</label>
+            <input type="text" id="iName" class="form-control" placeholder="e.g. Ram Bahadur" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Info (Phone/Email) *</label>
+            <input type="text" id="iContact" class="form-control" placeholder="Phone or email for emergency contact" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Province *</label>
+            <select id="iProvince" class="form-control" required>
+              <option value="">Select Province</option>
+              <option value="Bagmati Province">Bagmati Province</option>
+              <option value="Koshi Province">Koshi Province</option>
+              <option value="Madhesh Province">Madhesh Province</option>
+              <option value="Gandaki Province">Gandaki Province</option>
+              <option value="Lumbini Province">Lumbini Province</option>
+              <option value="Karnali Province">Karnali Province</option>
+              <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Support Type *</label>
+            <select id="iType" class="form-control">
+              <option value="Urgent Relocation">Urgent Relocation & Safehouse</option>
+              <option value="Legal Aid & Representation">Legal Aid & Representation</option>
+              <option value="Physical Security Threat">Physical Security Threat</option>
+              <option value="Fact-Finding Request">Fact-Finding Request</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Incident Details & Threat Description *</label>
+          <textarea id="iDetails" class="form-control" rows="3" placeholder="Provide a summary of the situation or threat..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit" style="background-color: #ef4444;"><i class="fa-solid fa-shield-halved"></i> Log Alert & Request Help</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Fetch stats, provinces, news, resources on load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStats();
+      loadProvinces();
+      loadNews();
+      loadResources();
+    });
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+    // Modal Toggles
+    function openMembershipModal() {
+      document.getElementById('membershipModal').classList.add('active');
+    }
+    function closeMembershipModal() {
+      document.getElementById('membershipModal').classList.remove('active');
+    }
+    function openIncidentModal() {
+      document.getElementById('incidentModal').classList.add('active');
+    }
+    function closeIncidentModal() {
+      document.getElementById('incidentModal').classList.remove('active');
+    }
+
+    // REST API Loaders
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('statProvinces').innerText = data.provincial_networks || '7';
+          document.getElementById('statDefenders').innerText = data.monitored_defenders || '1,200+';
+          document.getElementById('statCases').innerText = data.resolved_cases || '150+';
+          document.getElementById('totalVisitors').innerText = (data.total_visitors || 14230).toLocaleString();
+        }
+      } catch (e) {
+        console.error('Error fetching stats:', e);
+      }
+    }
+
+    async function loadProvinces() {
+      try {
+        const res = await fetch('/api/provinces');
+        if (res.ok) {
+          const provinces = await res.json();
+          const grid = document.getElementById('provinceGrid');
+          grid.innerHTML = provinces.map(p => `
+            <div class="province-card">
+              <h4>${p.name}</h4>
+              <p><strong>${p.base_city}</strong> • ${p.coordinators_count} localized monitoring coordinators.</p>
+              <p style="margin-top: 6px; font-size: 11px;">${p.description}</p>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Error loading provinces:', e);
+      }
+    }
+
+    async function loadNews() {
+      try {
+        const res = await fetch('/api/news');
+        if (res.ok) {
+          const news = await res.json();
+          const list = document.getElementById('newsList');
+          list.innerHTML = news.map(item => `
+            <div class="news-item">
+              <img src="${item.image_url}" alt="${item.title}" class="news-thumb">
+              <div>
+                <span class="news-date">${item.date_str}</span>
+                <h5>${item.title}</h5>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Error loading news:', e);
+      }
+    }
+
+    async function loadResources() {
+      try {
+        const res = await fetch('/api/resources');
+        if (res.ok) {
+          const resources = await res.json();
+          const list = document.getElementById('resourceList');
+          list.innerHTML = resources.map(r => `
+            <div class="resource-item">
+              <div class="resource-left">
+                <i class="fa-regular fa-file-pdf resource-icon"></i>
+                <div>
+                  <h5>${r.title}</h5>
+                  <span>${r.format} • ${r.file_size}</span>
+                </div>
+              </div>
+              <a href="${r.file_url}" class="download-btn" title="Download Resource"><i class="fa-solid fa-cloud-arrow-down"></i></a>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Error loading resources:', e);
+      }
+    }
+
+    // Form Submissions via REST API
+    async function handleMembershipSubmit(e) {
+      e.preventDefault();
+      const payload = {
+        full_name: document.getElementById('mFullName').value,
+        email: document.getElementById('mEmail').value,
+        phone: document.getElementById('mPhone').value,
+        province: document.getElementById('mProvince').value,
+        organization: document.getElementById('mOrg').value,
+        role: document.getElementById('mRole').value
+      };
+
+      try {
+        const res = await fetch('/api/membership', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(data.message, 'success');
+          document.getElementById('membershipForm').reset();
+          closeMembershipModal();
+        } else {
+          showToast(data.error || 'Failed to submit application', 'error');
+        }
+      } catch (err) {
+        showToast('Network error while submitting application', 'error');
+      }
+    }
+
+    async function handleIncidentSubmit(e) {
+      e.preventDefault();
+      const payload = {
+        reporter_name: document.getElementById('iName').value,
+        contact_info: document.getElementById('iContact').value,
+        province: document.getElementById('iProvince').value,
+        incident_type: document.getElementById('iType').value,
+        details: document.getElementById('iDetails').value
+      };
+
+      try {
+        const res = await fetch('/api/incident', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(data.message, 'success');
+          document.getElementById('incidentForm').reset();
+          closeIncidentModal();
+        } else {
+          showToast(data.error || 'Failed to log incident report', 'error');
+        }
+      } catch (err) {
+        showToast('Network error while submitting incident alert', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
