@@ -13,18 +13,18 @@ def index_page(request):
 
 def api_stats(request):
     stats = Stats.objects.first()
-    if stats:
-        return JsonResponse({
-            "provincial_networks": stats.provincial_networks,
-            "monitored_defenders": stats.monitored_defenders,
-            "resolved_cases": stats.resolved_cases,
-            "total_visitors": stats.total_visitors,
-        })
+    if not stats:
+        stats = Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=14230)
+    
+    # Increment real-time view count
+    stats.total_visitors += 1
+    stats.save(update_fields=['total_visitors'])
+
     return JsonResponse({
-        "provincial_networks": 7,
-        "monitored_defenders": "1,200+",
-        "resolved_cases": "150+",
-        "total_visitors": 14230
+        "provincial_networks": stats.provincial_networks,
+        "monitored_defenders": stats.monitored_defenders,
+        "resolved_cases": stats.resolved_cases,
+        "total_visitors": stats.total_visitors,
     })
 
 def api_provinces(request):

@@ -38,11 +38,11 @@ if not PopupConfig.objects.exists():
 
 if not Province.objects.exists():
     provinces_data = [
-        ('Koshi Province Desk', 'p1', 'Biratnagar Base', 26.4525, 87.2718, 12, '+977-21-524100', 'Main Road, Ward No. 4, Biratnagar', 14,
+        ('Koshi Province Desk', 'p1', 'Biratnagar', 26.4525, 87.2718, 12, '+977-21-524100', 'Main Road, Ward No. 4, Biratnagar', 14,
          '12 localized monitoring human rights coordinators processing regional case interventions.',
          'The Koshi Helpdesk actively coordinates legal aid and emergency relocation across 14 Eastern districts, protecting environmental and indigenous community advocates.'),
         
-        ('Madhesh Province Desk', 'p2', 'Janakpur Base', 26.7288, 85.9254, 15, '+977-41-520330', 'Station Road, Janakpurdham', 22,
+        ('Madhesh Province Desk', 'p2', 'Janakpur', 26.7288, 85.9254, 15, '+977-41-520330', 'Station Road, Janakpurdham', 22,
          'High-density advocacy missions protecting localized civil advocates.',
          'Monitors gender-based violence, election observers, and grassroots paralegals in dense border corridor districts.'),
 
@@ -50,19 +50,19 @@ if not Province.objects.exists():
          'Integrating central judicial lobbying with operational rapid response desks.',
          'Serves as the national command hub integrating Supreme Court litigation support, diplomatic liaison, and emergency security funds.'),
 
-        ('Gandaki Province Desk', 'p4', 'Pokhara Base', 28.2096, 83.9856, 10, '+977-61-532190', 'New Road, Pokhara', 9,
+        ('Gandaki Province Desk', 'p4', 'Pokhara', 28.2096, 83.9856, 10, '+977-61-532190', 'New Road, Pokhara', 9,
          'Active focal points monitoring environmental and land rights defenders.',
          'Specializes in safeguarding eco-defenders, conservationists, and indigenous river basin advocates against illegal resource extraction harassment.'),
 
-        ('Lumbini Province Desk', 'p5', 'Butwal Base', 27.7006, 83.4484, 14, '+977-71-540220', 'Traffic Chowk, Butwal', 18,
+        ('Lumbini Province Desk', 'p5', 'Butwal', 27.7006, 83.4484, 14, '+977-71-540220', 'Traffic Chowk, Butwal', 18,
          'Cross-border coordination units assisting community paralegals.',
          'Monitors labor rights advocates, border migrant safety, and community legal aid networks across Lumbini province.'),
 
-        ('Karnali Province Desk', 'p6', 'Surkhet Base', 28.6019, 81.6348, 8, '+977-83-521090', 'Birendranagar, Surkhet', 11,
+        ('Karnali Province Desk', 'p6', 'Surkhet', 28.6019, 81.6348, 8, '+977-83-521090', 'Birendranagar, Surkhet', 11,
          'Remote-access defender support networks covering highland jurisdictions.',
          'Deploys satellite-linked emergency communication units for remote mountain defenders facing geographic isolation.'),
 
-        ('Sudurpashchim Province Desk', 'p7', 'Dhangadhi Base', 28.6852, 80.5940, 11, '+977-91-523410', 'Main Bazaar, Dhangadhi', 13,
+        ('Sudurpashchim Province Desk', 'p7', 'Dhangadhi', 28.6852, 80.5940, 11, '+977-91-523410', 'Main Bazaar, Dhangadhi', 13,
          'Grassroots protective action programs for marginalized legal representatives.',
          'Focuses on protecting Dalit rights defenders, anti-caste discrimination campaigners, and rural legal assistants.')
     ]
