@@ -478,7 +478,7 @@
     <div class="container">
       <div class="section-badge">FIND US ON THE MAP</div>
       <h2 class="section-title">Interactive Provincial Helpdesk Map</h2>
-      <p class="section-subtitle">Select any regional base marker across Nepal to view local coordinator details and active case counts.</p>
+      <p class="section-subtitle">Select any provincial helpdesk marker across Nepal to view local coordinator details and active case counts.</p>
       <div class="map-wrapper">
         <div id="leafletMap"></div>
       </div>
@@ -826,7 +826,7 @@
       document.getElementById('provModalTitle').innerHTML = `<i class="fa-solid fa-shield-halved" style="color: var(--accent-blue);"></i> ${p.name}`;
       document.getElementById('provModalBody').innerHTML = `
         <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-          <h4 style="color: var(--primary-navy); font-size: 15px; margin-bottom: 4px;">${p.base_city} Regional HQ</h4>
+          <h4 style="color: var(--primary-navy); font-size: 15px; margin-bottom: 4px;">${p.base_city} Helpdesk Office</h4>
           <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
           <div style="display: flex; gap: 14px; flex-wrap: wrap;">
             <a href="tel:${p.helpline_phone}" style="background: #be123c; color: #fff; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; text-decoration: none;"><i class="fa-solid fa-phone"></i> ${p.helpline_phone}</a>
