@@ -478,7 +478,7 @@
     <div class="container">
       <div class="section-badge">FIND US ON THE MAP</div>
       <h2 class="section-title">Interactive Provincial Helpdesk Map</h2>
-      <p class="section-subtitle">Select any provincial helpdesk marker across Nepal to view local coordinator details and active case counts.</p>
+      <p class="section-subtitle">National interactive map of Nepal. Regional protection helpdesk locations will be announced upon finalization.</p>
       <div class="map-wrapper">
         <div id="leafletMap"></div>
       </div>
@@ -803,19 +803,6 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap'
       }).addTo(map);
-
-      provinces.forEach(p => {
-        const markerIcon = L.divIcon({
-          className: 'map-custom-marker',
-          html: `<div style="background:#be123c; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3); border:2px solid #fff; font-size:14px;"><i class="fa-solid fa-shield-halved"></i></div>`,
-          iconSize: [34, 34],
-          iconAnchor: [17, 17]
-        });
-
-        const marker = L.marker([p.coords_lat, p.coords_lng], { icon: markerIcon }).addTo(map);
-        marker.on('click', () => openProvinceDetail(p.id));
-        marker.bindTooltip(`<strong>${p.name}</strong><br>${p.base_city}`, { direction: 'top' });
-      });
     }
 
     // Open Dedicated Province Detail Modal

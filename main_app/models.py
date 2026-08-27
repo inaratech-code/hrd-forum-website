@@ -4,7 +4,7 @@ class Stats(models.Model):
     provincial_networks = models.IntegerField(default=7)
     monitored_defenders = models.CharField(max_length=50, default='1,200+')
     resolved_cases = models.CharField(max_length=50, default='150+')
-    total_visitors = models.IntegerField(default=14230)
+    total_visitors = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = "Statistics Metrics"
