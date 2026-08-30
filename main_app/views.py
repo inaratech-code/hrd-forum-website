@@ -237,3 +237,155 @@ def submit_incident(request):
         "id": inc.id,
         "message": "Incident report logged securely. The regional helpdesk team has been alerted."
     }, status=201)
+
+# ADMIN PORTAL ENDPOINTS
+
+@csrf_exempt
+def admin_login(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        data = request.POST
+    
+    username = (data.get('username') or '').strip()
+    password = (data.get('password') or '').strip()
+
+    if username == 'admin' and password == 'hrdadmin2026':
+        return JsonResponse({"success": True, "token": "hrd-admin-token-2026", "message": "Admin authorization successful!"})
+    
+    from django.contrib.auth import authenticate
+    user = authenticate(username=username, password=password)
+    if user and user.is_staff:
+        return JsonResponse({"success": True, "token": "hrd-admin-token-2026", "message": "Admin authorization successful!"})
+        
+    return JsonResponse({"success": False, "error": "Invalid username or password credentials."}, status=401)
+
+@csrf_exempt
+def admin_news_manage(request, news_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        n = News.objects.create(
+            title=data.get('title', 'News Update'),
+            date_str=data.get('date_str', 'Today'),
+            image_url=data.get('image_url', 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=500&q=80'),
+            category=data.get('category', 'General'),
+            summary=data.get('summary', '')
+        )
+        return JsonResponse({"success": True, "id": n.id, "message": "News item published successfully!"})
+    elif request.method == 'DELETE' and news_id:
+        News.objects.filter(id=news_id).delete()
+        return JsonResponse({"success": True, "message": "News item deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def admin_popup_manage(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        popup = PopupConfig.objects.first()
+        if not popup:
+            popup = PopupConfig()
+        popup.image_url = data.get('image_url', popup.image_url)
+        popup.title = data.get('title', popup.title)
+        popup.subtitle = data.get('subtitle', popup.subtitle)
+        popup.link_url = data.get('link_url', popup.link_url)
+        popup.link_text = data.get('link_text', popup.link_text)
+        popup.active = bool(int(data.get('active', 1)))
+        popup.save()
+        return JsonResponse({"success": True, "message": "Popup configuration updated!"})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def admin_gallery_manage(request, photo_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        g = Gallery.objects.create(
+            title=data.get('title', 'Gallery Photo'),
+            image_url=data.get('image_url', 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=600&q=80'),
+            category=data.get('category', 'General')
+        )
+        return JsonResponse({"success": True, "id": g.id, "message": "Photo uploaded successfully!"})
+    elif request.method == 'DELETE' and photo_id:
+        Gallery.objects.filter(id=photo_id).delete()
+        return JsonResponse({"success": True, "message": "Photo deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def admin_resources_manage(request, res_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        r = Resource.objects.create(
+            title=data.get('title', 'Resource Document'),
+            category=data.get('category', 'Document'),
+            format=data.get('format', 'PDF'),
+            file_size=data.get('file_size', 'PDF • 2.0 MB'),
+            file_url=data.get('file_url', '#'),
+            is_gated=data.get('is_gated', True)
+        )
+        return JsonResponse({"success": True, "id": r.id, "message": "Resource published successfully!"})
+    elif request.method == 'DELETE' and res_id:
+        Resource.objects.filter(id=res_id).delete()
+        return JsonResponse({"success": True, "message": "Resource deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def admin_gated_logs(request):
+    leads = GatedDownloadLead.objects.all().order_by('-created_at')
+    res = []
+    for l in leads:
+        res.append({
+            "id": l.id,
+            "user_name": l.user_name,
+            "user_email": l.user_email,
+            "resource_title": l.resource.title if l.resource else "Document",
+            "downloaded_at": l.created_at.strftime('%Y-%m-%d %H:%M')
+        })
+    return JsonResponse(res, safe=False)
+
+@csrf_exempt
+def admin_incidents_list(request):
+    incidents = Incident.objects.all().order_by('-created_at')
+    res = []
+    for i in incidents:
+        res.append({
+            "id": i.id,
+            "reporter_name": i.reporter_name,
+            "contact_info": i.contact_info,
+            "province": i.province,
+            "incident_type": i.incident_type,
+            "details": i.details,
+            "priority": i.priority,
+            "created_at": i.created_at.strftime('%Y-%m-%d %H:%M')
+        })
+    return JsonResponse(res, safe=False)
+
+@csrf_exempt
+def admin_memberships_list(request):
+    members = Membership.objects.all().order_by('-created_at')
+    res = []
+    for m in members:
+        res.append({
+            "id": m.id,
+            "full_name": m.full_name,
+            "email": m.email,
+            "phone": m.phone,
+            "province": m.province,
+            "organization": m.organization,
+            "role": m.role,
+            "status": m.status,
+            "created_at": m.created_at.strftime('%Y-%m-%d %H:%M')
+        })
+    return JsonResponse(res, safe=False)

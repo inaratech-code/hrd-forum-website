@@ -15,4 +15,17 @@ urlpatterns = [
     path('api/membership', views.submit_membership, name='submit_membership'),
     path('api/incident', views.submit_incident, name='submit_incident'),
     path('api/resource/download-access', views.request_gated_download, name='request_gated_download'),
+
+    # Admin Portal Routes
+    path('api/admin/login', views.admin_login, name='admin_login'),
+    path('api/admin/news', views.admin_news_manage, name='admin_news_manage'),
+    path('api/admin/news/<int:news_id>', views.admin_news_manage, name='admin_news_delete'),
+    path('api/admin/popup', views.admin_popup_manage, name='admin_popup_manage'),
+    path('api/admin/gallery', views.admin_gallery_manage, name='admin_gallery_manage'),
+    path('api/admin/gallery/<int:photo_id>', views.admin_gallery_manage, name='admin_gallery_delete'),
+    path('api/admin/resources', views.admin_resources_manage, name='admin_resources_manage'),
+    path('api/admin/resources/<int:res_id>', views.admin_resources_manage, name='admin_resources_delete'),
+    path('api/admin/gated-logs', views.admin_gated_logs, name='admin_gated_logs'),
+    path('api/incidents', views.admin_incidents_list, name='admin_incidents_list'),
+    path('api/memberships', views.admin_memberships_list, name='admin_memberships_list'),
 ]
