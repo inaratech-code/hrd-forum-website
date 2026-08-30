@@ -273,19 +273,27 @@
     .map-wrapper { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 4px 14px rgba(0,0,0,0.04); }
     #leafletMap { width: 100%; height: 400px; z-index: 1; }
 
-    /* Footer */
+    /* Clean Footer Styling */
     .footer { background-color: var(--secondary-navy); color: var(--text-light); padding: 60px 0 24px; font-size: 13px; }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-col h4 { color: #ffffff; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
-    .footer-col p { font-size: 12px; line-height: 1.6; margin-bottom: 16px; }
+    .footer-grid { display: grid; grid-template-columns: 1.8fr 1fr 1.2fr 1.3fr; gap: 36px; margin-bottom: 48px; }
+    .footer-col h4 { color: #ffffff; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 18px; }
+    .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .footer-logo { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; background: #ffffff; padding: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .footer-brand-title { color: #ffffff; font-size: 14px; font-weight: 800; letter-spacing: -0.01em; margin: 0; line-height: 1.2; }
+    .footer-brand-tag { font-size: 9px; font-weight: 700; color: var(--accent-light-blue); letter-spacing: 1px; }
+    .footer-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul a { color: var(--text-light); font-size: 12px; cursor: pointer; }
+    .footer-col ul a { color: #94a3b8; font-size: 12px; font-weight: 500; cursor: pointer; transition: color 0.2s; }
     .footer-col ul a:hover { color: #ffffff; }
-    .visitor-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 20px; font-size: 11px; color: #ffffff; }
-    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; }
-    .footer-socials { display: flex; gap: 12px; margin-top: 12px; }
-    .footer-socials a { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #ffffff; transition: background 0.2s; }
-    .footer-socials a:hover { background: var(--accent-blue); }
+    .contact-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #94a3b8; line-height: 1.5; }
+    .contact-list i { color: var(--accent-light-blue); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+    .contact-list a { color: #94a3b8; transition: color 0.2s; }
+    .contact-list a:hover { color: #ffffff; }
+    .visitor-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 20px; font-size: 11px; color: #ffffff; margin-bottom: 16px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .footer-socials a { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 13px; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+    .footer-socials a:hover { background: var(--accent-blue); color: #ffffff; border-color: var(--accent-blue); }
+    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 24px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; }
 
     /* Modals */
     .modal-backdrop {
@@ -534,50 +542,69 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-            <img src="/static/images/logo.jpg" alt="HRD Forum Nepal Logo" style="height: 38px; width: 38px; border-radius: 50%; object-fit: cover; background: #ffffff; padding: 1px;">
-            <h4 style="margin: 0; color: #ffffff; font-size: 13px; font-weight: 800; letter-spacing: 0.5px;">HRD FORUM NEPAL</h4>
+        <!-- Column 1: Organization Branding -->
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="/static/images/logo.jpg" alt="HRD Forum Nepal Logo" class="footer-logo">
+            <div>
+              <h4 class="footer-brand-title">HRD FORUM NEPAL</h4>
+              <span class="footer-brand-tag">NATIONAL COALITION</span>
+            </div>
           </div>
-          <p>A national coalition defending human rights activists and empowering local watchdogs to secure democratic processes under rule of law.</p>
+          <p class="footer-desc">A national coalition defending human rights activists and empowering local watchdogs to secure democratic processes under the rule of law across Nepal.</p>
           <div class="visitor-badge">
             <i class="fa-regular fa-eye"></i>
-            Total Visitors: <span id="totalVisitors">14,230</span>
+            Total Visitors: <span id="totalVisitors">0</span>
           </div>
           <div class="footer-socials">
-            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" title="Twitter / X"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
           </div>
         </div>
+
+        <!-- Column 2: Navigation Links -->
+        <div class="footer-col">
+          <h4>QUICK LINKS</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#provinces">Provincial Network</a></li>
+            <li><a href="#news">News & Updates</a></li>
+            <li><a href="#gallery">Photo Gallery</a></li>
+            <li><a href="#resources">Resource Library</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Actions & Resources -->
         <div class="footer-col">
           <h4>GET INVOLVED</h4>
           <ul>
-            <li><a onclick="openIncidentModal()">Report an Incident Alert</a></li>
-            <li><a onclick="openMembershipModal()">Become a Member</a></li>
-            <li><a href="#about">Institutional Partners</a></li>
+            <li><a onclick="openIncidentModal()"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; margin-right: 4px;"></i> Report Incident Alert</a></li>
+            <li><a onclick="openMembershipModal()"><i class="fa-solid fa-id-card" style="color: var(--accent-light-blue); margin-right: 4px;"></i> Become a Member</a></li>
+            <li><a href="#resources">Annual Status Reports</a></li>
+            <li><a href="#resources">Policy & Legal Blueprints</a></li>
+            <li><a href="/admin/" target="_blank"><i class="fa-solid fa-user-gear" style="margin-right: 4px;"></i> Admin Control Panel</a></li>
           </ul>
         </div>
+
+        <!-- Column 4: Contact Info -->
         <div class="footer-col">
-          <h4>RESOURCES</h4>
-          <ul>
-            <li><a href="#resources">Annual Risk Report 2025</a></li>
-            <li><a href="#resources">Advocacy Blueprints</a></li>
-            <li><a href="#resources">Legal Guidelines</a></li>
-            <li><a href="/admin" target="_blank">Admin Control Panel</a></li>
+          <h4>CONTACT US</h4>
+          <ul class="contact-list">
+            <li><i class="fa-solid fa-location-dot"></i> <span>Central HQ, Anamnagar, Kathmandu, Nepal</span></li>
+            <li><i class="fa-solid fa-phone"></i> <a href="tel:+9770155511400">+977-01-55511400</a></li>
+            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:info@hrdforum.org">info@hrdforum.org</a></li>
+            <li><i class="fa-solid fa-clock"></i> <span>Sun – Fri: 9:00 AM – 5:00 PM</span></li>
           </ul>
-        </div>
-        <div class="footer-col">
-          <h4>CONTACT INFO</h4>
-          <p><i class="fa-solid fa-location-dot"></i> Central Office, Anamnagar, Kathmandu, Nepal</p>
-          <p><i class="fa-solid fa-phone"></i> +977-01-55511400</p>
-          <p><i class="fa-solid fa-envelope"></i> info@hrdforum.org</p>
         </div>
       </div>
 
+      <!-- Footer Bottom -->
       <div class="footer-bottom">
         <div>© 2026 Human Rights Defenders Forum Nepal. All rights reserved.</div>
-        <div>Powered by Python Flask REST API & SQLite Backend</div>
+        <div>Protecting Rights & Empowering Defenders Across Nepal</div>
       </div>
     </div>
   </footer>
