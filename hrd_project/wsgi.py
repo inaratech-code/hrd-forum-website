@@ -12,6 +12,10 @@ try:
     
     call_command('migrate', interactive=False)
     
+    from django.contrib.auth.models import User
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@hrdforum.org', 'hrdadmin2026')
+        
     if not Stats.objects.exists():
         Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=0)
 
