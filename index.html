@@ -79,6 +79,48 @@
     .nav-links a { color: #cbd5e1; font-size: 13px; font-weight: 500; transition: color 0.2s; cursor: pointer; }
     .nav-links a:hover, .nav-links a.active { color: #ffffff; }
 
+    /* Navbar Dropdown Styling */
+    .nav-dropdown { position: relative; }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #ffffff;
+      min-width: 230px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      border: 1px solid var(--border-color);
+      padding: 8px 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 1000;
+      list-style: none !important;
+    }
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-menu li { width: 100%; margin: 0 !important; }
+    .dropdown-menu a {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      padding: 10px 16px !important;
+      color: var(--primary-navy) !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      transition: background 0.2s, color 0.2s !important;
+      text-transform: none !important;
+    }
+    .dropdown-menu a:hover {
+      background: #f1f5f9 !important;
+      color: var(--accent-blue) !important;
+    }
+    .dropdown-menu i { font-size: 13px; color: var(--accent-blue); width: 16px; text-align: center; }
+
     .btn-alert {
       background-color: var(--crimson-alert);
       color: #ffffff !important;
@@ -560,7 +602,14 @@
       <nav>
         <ul class="nav-links">
           <li><a href="#" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
+          <li class="nav-dropdown">
+            <a href="#about" class="dropdown-trigger">About <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></a>
+            <ul class="dropdown-menu">
+              <li><a href="#about" onclick="switchAboutTab('overviewTab')"><i class="fa-solid fa-compass"></i> Forum Description & Pillars</a></li>
+              <li><a href="#about" onclick="switchAboutTab('teamTab')"><i class="fa-solid fa-users-gear"></i> HRD Forum Team</a></li>
+              <li><a href="#about" onclick="switchAboutTab('collabTab')"><i class="fa-solid fa-handshake-angle"></i> Collaborations & Partners</a></li>
+            </ul>
+          </li>
           <li><a href="#provinces">Provincial Network</a></li>
           <li><a href="#news">News & Updates</a></li>
           <li><a href="#gallery">Photo Gallery</a></li>
@@ -1035,6 +1084,11 @@
 
       if (tabId === 'teamTab') loadTeam('all');
       if (tabId === 'collabTab') loadCollaborations('all');
+
+      const aboutElem = document.getElementById('about');
+      if (aboutElem) {
+        aboutElem.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     // Dynamic Team Member Loader & Sub-Tab Switcher
