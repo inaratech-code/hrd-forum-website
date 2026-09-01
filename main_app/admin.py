@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
-    PopupConfig, Gallery, Blog, Video, GatedDownloadLead
+    PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
+    TeamMember, Collaboration
 )
 
 @admin.register(Stats)
@@ -61,4 +62,17 @@ class VideoAdmin(admin.ModelAdmin):
 class GatedDownloadLeadAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'user_email', 'resource_title', 'downloaded_at')
     search_fields = ('user_name', 'user_email', 'resource_title')
-    list_filter = ('downloaded_at',)
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ('name', 'designation', 'category', 'order_index')
+    search_fields = ('name', 'designation', 'bio')
+    list_filter = ('category',)
+    list_editable = ('order_index',)
+
+@admin.register(Collaboration)
+class CollaborationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'website_url', 'order_index')
+    search_fields = ('name', 'blurb')
+    list_filter = ('category',)
+    list_editable = ('order_index',)

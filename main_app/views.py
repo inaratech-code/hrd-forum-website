@@ -5,7 +5,8 @@ import json
 
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
-    PopupConfig, Gallery, Blog, Video, GatedDownloadLead
+    PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
+    TeamMember, Collaboration
 )
 
 def index_page(request):
@@ -389,3 +390,83 @@ def admin_memberships_list(request):
             "created_at": m.created_at.strftime('%Y-%m-%d %H:%M')
         })
     return JsonResponse(res, safe=False)
+
+# TEAM & COLLABORATION ENDPOINTS
+
+def api_team(request):
+    category = request.GET.get('category')
+    queryset = TeamMember.objects.all()
+    if category:
+        queryset = queryset.filter(category=category)
+    res = []
+    for item in queryset:
+        res.append({
+            "id": item.id,
+            "name": item.name,
+            "designation": item.designation,
+            "category": item.category,
+            "bio": item.bio,
+            "image_url": item.image_url,
+            "order_index": item.order_index
+        })
+    return JsonResponse(res, safe=False)
+
+def api_collaborations(request):
+    category = request.GET.get('category')
+    queryset = Collaboration.objects.all()
+    if category:
+        queryset = queryset.filter(category=category)
+    res = []
+    for item in queryset:
+        res.append({
+            "id": item.id,
+            "name": item.name,
+            "category": item.category,
+            "logo_url": item.logo_url,
+            "blurb": item.blurb,
+            "website_url": item.website_url,
+            "order_index": item.order_index
+        })
+    return JsonResponse(res, safe=False)
+
+@csrf_exempt
+def admin_team_manage(request, member_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        t = TeamMember.objects.create(
+            name=data.get('name', 'Team Member'),
+            designation=data.get('designation', 'Coordinator'),
+            category=data.get('category', 'executive'),
+            bio=data.get('bio', ''),
+            image_url=data.get('image_url', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80'),
+            order_index=int(data.get('order_index', 0))
+        )
+        return JsonResponse({"success": True, "id": t.id, "message": "Team member added successfully!"})
+    elif request.method == 'DELETE' and member_id:
+        TeamMember.objects.filter(id=member_id).delete()
+        return JsonResponse({"success": True, "message": "Team member deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def admin_collaborations_manage(request, collab_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        c = Collaboration.objects.create(
+            name=data.get('name', 'Partner Organization'),
+            category=data.get('category', 'institutional'),
+            logo_url=data.get('logo_url', 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400&q=80'),
+            blurb=data.get('blurb', ''),
+            website_url=data.get('website_url', '#'),
+            order_index=int(data.get('order_index', 0))
+        )
+        return JsonResponse({"success": True, "id": c.id, "message": "Collaboration added successfully!"})
+    elif request.method == 'DELETE' and collab_id:
+        Collaboration.objects.filter(id=collab_id).delete()
+        return JsonResponse({"success": True, "message": "Collaboration deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)

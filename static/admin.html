@@ -215,6 +215,8 @@
       </div>
       <ul class="nav-menu">
         <li class="nav-item"><a onclick="switchTab('newsTab')" class="active" id="nav-newsTab"><i class="fa-solid fa-newspaper"></i> News & Updates</a></li>
+        <li class="nav-item"><a onclick="switchTab('teamTab')" id="nav-teamTab"><i class="fa-solid fa-user-group"></i> HRD Team Members</a></li>
+        <li class="nav-item"><a onclick="switchTab('collabTab')" id="nav-collabTab"><i class="fa-solid fa-handshake"></i> Collaborations</a></li>
         <li class="nav-item"><a onclick="switchTab('popupTab')" id="nav-popupTab"><i class="fa-solid fa-image"></i> Popup Banner</a></li>
         <li class="nav-item"><a onclick="switchTab('galleryTab')" id="nav-galleryTab"><i class="fa-solid fa-images"></i> Photo Gallery</a></li>
         <li class="nav-item"><a onclick="switchTab('resourceTab')" id="nav-resourceTab"><i class="fa-solid fa-file-arrow-up"></i> Resource Uploads</a></li>
@@ -283,6 +285,115 @@
               </tr>
             </thead>
             <tbody id="newsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: HRD TEAM MEMBERS -->
+      <div class="tab-pane" id="teamTab">
+        <div class="card">
+          <div class="card-title">Add HRD Team Member</div>
+          <form onsubmit="handleAddTeam(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="tName" class="form-control" placeholder="e.g. Adv. Sunita Shrestha" required>
+              </div>
+              <div class="form-group">
+                <label>Designation / Role *</label>
+                <input type="text" id="tDesignation" class="form-control" placeholder="e.g. Executive Director" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Team Tier Category *</label>
+                <select id="tCategory" class="form-control">
+                  <option value="executive">Executive Team (Leadership)</option>
+                  <option value="advisory">Advisory Board</option>
+                  <option value="general">General Member (Field Coordinator)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Profile Photo URL *</label>
+                <input type="url" id="tImage" class="form-control" placeholder="https://images.unsplash.com/..." required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Short Bio</label>
+              <textarea id="tBio" class="form-control" rows="2" placeholder="Brief summary of experience & advocacy background..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add Team Member</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Registered Team Roster</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Category Tier</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="teamTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: COLLABORATIONS -->
+      <div class="tab-pane" id="collabTab">
+        <div class="card">
+          <div class="card-title">Add Strategic Collaboration Partner</div>
+          <form onsubmit="handleAddCollab(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Partner / Ally Name *</label>
+                <input type="text" id="cName" class="form-control" placeholder="e.g. National Human Rights Commission" required>
+              </div>
+              <div class="form-group">
+                <label>Collaboration Type *</label>
+                <select id="cCategory" class="form-control">
+                  <option value="institutional">Institutional Collaboration (Partner NGO/Coalition)</option>
+                  <option value="individual">Individual Collaboration (Expert/Legal Counsel)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Logo / Image URL *</label>
+                <input type="url" id="cLogo" class="form-control" placeholder="https://images.unsplash.com/..." required>
+              </div>
+              <div class="form-group">
+                <label>Website Link</label>
+                <input type="text" id="cWebsite" class="form-control" placeholder="#">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Descriptive Blurb *</label>
+              <textarea id="cBlurb" class="form-control" rows="2" placeholder="Concise overview of partnership scope & collaboration focus..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-handshake"></i> Add Collaboration Partner</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Collaborations & Partnerships Directory</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Logo</th>
+                <th>Partner Name</th>
+                <th>Category</th>
+                <th>Descriptive Blurb</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="collabTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -499,6 +610,8 @@
 
       const titles = {
         newsTab: 'News & Updates Management',
+        teamTab: 'HRD Team Roster Management',
+        collabTab: 'Strategic Collaborations Directory',
         popupTab: 'Homepage Announcement Popup',
         galleryTab: 'Photo Gallery Management',
         resourceTab: 'Resource & Video Uploads',
@@ -508,6 +621,8 @@
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Admin Dashboard';
 
       if (tabId === 'newsTab') loadNews();
+      if (tabId === 'teamTab') loadTeamAdmin();
+      if (tabId === 'collabTab') loadCollabAdmin();
       if (tabId === 'popupTab') loadPopup();
       if (tabId === 'galleryTab') loadGallery();
       if (tabId === 'resourceTab') loadResources();
@@ -753,6 +868,100 @@
             <td>${m.organization || '-'} (${m.role || '-'})</td>
           </tr>
         `).join('');
+      }
+    }
+
+    // TEAM & COLLABORATION ADMIN HANDLERS
+    async function loadTeamAdmin() {
+      const res = await fetch('/api/team');
+      if (res.ok) {
+        const members = await res.json();
+        document.getElementById('teamTableBody').innerHTML = members.map(m => `
+          <tr>
+            <td>#${m.id}</td>
+            <td><img src="${m.image_url}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td>
+            <td><strong>${m.name}</strong></td>
+            <td>${m.designation}</td>
+            <td><span class="badge badge-info">${m.category}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteTeamMember(${m.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddTeam(e) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('tName').value,
+        designation: document.getElementById('tDesignation').value,
+        category: document.getElementById('tCategory').value,
+        image_url: document.getElementById('tImage').value,
+        bio: document.getElementById('tBio').value
+      };
+      const res = await fetch('/api/admin/team', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Team member added successfully!');
+        document.getElementById('tName').value = '';
+        document.getElementById('tDesignation').value = '';
+        document.getElementById('tBio').value = '';
+        loadTeamAdmin();
+      }
+    }
+
+    async function deleteTeamMember(id) {
+      if (confirm('Delete this team member profile?')) {
+        await fetch(`/api/admin/team/${id}`, { method: 'DELETE' });
+        loadTeamAdmin();
+      }
+    }
+
+    async function loadCollabAdmin() {
+      const res = await fetch('/api/collaborations');
+      if (res.ok) {
+        const collabs = await res.json();
+        document.getElementById('collabTableBody').innerHTML = collabs.map(c => `
+          <tr>
+            <td>#${c.id}</td>
+            <td><img src="${c.logo_url}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;"></td>
+            <td><strong>${c.name}</strong></td>
+            <td><span class="badge badge-warning">${c.category}</span></td>
+            <td style="max-width: 250px;">${c.blurb}</td>
+            <td><button class="btn btn-danger" onclick="deleteCollaboration(${c.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddCollab(e) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('cName').value,
+        category: document.getElementById('cCategory').value,
+        logo_url: document.getElementById('cLogo').value,
+        blurb: document.getElementById('cBlurb').value,
+        website_url: document.getElementById('cWebsite').value
+      };
+      const res = await fetch('/api/admin/collaborations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Collaboration partner added successfully!');
+        document.getElementById('cName').value = '';
+        document.getElementById('cBlurb').value = '';
+        loadCollabAdmin();
+      }
+    }
+
+    async function deleteCollaboration(id) {
+      if (confirm('Delete this collaboration partner?')) {
+        await fetch(`/api/admin/collaborations/${id}`, { method: 'DELETE' });
+        loadCollabAdmin();
       }
     }
   </script>

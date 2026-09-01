@@ -144,3 +144,48 @@ class GatedDownloadLead(models.Model):
 
     def __str__(self):
         return f"{self.user_name} ({self.user_email}) -> {self.resource_title}"
+
+
+class TeamMember(models.Model):
+    CATEGORY_CHOICES = [
+        ('executive', 'Executive Team'),
+        ('advisory', 'Advisory Board'),
+        ('general', 'General Members'),
+    ]
+
+    name = models.CharField(max_length=150)
+    designation = models.CharField(max_length=150)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='executive')
+    bio = models.TextField(blank=True, default='')
+    image_url = models.URLField(max_length=500, default='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80')
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Team Members"
+        ordering = ['order_index', 'id']
+
+    def __str__(self):
+        return f"{self.name} ({self.get_category_display()})"
+
+
+class Collaboration(models.Model):
+    CATEGORY_CHOICES = [
+        ('institutional', 'Institutional Collaboration'),
+        ('individual', 'Individual Collaboration'),
+    ]
+
+    name = models.CharField(max_length=150)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='institutional')
+    logo_url = models.URLField(max_length=500, default='https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400&q=80')
+    blurb = models.TextField()
+    website_url = models.URLField(max_length=500, blank=True, default='#')
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Collaborations"
+        ordering = ['order_index', 'id']
+
+    def __str__(self):
+        return f"{self.name} ({self.get_category_display()})"

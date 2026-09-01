@@ -8,7 +8,8 @@ django.setup()
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from main_app.models import (
-    Stats, Province, News, Resource, PopupConfig, Gallery, Blog, Video
+    Stats, Province, News, Resource, PopupConfig, Gallery, Blog, Video,
+    TeamMember, Collaboration
 )
 
 print("--- RUNNING DJANGO MIGRATIONS ---")
@@ -87,5 +88,24 @@ if not Resource.objects.exists():
     Resource.objects.create(title='Annual Protection Status Report 2025', category='Document', format='PDF', file_size='4.2 MB', file_url='#', is_gated=True)
     Resource.objects.create(title='Strategic Plan 2026–2030 Blueprint', category='Document', format='PDF', file_size='2.8 MB', file_url='#', is_gated=True)
     Resource.objects.create(title='Grassroots Security & Digital Safety Manual', category='Document', format='PDF', file_size='3.5 MB', file_url='#', is_gated=True)
+
+if not TeamMember.objects.exists():
+    TeamMember.objects.create(name='Adv. Sunita Shrestha', designation='Executive Director', category='executive', bio='Lead human rights attorney with 18+ years experience advocating for civic space protections and international legal compliance.', image_url='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', order_index=1)
+    TeamMember.objects.create(name='Dr. Rajesh Thapa', designation='Chairperson', category='executive', bio='Constitutional scholar and Senior Counsel leading strategic Supreme Court litigation and policy advocacy.', image_url='https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80', order_index=2)
+    TeamMember.objects.create(name='Bibek Adhikari', designation='Head of Rapid Response', category='executive', bio='Coordinates emergency relocation desks and 24/7 helpline operations across all 7 provinces.', image_url='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80', order_index=3)
+
+    TeamMember.objects.create(name='Hon. Justice (Retd.) K. B. Gurung', designation='Senior Judicial Advisor', category='advisory', bio='Former Appellate Judge advising on constitutional rights, rule of law, and judicial accountability.', image_url='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', order_index=1)
+    TeamMember.objects.create(name='Prof. Rita Sharma', designation='Gender & Diversity Expert', category='advisory', bio='Senior academic leading gender policy audits and marginalized defender protection protocols.', image_url='https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80', order_index=2)
+
+    TeamMember.objects.create(name='Ramesh Chaudhary', designation='Koshi Field Coordinator', category='general', bio='Grassroots environmental defender monitoring river basin rights and forest advocacy in Eastern Nepal.', image_url='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80', order_index=1)
+    TeamMember.objects.create(name='Sabina Mahato', designation='Madhesh Paralegal Lead', category='general', bio='Community paralegal specializing in gender violence defense and local legal aid representation.', image_url='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80', order_index=2)
+
+if not Collaboration.objects.exists():
+    Collaboration.objects.create(name='National Human Rights Commission (NHRC)', category='institutional', logo_url='https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=400&q=80', blurb='Formal memorandum of understanding for joint fact-finding missions and rapid defender alert escalation.', website_url='#', order_index=1)
+    Collaboration.objects.create(name='International Rights Protection Coalition', category='institutional', logo_url='https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&q=80', blurb='Global alliance providing emergency diplomatic backing and international emergency grants for high-risk advocates.', website_url='#', order_index=2)
+    Collaboration.objects.create(name='Nepal Pro-Bono Legal Alliance', category='institutional', logo_url='https://images.unsplash.com/photo-1450133064473-71024230f91b?w=400&q=80', blurb='Pro-bono network of 250+ legal practitioners extending emergency courtroom representation across all district courts.', website_url='#', order_index=3)
+
+    Collaboration.objects.create(name='Adv. Govinda K.C.', category='individual', logo_url='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', blurb='Senior Advocate offering emergency bail litigation and habeas corpus writs across Supreme and High Courts.', website_url='#', order_index=1)
+    Collaboration.objects.create(name='Dr. Anita Bhattarai', category='individual', logo_url='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', blurb='Digital security expert providing encrypted communication channels and digital forensics support for field monitors.', website_url='#', order_index=2)
 
 print("\n--- SEEDING COMPLETED SUCCESSFULLY ---")

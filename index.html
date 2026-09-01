@@ -295,6 +295,175 @@
     .footer-socials a:hover { background: var(--accent-blue); color: #ffffff; border-color: var(--accent-blue); }
     .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 24px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; }
 
+    /* Modular About Platform Styling */
+    .about-nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .about-tab-btn {
+      background: #ffffff;
+      color: var(--primary-navy);
+      border: 1px solid var(--border-color);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .about-tab-btn i { font-size: 14px; color: var(--accent-blue); transition: color 0.25s ease; }
+    .about-tab-btn:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+    .about-tab-btn.active {
+      background: var(--primary-navy);
+      color: #ffffff;
+      border-color: var(--primary-navy);
+      box-shadow: 0 6px 16px rgba(14, 42, 71, 0.2);
+    }
+    .about-tab-btn.active i { color: var(--accent-light-blue); }
+
+    .about-sub-pane { display: none; }
+    .about-sub-pane.active { display: block; animation: fadeIn 0.35s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sub-Tab Navigation for Team & Collaborations */
+    .sub-nav-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .sub-pill-btn {
+      background: #f1f5f9;
+      color: var(--text-dark);
+      border: 1px solid var(--border-color);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .sub-pill-btn:hover { background: #e2e8f0; }
+    .sub-pill-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+      font-weight: 700;
+    }
+
+    /* Mandate Mission Vision Cards */
+    .mmv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .mmv-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+    .mmv-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--accent-blue);
+    }
+    .mmv-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: #e0f2fe;
+      color: var(--accent-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    .mmv-card h3 { font-size: 16px; font-weight: 800; color: var(--primary-navy); margin-bottom: 10px; }
+    .mmv-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* Team Member Profile Grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .team-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+    .team-avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 16px;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .team-card h4 { font-size: 15px; font-weight: 800; color: var(--primary-navy); margin-bottom: 4px; }
+    .team-badge {
+      font-size: 11px; font-weight: 700;
+      color: var(--accent-blue); background: #e0f2fe;
+      padding: 3px 10px; border-radius: 12px;
+      display: inline-block; margin-bottom: 12px;
+    }
+    .team-card p { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+
+    /* Collaboration Partner Cards Grid */
+    .collab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .collab-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      transition: transform 0.25s ease;
+    }
+    .collab-card:hover { transform: translateY(-3px); }
+    .collab-logo {
+      width: 64px; height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border-color);
+      background: #f8fafc;
+    }
+    .collab-info h5 { font-size: 14px; font-weight: 800; color: var(--primary-navy); margin-bottom: 4px; }
+    .collab-tag { font-size: 10px; font-weight: 700; color: var(--accent-blue); background: #e0f2fe; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+    .collab-info p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    @media (max-width: 992px) {
+      .mmv-grid { grid-template-columns: 1fr; }
+    }
+
     /* Modals */
     .modal-backdrop {
       position: fixed;
@@ -418,55 +587,126 @@
   </section>
 
   <!-- About Section -->
-  <section class="about-section" id="about">
+  <section class="about-section" id="about" style="padding: 70px 0; background: var(--bg-light);">
     <div class="container">
-      <div class="about-grid">
-        <div class="about-text">
-          <div class="section-badge">ORGANIZATIONAL BACKGROUND</div>
-          <h2 class="section-title">About HRD Forum Nepal</h2>
-          <p>Human Rights Defenders Forum (HRD Forum) Nepal functions as a united national NGO committed to creating a secure and empowering environment for civic activists. Operating under constitutional mandates and universal declarations, we monitor safety, investigate violations, and empower vulnerable actors.</p>
-          <p>Through our strategic presence across all seven provinces of Nepal, we bridge critical gaps between local defenders and international protective structures. We believe that securing the rights of defenders is the first step toward safeguarding democratic freedom for all Nepalese citizens.</p>
-          
-          <div class="stats-row">
-            <div class="stat-item">
-              <h3 id="statProvinces">7</h3>
-              <p>Provincial Networks</p>
-            </div>
-            <div class="stat-item">
-              <h3 id="statDefenders">1,200+</h3>
-              <p>Monitored Defenders</p>
-            </div>
-            <div class="stat-item">
-              <h3 id="statCases">150+</h3>
-              <p>Resolved Cases</p>
-            </div>
+      <div style="text-align: center; max-width: 760px; margin: 0 auto 32px;">
+        <span class="section-badge">ORGANIZATIONAL HUB</span>
+        <h2 class="section-title">About HRD Forum Nepal</h2>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">A united national coalition defending human rights activists, coordinating legal protection, and strengthening grassroots watchdogs across all 7 provinces.</p>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <div class="about-nav-tabs">
+        <button class="about-tab-btn active" id="tab-overviewTab" onclick="switchAboutTab('overviewTab')">
+          <i class="fa-solid fa-compass"></i> Forum Overview & Pillars
+        </button>
+        <button class="about-tab-btn" id="tab-teamTab" onclick="switchAboutTab('teamTab')">
+          <i class="fa-solid fa-users-gear"></i> HRD Forum Team
+        </button>
+        <button class="about-tab-btn" id="tab-collabTab" onclick="switchAboutTab('collabTab')">
+          <i class="fa-solid fa-handshake-angle"></i> Strategic Collaborations
+        </button>
+      </div>
+
+      <!-- Sub-Pane 1: Forum Description -->
+      <div class="about-sub-pane active" id="overviewTab">
+        <!-- Mandate, Mission & Vision -->
+        <div class="mmv-grid">
+          <div class="mmv-card">
+            <div class="mmv-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+            <h3>Constitutional Mandate</h3>
+            <p>Empowered by international declarations and Nepal's Constitution, we monitor civic space violations, secure rule of law, and protect human rights defenders from judicial harassment and unlawful detention.</p>
+          </div>
+          <div class="mmv-card">
+            <div class="mmv-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Mission Statement</h3>
+            <p>To establish a rapid protective ecosystem across all 7 provinces that safeguards local activists, provides 24/7 legal aid, and ensures human rights defenders operate without fear of reprisal.</p>
+          </div>
+          <div class="mmv-card">
+            <div class="mmv-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Vision Statement</h3>
+            <p>A democratic Nepal where all grassroots advocates, journalists, and civic watchdogs enjoy full constitutional liberties and institutional security under absolute rule of law.</p>
           </div>
         </div>
 
-        <div class="feature-cards">
-          <div class="feature-card">
-            <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
-            <div>
-              <h4>Human Rights Advocacy</h4>
-              <p>Lobbying for domestic policies that recognize, respect, and defend critical civic workers under legal frameworks.</p>
+        <!-- Strategic Pillars -->
+        <div class="about-grid" style="margin-top: 40px;">
+          <div class="about-text">
+            <div class="section-badge">STRATEGIC FOCUS AREAS</div>
+            <h3 style="font-size: 22px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">Core Strategic Pillars</h3>
+            <p>Our operational framework blends immediate crisis response with long-term policy lobbying and grassroots paralegal capacity building.</p>
+            
+            <div class="stats-row">
+              <div class="stat-item">
+                <h3 id="statProvinces">7</h3>
+                <p>Provincial Desks</p>
+              </div>
+              <div class="stat-item">
+                <h3 id="statDefenders">1,200+</h3>
+                <p>Monitored Defenders</p>
+              </div>
+              <div class="stat-item">
+                <h3 id="statCases">150+</h3>
+                <p>Resolved Cases</p>
+              </div>
             </div>
           </div>
-          <div class="feature-card">
-            <div class="feature-icon"><i class="fa-solid fa-shield"></i></div>
-            <div>
-              <h4>Defender Protection</h4>
-              <p>Providing urgent helpline support, secure relocations, legal aid, and safety training to threatened grassroots actors.</p>
+
+          <div class="feature-cards">
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+              <div>
+                <h4>Defender Defense & Emergency Support</h4>
+                <p>Deploying 24/7 emergency hotlines, rapid legal counsel, and secure relocation facilities for threatened defenders.</p>
+              </div>
             </div>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon"><i class="fa-solid fa-book-open"></i></div>
-            <div>
-              <h4>Policy & Research</h4>
-              <p>Compiling annual status reports, monitoring judicial actions, and conducting fact-finding missions to update risk datasets.</p>
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-gavel"></i></div>
+              <div>
+                <h4>Policy Advocacy & Judicial Lobbying</h4>
+                <p>Drafting legislative blueprints and engaging the Supreme Court and Parliament to codify defender protection laws.</p>
+              </div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-hands-holding-child"></i></div>
+              <div>
+                <h4>Field Support & Grassroots Empowerment</h4>
+                <p>Training regional paralegals, conducting fact-finding missions, and empowering local indigenous & environmental watchdogs.</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Sub-Pane 2: HRD Team (Dynamic & Admin-Editable) -->
+      <div class="about-sub-pane" id="teamTab">
+        <!-- Team Sub-Pill Navigation -->
+        <div class="sub-nav-pills">
+          <button class="sub-pill-btn active" onclick="switchTeamSubTab('all', this)">All Team Members</button>
+          <button class="sub-pill-btn" onclick="switchTeamSubTab('executive', this)">Executive Team</button>
+          <button class="sub-pill-btn" onclick="switchTeamSubTab('advisory', this)">Advisory Board</button>
+          <button class="sub-pill-btn" onclick="switchTeamSubTab('general', this)">General Members</button>
+        </div>
+
+        <div class="team-grid" id="teamGridDisplay">
+          <!-- Dynamic rendering from /api/team -->
+        </div>
+      </div>
+
+      <!-- Sub-Pane 3: Collaborations -->
+      <div class="about-sub-pane" id="collabTab">
+        <!-- Collaboration Sub-Pill Navigation -->
+        <div class="sub-nav-pills">
+          <button class="sub-pill-btn active" onclick="switchCollabSubTab('all', this)">All Partners</button>
+          <button class="sub-pill-btn" onclick="switchCollabSubTab('institutional', this)">Institutional Collaborations</button>
+          <button class="sub-pill-btn" onclick="switchCollabSubTab('individual', this)">Individual Allies</button>
+        </div>
+
+        <div class="collab-grid" id="collabGridDisplay">
+          <!-- Dynamic rendering from /api/collaborations -->
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -777,8 +1017,89 @@
       loadGallery();
       loadNews();
       loadResources();
+      loadTeam('all');
+      loadCollaborations('all');
       checkPopup();
     });
+
+    // About Section Modular Tab Switcher
+    function switchAboutTab(tabId) {
+      document.querySelectorAll('.about-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.about-sub-pane').forEach(pane => pane.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const activePane = document.getElementById(tabId);
+      if (activePane) activePane.classList.add('active');
+
+      if (tabId === 'teamTab') loadTeam('all');
+      if (tabId === 'collabTab') loadCollaborations('all');
+    }
+
+    // Dynamic Team Member Loader & Sub-Tab Switcher
+    async function loadTeam(category = 'all') {
+      try {
+        const url = (category === 'all') ? '/api/team' : `/api/team?category=${category}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const members = await res.json();
+          const grid = document.getElementById('teamGridDisplay');
+          if (members.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No team members registered under this tier yet.</div>`;
+            return;
+          }
+          grid.innerHTML = members.map(m => `
+            <div class="team-card">
+              <img src="${m.image_url}" alt="${m.name}" class="team-avatar">
+              <h4>${m.name}</h4>
+              <span class="team-badge">${m.designation}</span>
+              <p>${m.bio || 'Dedicated human rights defender advocating for rule of law and civic space protections.'}</p>
+            </div>
+          `).join('');
+        }
+      } catch (e) {}
+    }
+
+    function switchTeamSubTab(category, btn) {
+      const container = btn.closest('.sub-nav-pills');
+      container.querySelectorAll('.sub-pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadTeam(category);
+    }
+
+    // Dynamic Collaborations Loader & Sub-Tab Switcher
+    async function loadCollaborations(category = 'all') {
+      try {
+        const url = (category === 'all') ? '/api/collaborations' : `/api/collaborations?category=${category}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          const partners = await res.json();
+          const grid = document.getElementById('collabGridDisplay');
+          if (partners.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No collaboration entries listed under this category yet.</div>`;
+            return;
+          }
+          grid.innerHTML = partners.map(c => `
+            <div class="collab-card">
+              <img src="${c.logo_url}" alt="${c.name}" class="collab-logo">
+              <div class="collab-info">
+                <span class="collab-tag">${c.category === 'institutional' ? 'Institutional Partner' : 'Individual Ally'}</span>
+                <h5>${c.name}</h5>
+                <p>${c.blurb}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {}
+    }
+
+    function switchCollabSubTab(category, btn) {
+      const container = btn.closest('.sub-nav-pills');
+      container.querySelectorAll('.sub-pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadCollaborations(category);
+    }
 
     function showToast(message, type = 'success') {
       const container = document.getElementById('toastContainer');

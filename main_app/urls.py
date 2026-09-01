@@ -28,4 +28,12 @@ urlpatterns = [
     path('api/admin/gated-logs', views.admin_gated_logs, name='admin_gated_logs'),
     path('api/incidents', views.admin_incidents_list, name='admin_incidents_list'),
     path('api/memberships', views.admin_memberships_list, name='admin_memberships_list'),
+
+    # Team & Collaboration Routes
+    path('api/team', views.api_team, name='api_team'),
+    path('api/collaborations', views.api_collaborations, name='api_collaborations'),
+    path('api/admin/team', views.admin_team_manage, name='admin_team_manage'),
+    path('api/admin/team/<int:member_id>', views.admin_team_manage, name='admin_team_delete'),
+    path('api/admin/collaborations', views.admin_collaborations_manage, name='admin_collaborations_manage'),
+    path('api/admin/collaborations/<int:collab_id>', views.admin_collaborations_manage, name='admin_collaborations_delete'),
 ]
