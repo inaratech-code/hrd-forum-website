@@ -604,11 +604,11 @@
         <ul class="nav-links">
           <li><a href="#" class="active">Home</a></li>
           <li class="nav-dropdown">
-            <a href="#about" class="dropdown-trigger">About <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></a>
+            <a onclick="openAboutModal('overviewTab')" class="dropdown-trigger" style="cursor: pointer;">About <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></a>
             <ul class="dropdown-menu">
-              <li><a href="#about" onclick="switchAboutTab('overviewTab')"><i class="fa-solid fa-compass"></i> Forum Description & Pillars</a></li>
-              <li><a href="#about" onclick="switchAboutTab('teamTab')"><i class="fa-solid fa-users-gear"></i> HRD Forum Team</a></li>
-              <li><a href="#about" onclick="switchAboutTab('collabTab')"><i class="fa-solid fa-handshake-angle"></i> Collaborations & Partners</a></li>
+              <li><a onclick="openAboutModal('overviewTab')" style="cursor: pointer;"><i class="fa-solid fa-compass"></i> Forum Description & Pillars</a></li>
+              <li><a onclick="openAboutModal('teamTab')" style="cursor: pointer;"><i class="fa-solid fa-users-gear"></i> HRD Forum Team</a></li>
+              <li><a onclick="openAboutModal('collabTab')" style="cursor: pointer;"><i class="fa-solid fa-handshake-angle"></i> Collaborations & Partners</a></li>
             </ul>
           </li>
           <li><a href="#provinces">Provincial Network</a></li>
@@ -645,130 +645,6 @@
         <button onclick="openMembershipModal()" class="btn-primary">Apply for Membership</button>
         <button onclick="openIncidentModal()" class="btn-outline">Report an Incident Alert</button>
       </div>
-    </div>
-  </section>
-
-  <!-- About Section -->
-  <section class="about-section" id="about" style="padding: 70px 0; background: var(--bg-light);">
-    <div class="container">
-      <div style="text-align: center; max-width: 760px; margin: 0 auto 32px;">
-        <span class="section-badge">ORGANIZATIONAL HUB</span>
-        <h2 class="section-title">About HRD Forum Nepal</h2>
-        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">A united national coalition defending human rights activists, coordinating legal protection, and strengthening grassroots watchdogs across all 7 provinces.</p>
-      </div>
-
-      <!-- Main Navigation Tabs -->
-      <div class="about-nav-tabs">
-        <button class="about-tab-btn active" id="tab-overviewTab" onclick="switchAboutTab('overviewTab')">
-          <i class="fa-solid fa-compass"></i> Forum Overview & Pillars
-        </button>
-        <button class="about-tab-btn" id="tab-teamTab" onclick="switchAboutTab('teamTab')">
-          <i class="fa-solid fa-users-gear"></i> HRD Forum Team
-        </button>
-        <button class="about-tab-btn" id="tab-collabTab" onclick="switchAboutTab('collabTab')">
-          <i class="fa-solid fa-handshake-angle"></i> Strategic Collaborations
-        </button>
-      </div>
-
-      <!-- Sub-Pane 1: Forum Description -->
-      <div class="about-sub-pane active" id="overviewTab">
-        <!-- Mandate, Mission & Vision -->
-        <div class="mmv-grid">
-          <div class="mmv-card">
-            <div class="mmv-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-            <h3>Constitutional Mandate</h3>
-            <p>Empowered by international declarations and Nepal's Constitution, we monitor civic space violations, secure rule of law, and protect human rights defenders from judicial harassment and unlawful detention.</p>
-          </div>
-          <div class="mmv-card">
-            <div class="mmv-icon"><i class="fa-solid fa-bullseye"></i></div>
-            <h3>Mission Statement</h3>
-            <p>To establish a rapid protective ecosystem across all 7 provinces that safeguards local activists, provides 24/7 legal aid, and ensures human rights defenders operate without fear of reprisal.</p>
-          </div>
-          <div class="mmv-card">
-            <div class="mmv-icon"><i class="fa-solid fa-eye"></i></div>
-            <h3>Vision Statement</h3>
-            <p>A democratic Nepal where all grassroots advocates, journalists, and civic watchdogs enjoy full constitutional liberties and institutional security under absolute rule of law.</p>
-          </div>
-        </div>
-
-        <!-- Strategic Pillars -->
-        <div class="about-grid" style="margin-top: 40px;">
-          <div class="about-text">
-            <div class="section-badge">STRATEGIC FOCUS AREAS</div>
-            <h3 style="font-size: 22px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">Core Strategic Pillars</h3>
-            <p>Our operational framework blends immediate crisis response with long-term policy lobbying and grassroots paralegal capacity building.</p>
-            
-            <div class="stats-row">
-              <div class="stat-item">
-                <h3 id="statProvinces">7</h3>
-                <p>Provincial Desks</p>
-              </div>
-              <div class="stat-item">
-                <h3 id="statDefenders">1,200+</h3>
-                <p>Monitored Defenders</p>
-              </div>
-              <div class="stat-item">
-                <h3 id="statCases">150+</h3>
-                <p>Resolved Cases</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="feature-cards">
-            <div class="feature-card">
-              <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-              <div>
-                <h4>Defender Defense & Emergency Support</h4>
-                <p>Deploying 24/7 emergency hotlines, rapid legal counsel, and secure relocation facilities for threatened defenders.</p>
-              </div>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon"><i class="fa-solid fa-gavel"></i></div>
-              <div>
-                <h4>Policy Advocacy & Judicial Lobbying</h4>
-                <p>Drafting legislative blueprints and engaging the Supreme Court and Parliament to codify defender protection laws.</p>
-              </div>
-            </div>
-            <div class="feature-card">
-              <div class="feature-icon"><i class="fa-solid fa-hands-holding-child"></i></div>
-              <div>
-                <h4>Field Support & Grassroots Empowerment</h4>
-                <p>Training regional paralegals, conducting fact-finding missions, and empowering local indigenous & environmental watchdogs.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sub-Pane 2: HRD Team (Dynamic & Admin-Editable) -->
-      <div class="about-sub-pane" id="teamTab">
-        <!-- Team Sub-Pill Navigation -->
-        <div class="sub-nav-pills">
-          <button class="sub-pill-btn active" onclick="switchTeamSubTab('all', this)">All Team Members</button>
-          <button class="sub-pill-btn" onclick="switchTeamSubTab('executive', this)">Executive Team</button>
-          <button class="sub-pill-btn" onclick="switchTeamSubTab('advisory', this)">Advisory Board</button>
-          <button class="sub-pill-btn" onclick="switchTeamSubTab('general', this)">General Members</button>
-        </div>
-
-        <div class="team-grid" id="teamGridDisplay">
-          <!-- Dynamic rendering from /api/team -->
-        </div>
-      </div>
-
-      <!-- Sub-Pane 3: Collaborations -->
-      <div class="about-sub-pane" id="collabTab">
-        <!-- Collaboration Sub-Pill Navigation -->
-        <div class="sub-nav-pills">
-          <button class="sub-pill-btn active" onclick="switchCollabSubTab('all', this)">All Partners</button>
-          <button class="sub-pill-btn" onclick="switchCollabSubTab('institutional', this)">Institutional Collaborations</button>
-          <button class="sub-pill-btn" onclick="switchCollabSubTab('individual', this)">Individual Allies</button>
-        </div>
-
-        <div class="collab-grid" id="collabGridDisplay">
-          <!-- Dynamic rendering from /api/collaborations -->
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -1087,6 +963,123 @@
     </div>
   </div>
 
+  <!-- Full Screen About Overlay Modal (3 Subsections: HRD Forum, Team, Collaborations) -->
+  <div class="modal-backdrop" id="aboutModal" onclick="if(event.target === this) closeAboutModal()">
+    <div class="modal-card" style="width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; padding: 24px 40px; display: flex; flex-direction: column; overflow: hidden; background: var(--card-bg, #ffffff);">
+      <div class="modal-header" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+        <h3 class="modal-title" style="font-size: 20px;"><i class="fa-solid fa-compass" style="color: var(--accent-blue);"></i> About HRD Forum Nepal</h3>
+        <button class="modal-close" onclick="closeAboutModal()" style="font-size: 28px; top: 18px; right: 24px;">&times;</button>
+      </div>
+
+      <!-- Main Navigation Subsections (3 Tabs) -->
+      <div class="about-nav-tabs" style="margin-bottom: 20px;">
+        <button class="about-tab-btn active" id="tab-overviewTab" onclick="switchAboutTab('overviewTab')">
+          <i class="fa-solid fa-compass"></i> 1. HRD Forum
+        </button>
+        <button class="about-tab-btn" id="tab-teamTab" onclick="switchAboutTab('teamTab')">
+          <i class="fa-solid fa-users-gear"></i> 2. HRD Team
+        </button>
+        <button class="about-tab-btn" id="tab-collabTab" onclick="switchAboutTab('collabTab')">
+          <i class="fa-solid fa-handshake-angle"></i> 3. Collaborations
+        </button>
+      </div>
+
+      <!-- Full-Screen Scrollable Content Area -->
+      <div style="flex: 1; overflow-y: auto; padding-right: 8px;">
+        <!-- Subsection 1: HRD Forum Overview & Core Pillars -->
+        <div class="about-sub-pane active" id="overviewTab">
+          <div class="mmv-grid">
+            <div class="mmv-card">
+              <div class="mmv-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+              <h3>Constitutional Mandate</h3>
+              <p>Empowered by international declarations and Nepal's Constitution, we monitor civic space violations, secure rule of law, and protect human rights defenders from judicial harassment and unlawful detention.</p>
+            </div>
+            <div class="mmv-card">
+              <div class="mmv-icon"><i class="fa-solid fa-bullseye"></i></div>
+              <h3>Mission Statement</h3>
+              <p>To establish a rapid protective ecosystem across all 7 provinces that safeguards local activists, provides 24/7 legal aid, and ensures human rights defenders operate without fear of reprisal.</p>
+            </div>
+            <div class="mmv-card">
+              <div class="mmv-icon"><i class="fa-solid fa-eye"></i></div>
+              <h3>Vision Statement</h3>
+              <p>A democratic Nepal where all grassroots advocates, journalists, and civic watchdogs enjoy full constitutional liberties and institutional security under absolute rule of law.</p>
+            </div>
+          </div>
+
+          <div class="about-grid" style="margin-top: 40px;">
+            <div class="about-text">
+              <div class="section-badge">STRATEGIC FOCUS AREAS</div>
+              <h3 style="font-size: 22px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">Core Strategic Pillars</h3>
+              <p>Our operational framework blends immediate crisis response with long-term policy lobbying and grassroots paralegal capacity building.</p>
+              
+              <div class="stats-row">
+                <div class="stat-item">
+                  <h3 id="statProvinces">7</h3>
+                  <p>Provincial Desks</p>
+                </div>
+                <div class="stat-item">
+                  <h3 id="statDefenders">1,200+</h3>
+                  <p>Monitored Defenders</p>
+                </div>
+                <div class="stat-item">
+                  <h3 id="statCases">150+</h3>
+                  <p>Resolved Cases</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="feature-cards">
+              <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                  <h4>Defender Defense & Emergency Support</h4>
+                  <p>Deploying 24/7 emergency hotlines, rapid legal counsel, and secure relocation facilities for threatened defenders.</p>
+                </div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-gavel"></i></div>
+                <div>
+                  <h4>Policy Advocacy & Judicial Lobbying</h4>
+                  <p>Drafting legislative blueprints and engaging the Supreme Court and Parliament to codify defender protection laws.</p>
+                </div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-hands-holding-child"></i></div>
+                <div>
+                  <h4>Field Support & Grassroots Empowerment</h4>
+                  <p>Training regional paralegals, conducting fact-finding missions, and empowering local indigenous & environmental watchdogs.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subsection 2: HRD Team (Executive, Advisory, General) -->
+        <div class="about-sub-pane" id="teamTab">
+          <div class="sub-nav-pills" style="margin-bottom: 20px;">
+            <button class="sub-pill-btn active" onclick="switchTeamSubTab('all', this)">All Team Members</button>
+            <button class="sub-pill-btn" onclick="switchTeamSubTab('executive', this)">Executive Team</button>
+            <button class="sub-pill-btn" onclick="switchTeamSubTab('advisory', this)">Advisory Board</button>
+            <button class="sub-pill-btn" onclick="switchTeamSubTab('general', this)">General Members</button>
+          </div>
+
+          <div class="team-grid" id="teamGridDisplay"></div>
+        </div>
+
+        <!-- Subsection 3: Collaborations (Institutional & Individual) -->
+        <div class="about-sub-pane" id="collabTab">
+          <div class="sub-nav-pills" style="margin-bottom: 20px;">
+            <button class="sub-pill-btn active" onclick="switchCollabSubTab('all', this)">All Partners</button>
+            <button class="sub-pill-btn" onclick="switchCollabSubTab('institutional', this)">Institutional Collaborations</button>
+            <button class="sub-pill-btn" onclick="switchCollabSubTab('individual', this)">Individual Allies</button>
+          </div>
+
+          <div class="collab-grid" id="collabGridDisplay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- News Full Article Modal -->
   <div class="modal-backdrop" id="newsArticleModal" onclick="if(event.target === this) closeNewsArticleModal()">
     <div class="modal-card" style="max-width: 680px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
@@ -1168,7 +1161,19 @@
       checkPopup();
     });
 
-    // About Section Modular Tab Switcher
+    // About Section Modular Tab Switcher & Modal Controls
+    function openAboutModal(tabId = 'overviewTab') {
+      switchAboutTab(tabId);
+      document.body.style.overflow = 'hidden';
+      document.getElementById('aboutModal').classList.add('active');
+    }
+
+    function closeAboutModal() {
+      const modal = document.getElementById('aboutModal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
     function switchAboutTab(tabId) {
       document.querySelectorAll('.about-tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.about-sub-pane').forEach(pane => pane.classList.remove('active'));
@@ -1181,11 +1186,6 @@
 
       if (tabId === 'teamTab') loadTeam('all');
       if (tabId === 'collabTab') loadCollaborations('all');
-
-      const aboutElem = document.getElementById('about');
-      if (aboutElem) {
-        aboutElem.scrollIntoView({ behavior: 'smooth' });
-      }
     }
 
     // Dynamic Team Member Loader & Sub-Tab Switcher
@@ -1755,6 +1755,7 @@
       }
 
       if (e.key === 'Escape') {
+        closeAboutModal();
         closeMediaGalleryModal();
         closeVideoPlayerModal();
         closeNewsArticleModal();
