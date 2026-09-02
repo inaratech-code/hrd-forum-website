@@ -604,11 +604,11 @@
         <ul class="nav-links">
           <li><a href="#" class="active">Home</a></li>
           <li class="nav-dropdown">
-            <a onclick="openAboutModal('overviewTab')" class="dropdown-trigger" style="cursor: pointer;">About <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></a>
+            <a onclick="openAboutModal('all')" class="dropdown-trigger" style="cursor: pointer;">About <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></a>
             <ul class="dropdown-menu">
-              <li><a onclick="openAboutModal('overviewTab')" style="cursor: pointer;"><i class="fa-solid fa-compass"></i> Forum Description & Pillars</a></li>
-              <li><a onclick="openAboutModal('teamTab')" style="cursor: pointer;"><i class="fa-solid fa-users-gear"></i> HRD Forum Team</a></li>
-              <li><a onclick="openAboutModal('collabTab')" style="cursor: pointer;"><i class="fa-solid fa-handshake-angle"></i> Collaborations & Partners</a></li>
+              <li><a onclick="openAboutModal('forum')" style="cursor: pointer;"><i class="fa-solid fa-compass"></i> 1. HRD Forum (Overview & Pillars)</a></li>
+              <li><a onclick="openAboutModal('team')" style="cursor: pointer;"><i class="fa-solid fa-users-gear"></i> 2. HRD Team (Executive, Advisory, Members)</a></li>
+              <li><a onclick="openAboutModal('collab')" style="cursor: pointer;"><i class="fa-solid fa-handshake-angle"></i> 3. Collaborations (Institutional & Individual)</a></li>
             </ul>
           </li>
           <li><a href="#provinces">Provincial Network</a></li>
@@ -952,7 +952,7 @@
     </div>
   </div>
 
-  <!-- Full Screen About Overlay Modal (3 Subsections: HRD Forum, Team, Collaborations) -->
+  <!-- Full Screen About Overlay Modal (Sequential Format: 1. HRD Forum, 2. HRD Team, 3. Collaborations) -->
   <div class="modal-backdrop" id="aboutModal" onclick="if(event.target === this) closeAboutModal()">
     <div class="modal-card" style="width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; padding: 24px 40px; display: flex; flex-direction: column; overflow: hidden; background: var(--card-bg, #ffffff);">
       <div class="modal-header" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
@@ -960,23 +960,26 @@
         <button class="modal-close" onclick="closeAboutModal()" style="font-size: 28px; top: 18px; right: 24px;">&times;</button>
       </div>
 
-      <!-- Main Navigation Subsections (3 Tabs) -->
-      <div class="about-nav-tabs" style="margin-bottom: 20px;">
-        <button class="about-tab-btn active" id="tab-overviewTab" onclick="switchAboutTab('overviewTab')">
-          <i class="fa-solid fa-compass"></i> 1. HRD Forum
-        </button>
-        <button class="about-tab-btn" id="tab-teamTab" onclick="switchAboutTab('teamTab')">
-          <i class="fa-solid fa-users-gear"></i> 2. HRD Team
-        </button>
-        <button class="about-tab-btn" id="tab-collabTab" onclick="switchAboutTab('collabTab')">
-          <i class="fa-solid fa-handshake-angle"></i> 3. Collaborations
-        </button>
+      <!-- Sequential Category Filter Pills -->
+      <div class="sub-nav-pills" style="margin-bottom: 20px;">
+        <button class="sub-pill-btn active" id="aboutFilterAll" onclick="filterAboutSequence('all', this)"><i class="fa-solid fa-list-check"></i> All About Sections</button>
+        <button class="sub-pill-btn" id="aboutFilterForum" onclick="filterAboutSequence('forum', this)"><i class="fa-solid fa-compass" style="color: #2563eb;"></i> 1. HRD Forum</button>
+        <button class="sub-pill-btn" id="aboutFilterTeam" onclick="filterAboutSequence('team', this)"><i class="fa-solid fa-users-gear" style="color: #059669;"></i> 2. HRD Team (Executive, Advisory, Members)</button>
+        <button class="sub-pill-btn" id="aboutFilterCollab" onclick="filterAboutSequence('collab', this)"><i class="fa-solid fa-handshake-angle" style="color: #d97706;"></i> 3. Collaborations (Institutional & Individual)</button>
       </div>
 
       <!-- Full-Screen Scrollable Content Area -->
-      <div style="flex: 1; overflow-y: auto; padding-right: 8px;">
-        <!-- Subsection 1: HRD Forum Overview & Core Pillars -->
-        <div class="about-sub-pane active" id="overviewTab">
+      <div style="flex: 1; overflow-y: auto; padding-right: 8px;" id="aboutScrollArea">
+        <!-- Sequential Section 1: HRD Forum Details & Core Pillars -->
+        <div class="about-seq-section" id="seqAboutForum" style="margin-bottom: 40px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #2563eb;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-compass" style="font-size: 20px; color: #2563eb;"></i>
+              <h4 style="font-size: 18px; font-weight: 800; color: var(--primary-navy); margin: 0;">1. HRD Forum Overview & Core Pillars</h4>
+            </div>
+            <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Organizational Mandate</span>
+          </div>
+
           <div class="mmv-grid">
             <div class="mmv-card">
               <div class="mmv-icon"><i class="fa-solid fa-scale-balanced"></i></div>
@@ -995,7 +998,7 @@
             </div>
           </div>
 
-          <div class="about-grid" style="margin-top: 40px;">
+          <div class="about-grid" style="margin-top: 36px;">
             <div class="about-text">
               <div class="section-badge">STRATEGIC FOCUS AREAS</div>
               <h3 style="font-size: 22px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">Core Strategic Pillars</h3>
@@ -1043,8 +1046,16 @@
           </div>
         </div>
 
-        <!-- Subsection 2: HRD Team (Executive, Advisory, General) -->
-        <div class="about-sub-pane" id="teamTab">
+        <!-- Sequential Section 2: HRD Team (Executive, Advisory, General) -->
+        <div class="about-seq-section" id="seqAboutTeam" style="margin-bottom: 40px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #059669;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-users-gear" style="font-size: 20px; color: #059669;"></i>
+              <h4 style="font-size: 18px; font-weight: 800; color: var(--primary-navy); margin: 0;">2. HRD Forum Team</h4>
+            </div>
+            <span style="font-size: 11px; background: #d1fae5; color: #065f46; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Executive • Advisory • Members</span>
+          </div>
+
           <div class="sub-nav-pills" style="margin-bottom: 20px;">
             <button class="sub-pill-btn active" onclick="switchTeamSubTab('all', this)">All Team Members</button>
             <button class="sub-pill-btn" onclick="switchTeamSubTab('executive', this)">Executive Team</button>
@@ -1055,8 +1066,16 @@
           <div class="team-grid" id="teamGridDisplay"></div>
         </div>
 
-        <!-- Subsection 3: Collaborations (Institutional & Individual) -->
-        <div class="about-sub-pane" id="collabTab">
+        <!-- Sequential Section 3: Collaborations (Institutional & Individual) -->
+        <div class="about-seq-section" id="seqAboutCollab" style="margin-bottom: 40px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #d97706;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-handshake-angle" style="font-size: 20px; color: #d97706;"></i>
+              <h4 style="font-size: 18px; font-weight: 800; color: var(--primary-navy); margin: 0;">3. Strategic Collaborations</h4>
+            </div>
+            <span style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Institutional & Individual</span>
+          </div>
+
           <div class="sub-nav-pills" style="margin-bottom: 20px;">
             <button class="sub-pill-btn active" onclick="switchCollabSubTab('all', this)">All Partners</button>
             <button class="sub-pill-btn" onclick="switchCollabSubTab('institutional', this)">Institutional Collaborations</button>
@@ -1207,9 +1226,11 @@
       checkPopup();
     });
 
-    // About Section Modular Tab Switcher & Modal Controls
-    function openAboutModal(tabId = 'overviewTab') {
-      switchAboutTab(tabId);
+    // About Section Modular Sequential Controls
+    function openAboutModal(sectionId = 'all') {
+      loadTeam('all');
+      loadCollaborations('all');
+      filterAboutSequence(sectionId);
       document.body.style.overflow = 'hidden';
       document.getElementById('aboutModal').classList.add('active');
     }
@@ -1220,18 +1241,40 @@
       document.body.style.overflow = '';
     }
 
-    function switchAboutTab(tabId) {
-      document.querySelectorAll('.about-tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.about-sub-pane').forEach(pane => pane.classList.remove('active'));
+    function filterAboutSequence(sectionId, btn) {
+      document.querySelectorAll('#aboutModal .sub-pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        const btnId = (sectionId === 'forum') ? 'aboutFilterForum' : (sectionId === 'team') ? 'aboutFilterTeam' : (sectionId === 'collab') ? 'aboutFilterCollab' : 'aboutFilterAll';
+        const targetBtn = document.getElementById(btnId);
+        if (targetBtn) targetBtn.classList.add('active');
+      }
 
-      const activeBtn = document.getElementById(`tab-${tabId}`);
-      if (activeBtn) activeBtn.classList.add('active');
+      const secForum = document.getElementById('seqAboutForum');
+      const secTeam = document.getElementById('seqAboutTeam');
+      const secCollab = document.getElementById('seqAboutCollab');
 
-      const activePane = document.getElementById(tabId);
-      if (activePane) activePane.classList.add('active');
+      if (sectionId === 'forum') {
+        if (secForum) secForum.style.display = 'block';
+        if (secTeam) secTeam.style.display = 'none';
+        if (secCollab) secCollab.style.display = 'none';
+      } else if (sectionId === 'team') {
+        if (secForum) secForum.style.display = 'none';
+        if (secTeam) secTeam.style.display = 'block';
+        if (secCollab) secCollab.style.display = 'none';
+      } else if (sectionId === 'collab') {
+        if (secForum) secForum.style.display = 'none';
+        if (secTeam) secTeam.style.display = 'none';
+        if (secCollab) secCollab.style.display = 'block';
+      } else {
+        if (secForum) secForum.style.display = 'block';
+        if (secTeam) secTeam.style.display = 'block';
+        if (secCollab) secCollab.style.display = 'block';
+      }
 
-      if (tabId === 'teamTab') loadTeam('all');
-      if (tabId === 'collabTab') loadCollaborations('all');
+      const scrollArea = document.getElementById('aboutScrollArea');
+      if (scrollArea) scrollArea.scrollTop = 0;
     }
 
     // Dynamic Team Member Loader & Sub-Tab Switcher
