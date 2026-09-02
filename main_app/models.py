@@ -22,6 +22,7 @@ class Province(models.Model):
     coordinators_count = models.IntegerField(default=10)
     helpline_phone = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
+    helpdesk_email = models.EmailField(blank=True, default='')
     active_cases = models.IntegerField(default=0)
     description = models.TextField()
     long_summary = models.TextField()

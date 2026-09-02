@@ -11,8 +11,8 @@ class StatsAdmin(admin.ModelAdmin):
 
 @admin.register(Province)
 class ProvinceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'base_city', 'coordinators_count', 'helpline_phone', 'active_cases')
-    search_fields = ('name', 'base_city', 'address')
+    list_display = ('name', 'code', 'base_city', 'helpdesk_email', 'coordinators_count', 'helpline_phone', 'active_cases')
+    search_fields = ('name', 'base_city', 'helpdesk_email', 'address')
     list_filter = ('base_city',)
 
 @admin.register(News)

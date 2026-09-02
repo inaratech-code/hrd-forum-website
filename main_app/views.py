@@ -169,6 +169,12 @@ def request_gated_download(request):
         "message": f"Thank you, {user_name}. Your download has been authorized!"
     })
 
+import logging
+from django.conf import settings
+from django.core.mail import send_mail
+
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def submit_membership(request):
     if request.method != 'POST':
@@ -197,6 +203,50 @@ def submit_membership(request):
         organization=organization,
         role=role
     )
+
+    # Email Notifications (Safely wrapped so DB record is never lost)
+    try:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@hrdforum.org')
+        admin_email = getattr(settings, 'ADMIN_NOTIFICATION_EMAIL', 'alerts@hrdforum.org')
+
+        # 1. Admin Notification Email
+        admin_subject = f"[NEW MEMBERSHIP APPLICATION] {m.full_name} - {m.province}"
+        admin_body = (
+            f"NEW MEMBERSHIP APPLICATION RECEIVED (#{m.id})\n"
+            f"----------------------------------------\n"
+            f"Applicant Name: {m.full_name}\n"
+            f"Email: {m.email}\n"
+            f"Phone: {m.phone or 'N/A'}\n"
+            f"Province: {m.province}\n"
+            f"Organization: {m.organization or 'N/A'}\n"
+            f"Role / Designation: {m.role or 'N/A'}\n"
+            f"Status: {m.get_status_display()}\n"
+            f"Submitted At: {m.created_at.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"----------------------------------------\n"
+            f"HRD Forum Nepal Membership Desk"
+        )
+        send_mail(admin_subject, admin_body, from_email, [admin_email], fail_silently=False)
+
+        # 2. Applicant Confirmation Email
+        if m.email:
+            applicant_subject = "HRD Forum Nepal Membership Application Confirmation"
+            applicant_body = (
+                f"Dear {m.full_name},\n\n"
+                f"Thank you for applying to join the Human Rights Defenders Forum (HRD Forum) Nepal network in {m.province}.\n\n"
+                f"Your application (Ref #{m.id}) has been received and is currently under review by our provincial coordination team.\n\n"
+                f"Application Details:\n"
+                f"- Name: {m.full_name}\n"
+                f"- Province: {m.province}\n"
+                f"- Status: Pending Review\n\n"
+                f"Our team will contact you shortly regarding the verification process.\n\n"
+                f"Warm regards,\n"
+                f"Human Rights Defenders Forum Nepal\n"
+                f"https://hrdforum.org"
+            )
+            send_mail(applicant_subject, applicant_body, from_email, [m.email], fail_silently=False)
+
+    except Exception as err:
+        logger.error(f"Membership email dispatch error for ID #{m.id}: {err}")
 
     return JsonResponse({
         "success": True,
@@ -232,6 +282,38 @@ def submit_incident(request):
         details=details,
         priority=priority
     )
+
+    # Email Notifications (Safely wrapped so DB record is never lost)
+    try:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@hrdforum.org')
+        admin_email = getattr(settings, 'ADMIN_NOTIFICATION_EMAIL', 'alerts@hrdforum.org')
+
+        # Recipient determination (Admin + Provincial Helpdesk if configured)
+        recipients = [admin_email]
+        prov_obj = Province.objects.filter(name__icontains=province.replace('Province', '').strip()).first()
+        if prov_obj and prov_obj.helpdesk_email and prov_obj.helpdesk_email not in recipients:
+            recipients.append(prov_obj.helpdesk_email)
+
+        subject = f"[URGENT INCIDENT ALERT] {inc.incident_type} - {inc.province} (#{inc.id})"
+        body = (
+            f"URGENT INCIDENT REPORT RECEIVED (#{inc.id})\n"
+            f"----------------------------------------\n"
+            f"Incident ID: {inc.id}\n"
+            f"Reporter Name: {inc.reporter_name}\n"
+            f"Contact Info: {inc.contact_info}\n"
+            f"Province: {inc.province}\n"
+            f"Support Type / Category: {inc.incident_type}\n"
+            f"Priority Level: {inc.priority}\n"
+            f"Submission Timestamp: {inc.created_at.strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+            f"Incident Details & Threat Description:\n"
+            f"{inc.details}\n\n"
+            f"----------------------------------------\n"
+            f"HRD Forum Nepal Rapid Protection Desk"
+        )
+        send_mail(subject, body, from_email, recipients, fail_silently=False)
+
+    except Exception as err:
+        logger.error(f"Incident email dispatch error for Alert #{inc.id}: {err}")
 
     return JsonResponse({
         "success": True,
