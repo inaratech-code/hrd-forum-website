@@ -108,4 +108,18 @@ if not Collaboration.objects.exists():
     Collaboration.objects.create(name='Adv. Govinda K.C.', category='individual', logo_url='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', blurb='Senior Advocate offering emergency bail litigation and habeas corpus writs across Supreme and High Courts.', website_url='#', order_index=1)
     Collaboration.objects.create(name='Dr. Anita Bhattarai', category='individual', logo_url='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', blurb='Digital security expert providing encrypted communication channels and digital forensics support for field monitors.', website_url='#', order_index=2)
 
+if not Video.objects.exists():
+    Video.objects.create(
+        title='National Human Rights Assembly & Defender Protection Summit 2025',
+        embed_url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        category='Assembly Documentary',
+        date_str='18 NOV 2025'
+    )
+    Video.objects.create(
+        title='Grassroots Legal Aid & Field Monitoring in Remote Karnali',
+        embed_url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        category='Field Report',
+        date_str='04 SEP 2025'
+    )
+
 print("\n--- SEEDING COMPLETED SUCCESSFULLY ---")
