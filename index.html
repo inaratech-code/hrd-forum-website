@@ -614,7 +614,7 @@
           <li><a href="#provinces">Provincial Network</a></li>
           <li><a href="#news">News & Updates</a></li>
           <li><a onclick="openMediaGalleryModal('photos')" style="cursor: pointer;"><i class="fa-solid fa-photo-film"></i> Gallery</a></li>
-          <li><a href="#resources">Resources</a></li>
+          <li><a onclick="openResourcesModal()" style="cursor: pointer;"><i class="fa-solid fa-folder-open"></i> Resources</a></li>
           <li><a href="/admin/" target="_blank" style="color: var(--accent-light-blue);"><i class="fa-solid fa-user-gear"></i> Admin Portal</a></li>
           <li><a onclick="openIncidentModal()" class="btn-alert"><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</a></li>
           <li><a onclick="openMembershipModal()" class="btn-nav">Become a Member</a></li>
@@ -671,25 +671,14 @@
     </div>
   </section>
 
-  <!-- News & Resources Section -->
+  <!-- News & Updates Section -->
   <section class="news-resources" id="news">
     <div class="container">
       <div class="section-badge">LATEST UPDATES</div>
-      <h2 class="section-title">News & Resource Library</h2>
+      <h2 class="section-title">News & Announcements</h2>
 
-      <div class="news-resources-grid">
-        <!-- News Column -->
-        <div>
-          <div class="column-title">News & Updates</div>
-          <div class="news-list" id="newsList"></div>
-        </div>
-
-        <!-- Resources Column -->
-        <div id="resources">
-          <div class="column-title">Downloadable Resource Library</div>
-          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Gated documents require user ID verification before download.</p>
-          <div class="resource-list" id="resourceList"></div>
-        </div>
+      <div style="max-width: 900px; margin: 0 auto;">
+        <div class="news-list" id="newsList"></div>
       </div>
     </div>
   </section>
@@ -1075,6 +1064,63 @@
           </div>
 
           <div class="collab-grid" id="collabGridDisplay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Screen Resources Overlay Modal (Sequential Categories: Reports, Publications, By-Laws) -->
+  <div class="modal-backdrop" id="resourcesModal" onclick="if(event.target === this) closeResourcesModal()">
+    <div class="modal-card" style="width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; padding: 24px 40px; display: flex; flex-direction: column; overflow: hidden; background: var(--card-bg, #ffffff);">
+      <div class="modal-header" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+        <h3 class="modal-title" style="font-size: 20px;"><i class="fa-solid fa-folder-open" style="color: var(--accent-blue);"></i> HRD Forum Resource Library</h3>
+        <button class="modal-close" onclick="closeResourcesModal()" style="font-size: 28px; top: 18px; right: 24px;">&times;</button>
+      </div>
+
+      <!-- Sequential Category Filter Pills -->
+      <div class="sub-nav-pills" style="margin-bottom: 20px;">
+        <button class="sub-pill-btn active" id="resFilterAll" onclick="filterResourcesSequence('all', this)"><i class="fa-solid fa-list-check"></i> All Resources</button>
+        <button class="sub-pill-btn" id="resFilterReport" onclick="filterResourcesSequence('Report', this)"><i class="fa-solid fa-file-pdf" style="color: #e11d48;"></i> Reports (PDF)</button>
+        <button class="sub-pill-btn" id="resFilterPub" onclick="filterResourcesSequence('Publication', this)"><i class="fa-solid fa-book-open" style="color: #2563eb;"></i> Publications (Reading Material)</button>
+        <button class="sub-pill-btn" id="resFilterBylaws" onclick="filterResourcesSequence('By-Laws', this)"><i class="fa-solid fa-gavel" style="color: #d97706;"></i> By-Laws (Guidelines & Policy)</button>
+      </div>
+
+      <!-- Full-Screen Scrollable Content Area -->
+      <div style="flex: 1; overflow-y: auto; padding-right: 8px;">
+        <!-- Sequential Section 1: Reports (PDF Format) -->
+        <div class="resource-seq-section" id="seqSectionReport" style="margin-bottom: 32px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e11d48;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-file-pdf" style="font-size: 18px; color: #e11d48;"></i>
+              <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">1. Reports (PDF Format)</h4>
+            </div>
+            <span style="font-size: 11px; background: #ffe4e6; color: #9f1239; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Official PDFs</span>
+          </div>
+          <div class="resource-grid-display" id="gridReport" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+
+        <!-- Sequential Section 2: Publications (Reading Material) -->
+        <div class="resource-seq-section" id="seqSectionPublication" style="margin-bottom: 32px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #2563eb;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-book-open" style="font-size: 18px; color: #2563eb;"></i>
+              <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">2. Publications (Reading Material)</h4>
+            </div>
+            <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Monographs & Studies</span>
+          </div>
+          <div class="resource-grid-display" id="gridPublication" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+
+        <!-- Sequential Section 3: By-Laws (Guidelines & Policy) -->
+        <div class="resource-seq-section" id="seqSectionBylaws" style="margin-bottom: 32px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #d97706;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-gavel" style="font-size: 18px; color: #d97706;"></i>
+              <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">3. By-Laws (Guidelines & Policy)</h4>
+            </div>
+            <span style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Statutes & Protection Rules</span>
+          </div>
+          <div class="resource-grid-display" id="gridBylaws" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
       </div>
     </div>
@@ -1620,28 +1666,107 @@
       } catch (e) {}
     }
 
-    async function loadResources() {
+    // Resources Full Screen Modal Controls
+    function openResourcesModal(category = 'all') {
+      loadResourcesModal();
+      document.body.style.overflow = 'hidden';
+      document.getElementById('resourcesModal').classList.add('active');
+    }
+
+    function closeResourcesModal() {
+      const modal = document.getElementById('resourcesModal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function filterResourcesSequence(category, btn) {
+      document.querySelectorAll('#resourcesModal .sub-pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const secReport = document.getElementById('seqSectionReport');
+      const secPub = document.getElementById('seqSectionPublication');
+      const secBylaws = document.getElementById('seqSectionBylaws');
+
+      if (category === 'Report') {
+        if (secReport) secReport.style.display = 'block';
+        if (secPub) secPub.style.display = 'none';
+        if (secBylaws) secBylaws.style.display = 'none';
+      } else if (category === 'Publication') {
+        if (secReport) secReport.style.display = 'none';
+        if (secPub) secPub.style.display = 'block';
+        if (secBylaws) secBylaws.style.display = 'none';
+      } else if (category === 'By-Laws') {
+        if (secReport) secReport.style.display = 'none';
+        if (secPub) secPub.style.display = 'none';
+        if (secBylaws) secBylaws.style.display = 'block';
+      } else {
+        if (secReport) secReport.style.display = 'block';
+        if (secPub) secPub.style.display = 'block';
+        if (secBylaws) secBylaws.style.display = 'block';
+      }
+    }
+
+    async function loadResourcesModal() {
       try {
         const res = await fetch('/api/resources');
         if (res.ok) {
           const resources = await res.json();
-          const list = document.getElementById('resourceList');
-          list.innerHTML = resources.map(r => `
-            <div class="resource-item">
-              <div class="resource-left">
-                <i class="fa-regular fa-file-pdf resource-icon"></i>
-                <div>
-                  <h5>${r.title}</h5>
-                  <span>${r.format} • ${r.file_size}</span>
-                </div>
-              </div>
-              <button class="download-btn" onclick="openGatedDownload(${r.id}, '${r.title.replace(/'/g, "\\'")}')">
-                <i class="fa-solid fa-lock"></i> Download
-              </button>
-            </div>
-          `).join('');
+          
+          const reports = [];
+          const publications = [];
+          const bylaws = [];
+
+          resources.forEach(r => {
+            const cat = (r.category || '').toLowerCase();
+            if (cat.includes('report')) {
+              reports.push(r);
+            } else if (cat.includes('pub') || cat.includes('manual') || cat.includes('reading')) {
+              publications.push(r);
+            } else if (cat.includes('by-law') || cat.includes('bylaw') || cat.includes('policy') || cat.includes('guideline')) {
+              bylaws.push(r);
+            } else {
+              if (r.format === 'PDF' || (r.title || '').toLowerCase().includes('report')) {
+                reports.push(r);
+              } else {
+                bylaws.push(r);
+              }
+            }
+          });
+
+          renderResourceList('gridReport', reports, 'Report');
+          renderResourceList('gridPublication', publications, 'Publication');
+          renderResourceList('gridBylaws', bylaws, 'By-Laws');
         }
       } catch (e) {}
+    }
+
+    function renderResourceList(elementId, items, categoryType) {
+      const container = document.getElementById(elementId);
+      if (!container) return;
+
+      if (items.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 16px; background: #f8fafc; border: 1px dashed var(--border-color); border-radius: 8px;">No ${categoryType} documents listed yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map(r => `
+        <div class="resource-item" style="background: #ffffff; border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+          <div class="resource-left" style="display: flex; align-items: center; gap: 14px;">
+            <i class="fa-solid ${r.format === 'PDF' ? 'fa-file-pdf' : 'fa-file-lines'}" style="font-size: 24px; color: ${r.format === 'PDF' ? '#e11d48' : 'var(--accent-blue)'};"></i>
+            <div>
+              <h5 style="margin: 0 0 4px 0; font-size: 14px; color: var(--primary-navy); font-weight: 700;">${r.title}</h5>
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;"><span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--primary-navy); margin-right: 6px;">${r.format || 'PDF'}</span> ${r.file_size || 'PDF Document'}</span>
+            </div>
+          </div>
+          <button class="download-btn" onclick="openGatedDownload(${r.id}, '${(r.title || '').replace(/'/g, "\\'")}')" style="background: var(--primary-navy); color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid ${r.is_gated ? 'fa-lock' : 'fa-download'}"></i> Download
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function loadResources() {
+      loadResourcesModal();
     }
 
     // GATED DOWNLOAD MODAL FLOW
@@ -1755,6 +1880,7 @@
       }
 
       if (e.key === 'Escape') {
+        closeResourcesModal();
         closeAboutModal();
         closeMediaGalleryModal();
         closeVideoPlayerModal();
