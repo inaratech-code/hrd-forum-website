@@ -9,10 +9,27 @@ from .models import (
     TeamMember, Collaboration
 )
 
+from django.db.models import F
+
+def _track_visitor(request):
+    """
+    Atomically tracks unique user website sessions.
+    Does not increment for repeating requests within the same session.
+    """
+    if not request.session.get('has_visited_hrd'):
+        request.session['has_visited_hrd'] = True
+        stats = Stats.objects.first()
+        if not stats:
+            Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=1)
+        else:
+            Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
+
 def index_page(request):
+    _track_visitor(request)
     return render(request, 'index.html')
 
 def api_stats(request):
+    _track_visitor(request)
     stats = Stats.objects.first()
     if not stats:
         stats = Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=0)
