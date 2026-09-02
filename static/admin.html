@@ -264,8 +264,12 @@
               </div>
             </div>
             <div class="form-group">
-              <label>Summary</label>
-              <textarea id="nSummary" class="form-control" rows="2" placeholder="Short description..."></textarea>
+              <label>Short Summary</label>
+              <textarea id="nSummary" class="form-control" rows="2" placeholder="Brief summary snippet..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Full Article Content</label>
+              <textarea id="nContent" class="form-control" rows="4" placeholder="Full multiline article body content..."></textarea>
             </div>
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Publish Article</button>
           </form>
@@ -687,7 +691,8 @@
         date_str: document.getElementById('nDate').value,
         image_url: document.getElementById('nImage').value,
         category: document.getElementById('nCategory').value,
-        summary: document.getElementById('nSummary').value
+        summary: document.getElementById('nSummary').value,
+        content: document.getElementById('nContent').value || document.getElementById('nSummary').value
       };
       const res = await fetch('/api/admin/news', {
         method: 'POST',
@@ -696,6 +701,9 @@
       });
       if (res.ok) {
         alert('News published!');
+        document.getElementById('nTitle').value = '';
+        document.getElementById('nSummary').value = '';
+        document.getElementById('nContent').value = '';
         loadNews();
       }
     }

@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/provinces', views.api_provinces, name='api_provinces'),
     path('api/province/<int:prov_id>', views.api_province_detail, name='api_province_detail'),
     path('api/news', views.api_news, name='api_news'),
+    path('api/news/<int:news_id>', views.api_news_detail, name='api_news_detail'),
     path('api/resources', views.api_resources, name='api_resources'),
     path('api/popup', views.api_popup, name='api_popup'),
     path('api/gallery', views.api_gallery, name='api_gallery'),

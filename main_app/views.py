@@ -70,9 +70,25 @@ def api_news(request):
         "date_str": n.date_str,
         "image_url": n.image_url,
         "category": n.category,
-        "summary": n.summary
+        "summary": n.summary,
+        "content": n.content or n.summary or ''
     } for n in news_items]
     return JsonResponse(data, safe=False)
+
+def api_news_detail(request, news_id):
+    try:
+        n = News.objects.get(pk=news_id)
+        return JsonResponse({
+            "id": n.id,
+            "title": n.title,
+            "date_str": n.date_str,
+            "image_url": n.image_url,
+            "category": n.category,
+            "summary": n.summary,
+            "content": n.content or n.summary or ''
+        })
+    except News.DoesNotExist:
+        return JsonResponse({"error": "News article not found"}, status=404)
 
 def api_resources(request):
     resources = Resource.objects.all().order_by('id')
@@ -371,7 +387,8 @@ def admin_news_manage(request, news_id=None):
             date_str=data.get('date_str', 'Today'),
             image_url=data.get('image_url', 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=500&q=80'),
             category=data.get('category', 'General'),
-            summary=data.get('summary', '')
+            summary=data.get('summary', ''),
+            content=data.get('content', data.get('summary', ''))
         )
         return JsonResponse({"success": True, "id": n.id, "message": "News item published successfully!"})
     elif request.method == 'DELETE' and news_id:

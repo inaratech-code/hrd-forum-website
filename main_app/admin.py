@@ -18,7 +18,7 @@ class ProvinceAdmin(admin.ModelAdmin):
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'date_str')
-    search_fields = ('title', 'summary')
+    search_fields = ('title', 'summary', 'content')
     list_filter = ('category',)
 
 @admin.register(Resource)

@@ -37,6 +37,7 @@ class News(models.Model):
     image_url = models.URLField(max_length=500)
     category = models.CharField(max_length=50, default='News & Updates')
     summary = models.TextField(blank=True, null=True)
+    content = models.TextField(blank=True, default='')
 
     class Meta:
         verbose_name_plural = "News & Updates"
