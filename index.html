@@ -582,6 +582,7 @@
       <div class="top-info">
         <span><i class="fa-solid fa-phone"></i> +977-01-55511400</span>
         <span><i class="fa-solid fa-envelope"></i> info@hrdforum.org</span>
+        <a onclick="openMediaGalleryModal('photos')" style="color: #60a5fa; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; margin-left: 12px; text-decoration: none;"><i class="fa-solid fa-photo-film"></i> Media Archive</a>
       </div>
       <div class="top-socials">
         <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
@@ -612,7 +613,7 @@
           </li>
           <li><a href="#provinces">Provincial Network</a></li>
           <li><a href="#news">News & Updates</a></li>
-          <li><a href="#gallery">Photo Gallery</a></li>
+          <li><a onclick="openMediaGalleryModal('photos')" style="cursor: pointer;"><i class="fa-solid fa-photo-film"></i> Media Gallery</a></li>
           <li><a href="#resources">Resources</a></li>
           <li><a href="/admin/" target="_blank" style="color: var(--accent-light-blue);"><i class="fa-solid fa-user-gear"></i> Admin Portal</a></li>
           <li><a onclick="openIncidentModal()" class="btn-alert"><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</a></li>
@@ -791,28 +792,6 @@
       <div class="map-wrapper">
         <div id="leafletMap"></div>
       </div>
-    </div>
-  </section>
-
-  <!-- Photo Gallery Section -->
-  <section class="gallery-section" id="gallery">
-    <div class="container">
-      <div class="section-badge">VISUAL DOCUMENTATION</div>
-      <h2 class="section-title">Photo Gallery & Field Operations</h2>
-      <p class="section-subtitle">Photographic records of fact-finding missions, regional legal workshops, and national assemblies.</p>
-
-      <div class="gallery-grid" id="galleryGrid"></div>
-    </div>
-  </section>
-
-  <!-- Video Documentaries & Field Reports Section -->
-  <section class="video-section" id="videos" style="background: var(--bg-light); padding: 50px 0; border-top: 1px solid var(--border-color);">
-    <div class="container">
-      <div class="section-badge"><i class="fa-solid fa-video"></i> MULTIMEDIA ARCHIVE</div>
-      <h2 class="section-title">Video Documentaries & Field Reports</h2>
-      <p class="section-subtitle">Video documentation of defender assemblies, human rights workshops, and regional field advocacy.</p>
-
-      <div class="video-grid" id="videoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 24px;"></div>
     </div>
   </section>
 
@@ -1077,6 +1056,37 @@
     </div>
   </div>
 
+  <!-- Media Gallery & Archive Overlay Modal (Photos & Videos) -->
+  <div class="modal-backdrop" id="mediaGalleryModal" onclick="if(event.target === this) closeMediaGalleryModal()">
+    <div class="modal-card" style="max-width: 960px; width: 92%; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; padding: 24px;">
+      <div class="modal-header" style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+        <h3 class="modal-title" style="font-size: 18px;"><i class="fa-solid fa-photo-film" style="color: var(--accent-blue);"></i> HRD Forum Media Gallery & Archive</h3>
+        <button class="modal-close" onclick="closeMediaGalleryModal()">&times;</button>
+      </div>
+
+      <!-- Tab Switcher (Photos vs Videos) -->
+      <div class="sub-nav-pills" style="margin-bottom: 16px;">
+        <button class="sub-pill-btn active" id="mediaTabBtnPhotos" onclick="switchMediaTab('photos')"><i class="fa-solid fa-image"></i> Photo Gallery</button>
+        <button class="sub-pill-btn" id="mediaTabBtnVideos" onclick="switchMediaTab('videos')"><i class="fa-solid fa-video"></i> Video Documentaries</button>
+      </div>
+
+      <!-- Scrollable Media Content View -->
+      <div style="flex: 1; overflow-y: auto; padding-right: 4px;">
+        <!-- Photos Tab Pane -->
+        <div id="mediaPhotosTab">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Photographic records of fact-finding missions, regional legal workshops, and national assemblies. Click any photo thumbnail to expand in high resolution.</p>
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+
+        <!-- Videos Tab Pane -->
+        <div id="mediaVideosTab" style="display: none;">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Video documentation of defender assemblies, human rights workshops, and regional field advocacy.</p>
+          <div class="video-grid" id="videoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- News Full Article Modal -->
   <div class="modal-backdrop" id="newsArticleModal" onclick="if(event.target === this) closeNewsArticleModal()">
     <div class="modal-card" style="max-width: 680px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
@@ -1259,6 +1269,38 @@
     function closePopupModal() { document.getElementById('popupModal').classList.remove('active'); }
     function closeProvinceModal() { document.getElementById('provinceModal').classList.remove('active'); }
     function closeGatedModal() { document.getElementById('gatedModal').classList.remove('active'); }
+
+    // Media Gallery Modal Controls
+    function openMediaGalleryModal(tabName = 'photos') {
+      switchMediaTab(tabName);
+      document.body.style.overflow = 'hidden';
+      document.getElementById('mediaGalleryModal').classList.add('active');
+    }
+
+    function closeMediaGalleryModal() {
+      const modal = document.getElementById('mediaGalleryModal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchMediaTab(tabName) {
+      const btnPhotos = document.getElementById('mediaTabBtnPhotos');
+      const btnVideos = document.getElementById('mediaTabBtnVideos');
+      const panePhotos = document.getElementById('mediaPhotosTab');
+      const paneVideos = document.getElementById('mediaVideosTab');
+
+      if (tabName === 'videos') {
+        if (btnPhotos) btnPhotos.classList.remove('active');
+        if (btnVideos) btnVideos.classList.add('active');
+        if (panePhotos) panePhotos.style.display = 'none';
+        if (paneVideos) paneVideos.style.display = 'block';
+      } else {
+        if (btnVideos) btnVideos.classList.remove('active');
+        if (btnPhotos) btnPhotos.classList.add('active');
+        if (paneVideos) paneVideos.style.display = 'none';
+        if (panePhotos) panePhotos.style.display = 'block';
+      }
+    }
 
     // Popup Announcement Lightbox Check
     async function checkPopup() {
@@ -1713,6 +1755,7 @@
       }
 
       if (e.key === 'Escape') {
+        closeMediaGalleryModal();
         closeVideoPlayerModal();
         closeNewsArticleModal();
         closeMembershipModal();
