@@ -18,6 +18,7 @@ urlpatterns = [
 
     # Admin Portal Routes
     path('api/admin/login', views.admin_login, name='admin_login'),
+    path('api/admin/logout', views.admin_logout, name='admin_logout'),
     path('api/admin/news', views.admin_news_manage, name='admin_news_manage'),
     path('api/admin/news/<int:news_id>', views.admin_news_manage, name='admin_news_delete'),
     path('api/admin/popup', views.admin_popup_manage, name='admin_popup_manage'),

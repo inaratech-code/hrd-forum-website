@@ -57,16 +57,23 @@ class Resource(models.Model):
 
 
 class Membership(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
     full_name = models.CharField(max_length=150)
     email = models.EmailField()
     phone = models.CharField(max_length=50, blank=True, null=True)
     province = models.CharField(max_length=100)
     organization = models.CharField(max_length=200, blank=True, null=True)
     role = models.CharField(max_length=150, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.full_name} ({self.province})"
+        return f"{self.full_name} ({self.province}) - {self.get_status_display()}"
 
 
 class Incident(models.Model):

@@ -29,9 +29,10 @@ class ResourceAdmin(admin.ModelAdmin):
 
 @admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'email', 'phone', 'province', 'organization', 'role', 'created_at')
+    list_display = ('full_name', 'email', 'phone', 'province', 'organization', 'role', 'status', 'created_at')
     search_fields = ('full_name', 'email', 'province', 'organization')
-    list_filter = ('province', 'created_at')
+    list_filter = ('status', 'province', 'created_at')
+    list_editable = ('status',)
 
 @admin.register(Incident)
 class IncidentAdmin(admin.ModelAdmin):

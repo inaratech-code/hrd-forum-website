@@ -239,6 +239,17 @@ def submit_incident(request):
         "message": "Incident report logged securely. The regional helpdesk team has been alerted."
     }, status=201)
 
+from functools import wraps
+from django.contrib.auth import authenticate, login, logout
+
+def staff_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not (request.user and request.user.is_authenticated and request.user.is_staff):
+            return JsonResponse({"success": False, "error": "Unauthorized access. Staff credentials required."}, status=401)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
 # ADMIN PORTAL ENDPOINTS
 
 @csrf_exempt
@@ -253,17 +264,20 @@ def admin_login(request):
     username = (data.get('username') or '').strip()
     password = (data.get('password') or '').strip()
 
-    if username == 'admin' and password == 'hrdadmin2026':
-        return JsonResponse({"success": True, "token": "hrd-admin-token-2026", "message": "Admin authorization successful!"})
-    
-    from django.contrib.auth import authenticate
-    user = authenticate(username=username, password=password)
+    user = authenticate(request, username=username, password=password)
     if user and user.is_staff:
-        return JsonResponse({"success": True, "token": "hrd-admin-token-2026", "message": "Admin authorization successful!"})
+        login(request, user)
+        return JsonResponse({"success": True, "message": "Admin authorization successful!"})
         
     return JsonResponse({"success": False, "error": "Invalid username or password credentials."}, status=401)
 
 @csrf_exempt
+def admin_logout(request):
+    logout(request)
+    return JsonResponse({"success": True, "message": "Logged out successfully."})
+
+@csrf_exempt
+@staff_required
 def admin_news_manage(request, news_id=None):
     if request.method == 'POST':
         try:
@@ -284,6 +298,7 @@ def admin_news_manage(request, news_id=None):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 @csrf_exempt
+@staff_required
 def admin_popup_manage(request):
     if request.method == 'POST':
         try:
@@ -304,6 +319,7 @@ def admin_popup_manage(request):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 @csrf_exempt
+@staff_required
 def admin_gallery_manage(request, photo_id=None):
     if request.method == 'POST':
         try:
@@ -322,6 +338,7 @@ def admin_gallery_manage(request, photo_id=None):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 @csrf_exempt
+@staff_required
 def admin_resources_manage(request, res_id=None):
     if request.method == 'POST':
         try:
@@ -343,20 +360,22 @@ def admin_resources_manage(request, res_id=None):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 @csrf_exempt
+@staff_required
 def admin_gated_logs(request):
-    leads = GatedDownloadLead.objects.all().order_by('-created_at')
+    leads = GatedDownloadLead.objects.all().order_by('-downloaded_at')
     res = []
     for l in leads:
         res.append({
             "id": l.id,
             "user_name": l.user_name,
             "user_email": l.user_email,
-            "resource_title": l.resource.title if l.resource else "Document",
-            "downloaded_at": l.created_at.strftime('%Y-%m-%d %H:%M')
+            "resource_title": l.resource_title or "Document",
+            "downloaded_at": l.downloaded_at.strftime('%Y-%m-%d %H:%M') if l.downloaded_at else ""
         })
     return JsonResponse(res, safe=False)
 
 @csrf_exempt
+@staff_required
 def admin_incidents_list(request):
     incidents = Incident.objects.all().order_by('-created_at')
     res = []
@@ -374,6 +393,7 @@ def admin_incidents_list(request):
     return JsonResponse(res, safe=False)
 
 @csrf_exempt
+@staff_required
 def admin_memberships_list(request):
     members = Membership.objects.all().order_by('-created_at')
     res = []
@@ -430,6 +450,7 @@ def api_collaborations(request):
     return JsonResponse(res, safe=False)
 
 @csrf_exempt
+@staff_required
 def admin_team_manage(request, member_id=None):
     if request.method == 'POST':
         try:
@@ -451,6 +472,7 @@ def admin_team_manage(request, member_id=None):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 @csrf_exempt
+@staff_required
 def admin_collaborations_manage(request, collab_id=None):
     if request.method == 'POST':
         try:
