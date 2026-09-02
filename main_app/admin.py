@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
-    TeamMember, Collaboration
+    TeamMember, Collaboration, NewsFlash
 )
 
 @admin.register(Stats)
@@ -77,3 +77,10 @@ class CollaborationAdmin(admin.ModelAdmin):
     search_fields = ('name', 'blurb')
     list_filter = ('category',)
     list_editable = ('order_index',)
+
+@admin.register(NewsFlash)
+class NewsFlashAdmin(admin.ModelAdmin):
+    list_display = ('text', 'active', 'order_index', 'created_at')
+    list_editable = ('active', 'order_index')
+    list_filter = ('active',)
+    search_fields = ('text', 'link_url')

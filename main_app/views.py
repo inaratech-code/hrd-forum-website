@@ -6,7 +6,7 @@ import json
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
-    TeamMember, Collaboration
+    TeamMember, Collaboration, NewsFlash
 )
 
 from django.db.models import F
@@ -165,6 +165,20 @@ def api_videos(request):
         "category": v.category,
         "date_str": v.date_str
     } for v in videos]
+    return JsonResponse(data, safe=False)
+
+def api_news_flashes(request):
+    flashes = NewsFlash.objects.filter(active=True).order_by('order_index', '-created_at')
+    data = []
+    for f in flashes:
+        link = (f.link_url or '').strip()
+        if not (link.startswith('http://') or link.startswith('https://')):
+            link = ''
+        data.append({
+            "id": f.id,
+            "text": f.text,
+            "link_url": link
+        })
     return JsonResponse(data, safe=False)
 
 @csrf_exempt

@@ -622,6 +622,18 @@
     </div>
   </header>
 
+  <!-- News Flash Ticker Bar -->
+  <div class="news-ticker-bar" id="newsTickerBar" style="display: none; background: #0c233c; border-bottom: 2px solid var(--accent-light-blue); color: #ffffff; padding: 10px 0; font-size: 13px;">
+    <div class="container" style="display: flex; align-items: center; gap: 14px; overflow: hidden;">
+      <div style="background: var(--crimson-alert, #e11d48); color: #ffffff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; display: flex; align-items: center; gap: 6px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;">
+        <i class="fa-solid fa-bolt"></i> News Flash
+      </div>
+      <div id="tickerContent" style="flex: 1; overflow: hidden; white-space: nowrap; position: relative;">
+        <!-- Loaded dynamically from /api/news-flashes -->
+      </div>
+    </div>
+  </div>
+
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
@@ -1134,6 +1146,7 @@
     let globalProvinces = [];
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadNewsFlashes();
       loadStats();
       loadProvinces();
       loadGallery();
@@ -1304,6 +1317,38 @@
     }
 
     // REST API Loaders
+    async function loadNewsFlashes() {
+      try {
+        const res = await fetch('/api/news-flashes');
+        if (res.ok) {
+          const flashes = await res.json();
+          const bar = document.getElementById('newsTickerBar');
+          const content = document.getElementById('tickerContent');
+          if (!bar || !content) return;
+
+          if (!flashes || flashes.length === 0) {
+            bar.style.display = 'none';
+            return;
+          }
+
+          const itemsHtml = flashes.map(f => {
+            const safeText = (f.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const link = (f.link_url || '').trim();
+            const isSafeLink = link.startsWith('http://') || link.startsWith('https://');
+
+            if (isSafeLink) {
+              return `<a href="${link}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: underline; font-weight: 600; margin-right: 36px; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px; opacity: 0.85;"></i> ${safeText}</a>`;
+            } else {
+              return `<span style="color: #ffffff; font-weight: 500; margin-right: 36px; display: inline-block;">${safeText}</span>`;
+            }
+          }).join('');
+
+          content.innerHTML = `<div style="display: inline-block; white-space: nowrap;">${itemsHtml}</div>`;
+          bar.style.display = 'block';
+        }
+      } catch (e) {}
+    }
+
     async function loadStats() {
       try {
         const res = await fetch('/api/stats');

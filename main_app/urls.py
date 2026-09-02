@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/gallery', views.api_gallery, name='api_gallery'),
     path('api/blogs', views.api_blogs, name='api_blogs'),
     path('api/videos', views.api_videos, name='api_videos'),
+    path('api/news-flashes', views.api_news_flashes, name='api_news_flashes'),
     path('api/membership', views.submit_membership, name='submit_membership'),
     path('api/incident', views.submit_incident, name='submit_incident'),
     path('api/resource/download-access', views.request_gated_download, name='request_gated_download'),

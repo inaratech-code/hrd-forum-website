@@ -198,3 +198,18 @@ class Collaboration(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_category_display()})"
+
+
+class NewsFlash(models.Model):
+    text = models.CharField(max_length=255)
+    link_url = models.URLField(max_length=500, blank=True, null=True)
+    active = models.BooleanField(default=True)
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "News Flashes / Ticker"
+        ordering = ['order_index', '-created_at']
+
+    def __str__(self):
+        return self.text
