@@ -469,6 +469,26 @@ def admin_gallery_manage(request, photo_id=None):
 
 @csrf_exempt
 @staff_required
+def admin_video_manage(request, video_id=None):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            data = request.POST
+        v = Video.objects.create(
+            title=data.get('title', 'Video Documentary'),
+            embed_url=data.get('embed_url', ''),
+            category=data.get('category', 'Documentary'),
+            date_str=data.get('date_str', 'Today')
+        )
+        return JsonResponse({"success": True, "id": v.id, "message": "Video published successfully!"})
+    elif request.method == 'DELETE' and video_id:
+        Video.objects.filter(id=video_id).delete()
+        return JsonResponse({"success": True, "message": "Video deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
 def admin_resources_manage(request, res_id=None):
     if request.method == 'POST':
         try:

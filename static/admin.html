@@ -472,7 +472,7 @@
         </div>
 
         <div class="card">
-          <div class="card-title">Gallery Collection</div>
+          <div class="card-title">Gallery Photo Collection</div>
           <table>
             <thead>
               <tr>
@@ -484,6 +484,54 @@
               </tr>
             </thead>
             <tbody id="galleryTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-title">Add YouTube Video to Gallery</div>
+          <form onsubmit="handleAddVideo(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Video Title *</label>
+                <input type="text" id="vTitle" class="form-control" placeholder="e.g. National Assembly Summit 2025" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="vCategory" class="form-control">
+                  <option value="Documentary">Documentary</option>
+                  <option value="Assembly Documentary">Assembly Documentary</option>
+                  <option value="Field Report">Field Report</option>
+                  <option value="Workshop">Workshop Video</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>YouTube URL / Watch Link *</label>
+                <input type="url" id="vEmbedUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=..." required>
+              </div>
+              <div class="form-group">
+                <label>Publication Date</label>
+                <input type="text" id="vDate" class="form-control" placeholder="e.g. 18 NOV 2025">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-film"></i> Publish YouTube Video</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">YouTube Video Collection</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>YouTube URL</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="videoTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -760,6 +808,25 @@
           </tr>
         `).join('');
       }
+      loadVideosAdmin();
+    }
+
+    async function loadVideosAdmin() {
+      const res = await fetch('/api/videos');
+      if (res.ok) {
+        const videos = await res.json();
+        const tbody = document.getElementById('videoTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = videos.map(v => `
+          <tr>
+            <td>#${v.id}</td>
+            <td>${v.title}</td>
+            <td><a href="${v.embed_url}" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">${v.embed_url}</a></td>
+            <td><span class="badge badge-warning">${v.category}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteVideo(${v.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
     }
 
     async function handleAddGallery(e) {
@@ -776,6 +843,8 @@
       });
       if (res.ok) {
         alert('Photo uploaded to gallery!');
+        document.getElementById('gTitle').value = '';
+        document.getElementById('gImage').value = '';
         loadGallery();
       }
     }
@@ -784,6 +853,35 @@
       if (confirm('Remove photo from gallery?')) {
         await fetch(`/api/admin/gallery/${id}`, { method: 'DELETE' });
         loadGallery();
+      }
+    }
+
+    async function handleAddVideo(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('vTitle').value,
+        embed_url: document.getElementById('vEmbedUrl').value,
+        category: document.getElementById('vCategory').value,
+        date_str: document.getElementById('vDate').value || 'Today'
+      };
+      const res = await fetch('/api/admin/videos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('YouTube video published!');
+        document.getElementById('vTitle').value = '';
+        document.getElementById('vEmbedUrl').value = '';
+        document.getElementById('vDate').value = '';
+        loadVideosAdmin();
+      }
+    }
+
+    async function deleteVideo(id) {
+      if (confirm('Remove YouTube video?')) {
+        await fetch(`/api/admin/videos/${id}`, { method: 'DELETE' });
+        loadVideosAdmin();
       }
     }
 
