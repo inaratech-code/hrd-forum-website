@@ -1073,6 +1073,34 @@
     </div>
   </div>
 
+  <!-- Photo Gallery Lightbox Modal -->
+  <div class="modal-backdrop" id="galleryLightboxModal" onclick="if(event.target === this) closeGalleryLightbox()">
+    <div class="modal-card" style="max-width: 840px; background: rgba(9, 29, 49, 0.96); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; padding: 20px; position: relative;">
+      <button class="modal-close" onclick="closeGalleryLightbox()" style="color: #ffffff; top: 14px; right: 18px; font-size: 24px;">&times;</button>
+      
+      <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 280px; max-height: 65vh; overflow: hidden; border-radius: 8px; background: #000000; margin-bottom: 16px;">
+        <img id="lightboxImg" src="" alt="Gallery Photo" style="max-width: 100%; max-height: 65vh; object-fit: contain; display: block;" onerror="this.src='https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800&q=80'">
+        
+        <!-- Navigation Arrows -->
+        <button onclick="prevGalleryPhoto()" id="lightboxPrevBtn" title="Previous photo (Left Arrow)" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: background 0.2s;">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="nextGalleryPhoto()" id="lightboxNextBtn" title="Next photo (Right Arrow)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: background 0.2s;">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Caption & Meta Information -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span id="lightboxCategory" style="background: var(--accent-blue); color: #ffffff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px;">Category</span>
+          <h4 id="lightboxTitle" style="font-size: 16px; font-weight: 700; color: #ffffff; margin: 0;">Photo Title</h4>
+        </div>
+        <span id="lightboxCounter" style="font-size: 12px; color: #94a3b8; font-weight: 600;">1 / 1</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -1282,23 +1310,70 @@
       } catch (e) {}
     }
 
+    let globalGalleryPhotos = [];
+    let currentGalleryIndex = 0;
+
     async function loadGallery() {
       try {
         const res = await fetch('/api/gallery');
         if (res.ok) {
-          const photos = await res.json();
+          globalGalleryPhotos = await res.json();
           const grid = document.getElementById('galleryGrid');
-          grid.innerHTML = photos.map(g => `
-            <div class="gallery-card">
-              <img src="${g.image_url}" alt="${g.title}" class="gallery-img">
+          if (globalGalleryPhotos.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No gallery photos available yet.</div>`;
+            return;
+          }
+          grid.innerHTML = globalGalleryPhotos.map((g, idx) => `
+            <div class="gallery-card" onclick="openGalleryLightbox(${idx})" style="cursor: pointer;" title="Click to expand photo">
+              <img src="${g.image_url}" alt="${g.title}" class="gallery-img" onerror="this.src='https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=600&q=80'">
               <div class="gallery-info">
-                <span class="gallery-tag">${g.category}</span>
+                <span class="gallery-tag">${g.category || 'Advocacy'}</span>
                 <h5>${g.title}</h5>
               </div>
             </div>
           `).join('');
         }
       } catch (e) {}
+    }
+
+    function openGalleryLightbox(index) {
+      if (!globalGalleryPhotos || globalGalleryPhotos.length === 0) return;
+      if (index < 0) index = 0;
+      if (index >= globalGalleryPhotos.length) index = globalGalleryPhotos.length - 1;
+
+      currentGalleryIndex = index;
+      updateLightboxDisplay();
+
+      document.body.style.overflow = 'hidden'; // Prevent background page scrolling
+      document.getElementById('galleryLightboxModal').classList.add('active');
+    }
+
+    function closeGalleryLightbox() {
+      const modal = document.getElementById('galleryLightboxModal');
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = ''; // Restore background page scrolling
+    }
+
+    function updateLightboxDisplay() {
+      if (!globalGalleryPhotos || globalGalleryPhotos.length === 0) return;
+      const photo = globalGalleryPhotos[currentGalleryIndex];
+
+      document.getElementById('lightboxImg').src = photo.image_url || '';
+      document.getElementById('lightboxTitle').innerText = photo.title || 'Gallery Photo';
+      document.getElementById('lightboxCategory').innerText = photo.category || 'Advocacy';
+      document.getElementById('lightboxCounter').innerText = `${currentGalleryIndex + 1} / ${globalGalleryPhotos.length}`;
+    }
+
+    function prevGalleryPhoto() {
+      if (globalGalleryPhotos.length === 0) return;
+      currentGalleryIndex = (currentGalleryIndex - 1 + globalGalleryPhotos.length) % globalGalleryPhotos.length;
+      updateLightboxDisplay();
+    }
+
+    function nextGalleryPhoto() {
+      if (globalGalleryPhotos.length === 0) return;
+      currentGalleryIndex = (currentGalleryIndex + 1) % globalGalleryPhotos.length;
+      updateLightboxDisplay();
     }
 
     function closeNewsArticleModal() {
@@ -1476,6 +1551,30 @@
         showToast('Network error while submitting incident alert', 'error');
       }
     }
+
+    // Global Keyboard Navigation (Arrow keys for Lightbox, Escape to close modals)
+    document.addEventListener('keydown', (e) => {
+      const lightboxModal = document.getElementById('galleryLightboxModal');
+      if (lightboxModal && lightboxModal.classList.contains('active')) {
+        if (e.key === 'ArrowLeft') {
+          prevGalleryPhoto();
+        } else if (e.key === 'ArrowRight') {
+          nextGalleryPhoto();
+        } else if (e.key === 'Escape') {
+          closeGalleryLightbox();
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        closeNewsArticleModal();
+        closeMembershipModal();
+        closeIncidentModal();
+        closePopupModal();
+        closeProvinceModal();
+        closeGatedModal();
+      }
+    });
   </script>
 </body>
 </html>
