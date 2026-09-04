@@ -6,23 +6,41 @@ import json
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
-    TeamMember, Collaboration, NewsFlash
+    TeamMember, Collaboration, NewsFlash, UniqueVisitor
 )
 
 from django.db.models import F
 
+def _get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', '127.0.0.1')
+
 def _track_visitor(request):
     """
-    Atomically tracks unique user website sessions.
-    Does not increment for repeating requests within the same session.
+    Tracks unique website visitors using client IP address & session state.
+    Increments total_visitors ONLY when a new unique visitor is detected.
     """
-    if not request.session.get('has_visited_hrd'):
+    ip = _get_client_ip(request)
+    session_key = request.session.session_key or ''
+    has_visited = request.session.get('has_visited_hrd', False)
+
+    if not has_visited:
+        visitor, created = UniqueVisitor.objects.get_or_create(
+            ip_address=ip,
+            defaults={'session_key': session_key}
+        )
         request.session['has_visited_hrd'] = True
-        stats = Stats.objects.first()
-        if not stats:
-            Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=1)
+
+        if created:
+            stats = Stats.objects.first()
+            if not stats:
+                Stats.objects.create(provincial_networks=7, monitored_defenders="1,200+", resolved_cases="150+", total_visitors=1)
+            else:
+                Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
         else:
-            Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
+            visitor.save()
 
 def index_page(request):
     _track_visitor(request)

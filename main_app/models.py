@@ -13,6 +13,19 @@ class Stats(models.Model):
         return f"Stats: {self.provincial_networks} Networks, {self.monitored_defenders} Defenders"
 
 
+class UniqueVisitor(models.Model):
+    ip_address = models.CharField(max_length=45)
+    session_key = models.CharField(max_length=255, blank=True, default='')
+    first_visited = models.DateTimeField(auto_now_add=True)
+    last_visited = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Unique Visitors Log"
+
+    def __str__(self):
+        return f"Unique Visitor ({self.ip_address})"
+
+
 class Province(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20)
