@@ -59,6 +59,24 @@ def api_stats(request):
         "total_visitors": stats.total_visitors,
     })
 
+DISTRICTS_MAP = {
+    'p1': 14, 'koshi': 14,
+    'p2': 8, 'madhesh': 8,
+    'p3': 13, 'bagmati': 13,
+    'p4': 11, 'gandaki': 11,
+    'p5': 12, 'lumbini': 12,
+    'p6': 10, 'karnali': 10,
+    'p7': 9, 'sudurpashchim': 9,
+}
+
+def get_districts_count(p):
+    if getattr(p, 'districts_count', 0) and p.districts_count > 0:
+        return p.districts_count
+    for k, v in DISTRICTS_MAP.items():
+        if k in p.code.lower() or k in p.name.lower():
+            return v
+    return 10
+
 def api_provinces(request):
     provinces = Province.objects.all().order_by('id')
     data = [{
@@ -69,6 +87,7 @@ def api_provinces(request):
         "coords_lat": p.coords_lat,
         "coords_lng": p.coords_lng,
         "coordinators_count": p.coordinators_count,
+        "districts_count": get_districts_count(p),
         "helpline_phone": p.helpline_phone,
         "address": p.address,
         "active_cases": p.active_cases,
@@ -88,6 +107,7 @@ def api_province_detail(request, prov_id):
             "coords_lat": p.coords_lat,
             "coords_lng": p.coords_lng,
             "coordinators_count": p.coordinators_count,
+            "districts_count": get_districts_count(p),
             "helpline_phone": p.helpline_phone,
             "address": p.address,
             "active_cases": p.active_cases,

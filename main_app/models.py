@@ -33,6 +33,7 @@ class Province(models.Model):
     coords_lat = models.FloatField()
     coords_lng = models.FloatField()
     coordinators_count = models.IntegerField(default=10)
+    districts_count = models.IntegerField(default=10)
     helpline_phone = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
     helpdesk_email = models.EmailField(blank=True, default='')

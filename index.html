@@ -19,19 +19,35 @@
   
   <style>
     :root {
-      --primary-navy: #0e2a47;
-      --secondary-navy: #091d31;
-      --accent-blue: #0284c7;
-      --accent-light-blue: #00a8e8;
-      --crimson-alert: #be123c;
-      --crimson-alert-hover: #9f1239;
-      --text-dark: #1e293b;
+      /* 60% Dominant Space */
+      --bg-white: #ffffff;
+      --bg-light: #f8fafc;
+      --bg-mist: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-dark: #0f172a;
+      --text-body: #334155;
       --text-muted: #64748b;
       --text-light: #94a3b8;
-      --bg-light: #f8fafc;
-      --bg-white: #ffffff;
-      --border-color: #e2e8f0;
-      --card-bg: #f8fafc;
+
+      /* 30% Structural Elements */
+      --cobalt-blue: #1e3a8a;
+      --cobalt-accent: #2563eb;
+      --deep-teal: #0f766e;
+      --deep-teal-hover: #115e59;
+      --deep-teal-light: #ccfbf1;
+      --primary-navy: #0f172a;
+      --secondary-navy: #1e293b;
+      --accent-blue: #2563eb;
+      --accent-light-blue: #38bdf8;
+
+      /* 10% Action Focus (Warm Amber) */
+      --action-amber: #d97706;
+      --action-amber-hover: #b45309;
+      --action-amber-light: #fef3c7;
+      --action-amber-border: #f59e0b;
+      --crimson-alert: #d97706;
+      --crimson-alert-hover: #b45309;
       --radius: 8px;
     }
 
@@ -55,9 +71,9 @@
     .top-socials a { transition: color 0.2s; }
     .top-socials a:hover { color: #fff; }
 
-    /* Navigation */
+    /* Navigation (30% Cobalt Blue Structural Header) */
     .navbar {
-      background-color: var(--primary-navy);
+      background-color: var(--cobalt-blue);
       padding: 14px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       position: sticky;
@@ -117,12 +133,14 @@
     }
     .dropdown-menu a:hover {
       background: #f1f5f9 !important;
-      color: var(--accent-blue) !important;
+      color: var(--cobalt-accent) !important;
     }
-    .dropdown-menu i { font-size: 13px; color: var(--accent-blue); width: 16px; text-align: center; }
+    .dropdown-menu i { font-size: 13px; color: var(--deep-teal); width: 16px; text-align: center; }
 
+    /* 10% Action Focus (Warm Amber CTA) */
     .btn-alert {
-      background-color: var(--crimson-alert);
+      background-color: var(--action-amber);
+      border: 1px solid var(--action-amber-border);
       color: #ffffff !important;
       padding: 8px 14px;
       border-radius: var(--radius);
@@ -131,12 +149,18 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background-color 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
     }
-    .btn-alert:hover { background-color: var(--crimson-alert-hover); }
+    .btn-alert:hover {
+      background-color: var(--action-amber-hover);
+      border-color: var(--action-amber);
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+    }
     
+    /* 30% Deep Teal Secondary Interactive Button */
     .btn-nav {
-      background-color: var(--accent-blue);
+      background-color: var(--deep-teal);
       color: #ffffff !important;
       padding: 8px 16px;
       border-radius: var(--radius);
@@ -144,11 +168,11 @@
       font-weight: 700;
       transition: background-color 0.2s;
     }
-    .btn-nav:hover { background-color: #0369a1; }
+    .btn-nav:hover { background-color: var(--deep-teal-hover); }
 
-    /* Hero Section */
+    /* Hero Section (30% Cobalt Blue Structure) */
     .hero {
-      background: linear-gradient(180deg, var(--primary-navy) 0%, #081a2f 100%);
+      background: linear-gradient(180deg, var(--primary-navy) 0%, var(--cobalt-blue) 100%);
       color: #ffffff;
       padding: 90px 0 110px 0;
       text-align: center;
@@ -171,15 +195,15 @@
       line-height: 1.2;
     }
     .hero p {
-      font-size: 15px;
-      color: #94a3b8;
+      font-size: 16px;
+      color: #e2e8f0;
       max-width: 680px;
       margin: 0 auto 32px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
     .hero-actions { display: flex; justify-content: center; gap: 14px; }
     .btn-primary {
-      background-color: var(--accent-blue);
+      background-color: var(--deep-teal);
       color: #ffffff;
       padding: 12px 24px;
       border: none;
@@ -187,23 +211,39 @@
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
+    .btn-primary:hover {
+      background-color: var(--deep-teal-hover);
+    }
+    
+    /* 10% Action Focus (Warm Amber Hero Report CTA) */
     .btn-outline {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(217, 119, 6, 0.2);
+      border: 1.5px solid var(--action-amber-border);
       color: #ffffff !important;
       padding: 12px 24px;
       border-radius: var(--radius);
-      font-weight: 600;
+      font-weight: 700;
       font-size: 14px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+    }
+    .btn-outline:hover {
+      background: rgba(217, 119, 6, 0.38);
+      border-color: #fbbf24;
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
     }
 
-    /* Section Typography */
+    /* Section Typography & Badges (30% Deep Teal & Cobalt Blue) */
     .section-badge {
       font-size: 11px;
       font-weight: 700;
-      color: var(--accent-blue);
+      color: var(--deep-teal);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 8px;
@@ -212,7 +252,7 @@
       font-size: 28px;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: var(--primary-navy);
+      color: var(--cobalt-blue);
       margin-bottom: 10px;
       line-height: 1.25;
     }
@@ -253,19 +293,43 @@
 
     /* Provincial Section */
     .provinces-section { padding: 70px 0; background-color: #ffffff; border-top: 1px solid var(--border-color); }
-    .province-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .province-card {
-      background-color: var(--card-bg);
-      border: 1px solid #e2e8f0;
-      border-radius: var(--radius);
-      padding: 16px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    .province-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 992px) {
+      .province-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    .province-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(14, 42, 71, 0.08); border-color: var(--accent-blue); }
-    .province-card h4 { font-size: 14px; font-weight: 700; color: var(--primary-navy); margin-bottom: 6px; }
-    .province-card p { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
-    .btn-view-province { font-size: 11px; font-weight: 700; color: var(--accent-blue); margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
+    @media (max-width: 640px) {
+      .province-grid { grid-template-columns: 1fr; }
+    }
+    .province-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 22px 24px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    .province-card:nth-child(7) {
+      grid-column: span 3;
+    }
+    @media (max-width: 992px) {
+      .province-card:nth-child(7) { grid-column: span 2; }
+    }
+    @media (max-width: 640px) {
+      .province-card:nth-child(7) { grid-column: span 1; }
+    }
+    .province-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(14, 42, 71, 0.09);
+      border-color: #2563eb;
+    }
+    .province-card h4 { font-size: 16px; font-weight: 800; color: var(--primary-navy); margin-bottom: 6px; }
+    .province-card p { font-size: 13px; color: #475569; line-height: 1.55; }
+    .btn-view-province { font-size: 12px; font-weight: 700; color: #2563eb; margin-top: 16px; display: inline-flex; align-items: center; gap: 6px; }
+    .province-card:hover .btn-view-province { color: #1d4ed8; }
 
     /* Gallery Section */
     .gallery-section { padding: 70px 0; background-color: #f8fafc; border-top: 1px solid var(--border-color); }
@@ -400,9 +464,9 @@
     }
     .sub-pill-btn:hover { background: #e2e8f0; }
     .sub-pill-btn.active {
-      background: var(--accent-blue);
+      background: var(--deep-teal);
       color: #ffffff;
-      border-color: var(--accent-blue);
+      border-color: var(--deep-teal);
       font-weight: 700;
     }
 
@@ -582,7 +646,6 @@
       <div class="top-info">
         <span><i class="fa-solid fa-phone"></i> +977 985-1180690</span>
         <span><i class="fa-solid fa-envelope"></i> defendersforum@gmail.com</span>
-        <a onclick="openMediaGalleryModal('photos')" style="color: #60a5fa; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; margin-left: 12px; text-decoration: none;"><i class="fa-solid fa-photo-film"></i> Gallery</a>
       </div>
       <div class="top-socials">
         <a href="https://www.facebook.com/defendersforum" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
@@ -614,9 +677,8 @@
           <li><a href="#news">News & Updates</a></li>
           <li><a onclick="openMediaGalleryModal('photos')" style="cursor: pointer;"><i class="fa-solid fa-photo-film"></i> Gallery</a></li>
           <li><a onclick="openResourcesModal()" style="cursor: pointer;"><i class="fa-solid fa-folder-open"></i> Resources</a></li>
-          <li><a href="/admin/" target="_blank" style="color: var(--accent-light-blue);"><i class="fa-solid fa-user-gear"></i> Admin Portal</a></li>
           <li><a onclick="openIncidentModal()" class="btn-alert"><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</a></li>
-          <li><a onclick="openMembershipModal()" class="btn-nav">Become a Member</a></li>
+          <li><a onclick="openMembershipModal()" class="btn-nav">Apply for Membership</a></li>
         </ul>
       </nav>
     </div>
@@ -642,22 +704,30 @@
       <p>Strengthening provincial networks, monitoring protection status, and advocating for civic safety to secure constitutional liberties for every human rights defender.</p>
       <div class="hero-actions">
         <button onclick="openMembershipModal()" class="btn-primary">Apply for Membership</button>
-        <button onclick="openIncidentModal()" class="btn-outline">Report an Incident Alert</button>
+        <button onclick="openIncidentModal()" class="btn-outline"><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</button>
       </div>
     </div>
   </section>
 
   <!-- Landing Page About Teaser Section -->
-  <section class="about-teaser-section" style="padding: 64px 0; background: var(--bg-light, #f8fafc); border-bottom: 1px solid var(--border-color, #e2e8f0);">
+  <section class="about-teaser-section" style="padding: 44px 0; background: var(--bg-light, #f8fafc); border-bottom: 1px solid var(--border-color, #e2e8f0);">
     <div class="container" style="max-width: 920px; text-align: center; margin: 0 auto;">
-      <span class="section-badge" style="letter-spacing: 1px;">ABOUT HRD FORUM</span>
-      <h2 class="section-title" style="font-size: 26px; font-weight: 800; color: var(--primary-navy); margin-top: 8px; margin-bottom: 16px;">Human Rights Defenders Forum (HRD Forum)</h2>
-      <p style="font-size: 15px; color: var(--primary-navy); font-weight: 600; line-height: 1.6; margin-bottom: 12px;">
-        Human Rights Defenders Forum (HRD Forum) is a national network working to protect, support, and empower human rights defenders across Nepal.
+      <span class="section-badge" style="letter-spacing: 1px;">WHO WE ARE</span>
+      <h2 class="section-title" style="font-size: 26px; font-weight: 800; color: var(--primary-navy); margin-top: 8px; margin-bottom: 14px;">Standing Up for Nepal’s Rights Defenders</h2>
+      <p style="font-size: 15px; color: var(--text-dark, #334155); line-height: 1.65; margin-bottom: 18px; max-width: 780px; margin-left: auto; margin-right: auto;">
+        HRD Forum protects and supports frontline activists across Nepal. We monitor threats, provide emergency help, and ensure defenders can work safely in all 7 provinces.
       </p>
-      <p style="font-size: 14px; color: var(--text-muted); line-height: 1.65; margin-bottom: 24px;">
-        We strengthen provincial networks, monitor protection concerns, respond to threats against defenders, and advocate for a safe and enabling environment for human rights work.
-      </p>
+      
+      <!-- Compact Badge Chips Flex Row -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+        <span style="background: #e0f2fe; color: #0369a1; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-map-location-dot"></i> <strong>Nationwide:</strong> Active across all 7 provinces
+        </span>
+        <span style="background: #f0fdf4; color: #15803d; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-shield-halved"></i> <strong>Core Work:</strong> Rapid response, legal aid, and safety
+        </span>
+      </div>
+
       <button onclick="openAboutModal('all')" class="btn-primary" style="background: var(--primary-navy); color: #ffffff; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(12, 35, 60, 0.15);">
         Learn More About Us <i class="fa-solid fa-arrow-right"></i>
       </button>
@@ -776,11 +846,11 @@
         <div class="footer-col">
           <h4>GET INVOLVED</h4>
           <ul>
-            <li><a onclick="openIncidentModal()"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; margin-right: 4px;"></i> Report Incident Alert</a></li>
-            <li><a onclick="openMembershipModal()"><i class="fa-solid fa-id-card" style="color: var(--accent-light-blue); margin-right: 4px;"></i> Become a Member</a></li>
+            <li><a onclick="openIncidentModal()"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; margin-right: 4px;"></i> Report Incident</a></li>
+            <li><a onclick="openMembershipModal()"><i class="fa-solid fa-id-card" style="color: var(--accent-light-blue); margin-right: 4px;"></i> Apply for Membership</a></li>
             <li><a onclick="openResourcesModal()">Annual Status Reports</a></li>
             <li><a onclick="openResourcesModal()">Policy & Legal Blueprints</a></li>
-            <li><a href="/admin/" target="_blank"><i class="fa-solid fa-user-gear" style="margin-right: 4px;"></i> Admin Control Panel</a></li>
+            <li><a href="/admin/" target="_blank" style="color: #60a5fa; font-weight: 600;"><i class="fa-solid fa-user-gear" style="margin-right: 4px;"></i> Admin Portal</a></li>
           </ul>
         </div>
 
@@ -1009,208 +1079,250 @@
 
       <!-- Full-Screen Scrollable Content Area -->
       <div style="flex: 1; overflow-y: auto; padding-right: 8px;" id="aboutScrollArea">
-        <!-- Sequential Section 1: HRD Forum Details (Step-by-Step Vertical Format) -->
+        <!-- Sequential Section 1: HRD Forum Details (Modern Modular Card System) -->
         <div class="about-seq-section" id="seqAboutForum" style="margin-bottom: 40px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #2563eb;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <i class="fa-solid fa-compass" style="font-size: 22px; color: #2563eb;"></i>
-              <h4 style="font-size: 19px; font-weight: 800; color: var(--primary-navy); margin: 0;">1. HRD Forum Overview & Mandate</h4>
+              <div>
+                <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #2563eb; display: block; margin-bottom: 2px;">ABOUT HRD FORUM</span>
+                <h4 style="font-size: 19px; font-weight: 800; color: var(--primary-navy); margin: 0;">1. HRD Forum Overview & Mandate</h4>
+              </div>
             </div>
-            <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-weight: 700;">Step-by-Step Overview</span>
+            <span style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-weight: 700;">Modular Overview</span>
           </div>
 
-          <!-- Step-by-Step Vertical Flow (One After Another) -->
+          <!-- Modular Container / Card System Vertical Flow -->
           <div style="display: flex; flex-direction: column; gap: 24px;">
 
-            <!-- STEP 1: Short Introduction & Organization Details -->
-            <div style="background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid #2563eb; border-radius: 8px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                <span style="background: #2563eb; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">STEP 1</span>
-                <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">Short Introduction & Background</h4>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
-                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-color);">
-                  <strong style="color: var(--primary-navy);"><i class="fa-solid fa-building-flag" style="color: #2563eb;"></i> Organization Name:</strong>
-                  <span style="color: var(--text-dark); font-weight: 600; margin-left: 6px;">Human Rights Defenders Forum Nepal (HRD Forum Nepal)</span>
-                </div>
-
-                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-color);">
-                  <strong style="color: var(--primary-navy);"><i class="fa-solid fa-calendar-check" style="color: #2563eb;"></i> When & Why Established:</strong>
-                  <p style="margin: 4px 0 0 0; color: var(--text-muted); line-height: 1.55;">Established as a national protective network to safeguard grassroots activists, legal advocates, and civic watchdogs operating under constitutional liberties across Nepal.</p>
-                </div>
-
-                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-color);">
-                  <strong style="color: var(--primary-navy);"><i class="fa-solid fa-triangle-exclamation" style="color: #e11d48;"></i> The Problem It Addresses:</strong>
-                  <p style="margin: 4px 0 0 0; color: var(--text-muted); line-height: 1.55;">Shrinking civic space, judicial harassment, physical threats, targeted surveillance, and unlawful detention facing local human rights defenders across provincial regions.</p>
-                </div>
-
-                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-color);">
-                  <strong style="color: var(--primary-navy);"><i class="fa-solid fa-users" style="color: #059669;"></i> Who It Serves:</strong>
-                  <p style="margin: 4px 0 0 0; color: var(--text-muted); line-height: 1.55;">Grassroots activists, environmental watchdogs, journalists, indigenous leaders, and women human rights defenders across all 7 provinces of Nepal.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- STEP 2: Mission & Vision -->
-            <div style="background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid #059669; border-radius: 8px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                <span style="background: #059669; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">STEP 2</span>
-                <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">Mission & Vision</h4>
+            <!-- CONTAINER 1: Key-Value List / Data Table - Organization Profile & Legal Standings -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #2563eb; display: block; margin-bottom: 4px;">ORGANIZATION PROFILE</span>
+                <h4 style="font-size: 17px; font-weight: 800; color: var(--primary-navy); margin: 0;">Legal Standings & Background Data</h4>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
-                <div style="background: #f0fdf4; padding: 14px 16px; border-radius: 6px; border: 1px solid #bbf7d0;">
-                  <strong style="color: #065f46; font-size: 14px;"><i class="fa-solid fa-bullseye" style="color: #059669;"></i> Mission (What We Actively Do):</strong>
-                  <p style="margin: 4px 0 0 0; color: var(--text-dark); line-height: 1.55;">Protecting, supporting, and empowering human rights defenders through 24/7 emergency legal aid, rapid relocation, and security monitoring across Nepal.</p>
-                </div>
-
-                <div style="background: #eff6ff; padding: 14px 16px; border-radius: 6px; border: 1px solid #bfdbfe;">
-                  <strong style="color: #1e40af; font-size: 14px;"><i class="fa-solid fa-eye" style="color: #2563eb;"></i> Vision (The Future We Want to Create):</strong>
-                  <p style="margin: 4px 0 0 0; color: var(--text-dark); line-height: 1.55;">A democratic Nepal where all grassroots advocates, journalists, and civic watchdogs exercise constitutional liberties securely under the rule of law.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- STEP 3: What the Organization Does (Key Programs) -->
-            <div style="background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid #d97706; border-radius: 8px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                <span style="background: #d97706; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">STEP 3</span>
-                <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">What the Organization Does (Key Programmatic Areas)</h4>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; align-items: flex-start; gap: 12px; background: #fffbeb; padding: 12px 16px; border-radius: 6px; border: 1px solid #fef3c7;">
-                  <div style="background: #d97706; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 2px;">1</div>
-                  <div>
-                    <h5 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin: 0 0 2px 0;">Defender Protection & Emergency Response</h5>
-                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5;">Operating 24/7 emergency hotlines, rapid legal representation, and secure relocation support for threatened defenders.</p>
+              <!-- Alternating Border-Separated Key-Value List -->
+              <div style="display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                <div style="display: flex; flex-wrap: wrap; background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; align-items: center;">
+                  <div style="width: 200px; flex-shrink: 0; font-weight: 700; color: var(--primary-navy); font-size: 13px;">
+                    <i class="fa-solid fa-building-flag" style="color: #2563eb; margin-right: 8px;"></i>Organization Name
+                  </div>
+                  <div style="flex: 1; min-width: 200px; color: var(--text-dark); font-weight: 600; font-size: 13px;">
+                    Human Rights Defenders Forum Nepal (HRD Forum Nepal)
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: flex-start; gap: 12px; background: #fffbeb; padding: 12px 16px; border-radius: 6px; border: 1px solid #fef3c7;">
-                  <div style="background: #d97706; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 2px;">2</div>
-                  <div>
-                    <h5 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin: 0 0 2px 0;">Policy Advocacy & Legal Reform</h5>
-                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5;">Drafting legislative recommendations and engaging Parliament and courts to strengthen defender protection laws.</p>
+                <div style="display: flex; flex-wrap: wrap; background: #ffffff; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; align-items: center;">
+                  <div style="width: 200px; flex-shrink: 0; font-weight: 700; color: var(--primary-navy); font-size: 13px;">
+                    <i class="fa-solid fa-calendar-check" style="color: #2563eb; margin-right: 8px;"></i>When & Why Established
+                  </div>
+                  <div style="flex: 1; min-width: 200px; color: var(--text-muted); font-size: 13px; line-height: 1.5;">
+                    Established as a national protective network to safeguard grassroots activists, legal advocates, and civic watchdogs operating under constitutional liberties across Nepal.
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: flex-start; gap: 12px; background: #fffbeb; padding: 12px 16px; border-radius: 6px; border: 1px solid #fef3c7;">
-                  <div style="background: #d97706; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 2px;">3</div>
-                  <div>
-                    <h5 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin: 0 0 2px 0;">Field Monitoring & Fact-Finding</h5>
-                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5;">Conducting rapid fact-finding missions, documenting violations, and monitoring regional protection helpdesks.</p>
+                <div style="display: flex; flex-wrap: wrap; background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; align-items: center;">
+                  <div style="width: 200px; flex-shrink: 0; font-weight: 700; color: var(--primary-navy); font-size: 13px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #e11d48; margin-right: 8px;"></i>The Problem Addressed
+                  </div>
+                  <div style="flex: 1; min-width: 200px; color: var(--text-muted); font-size: 13px; line-height: 1.5;">
+                    Shrinking civic space, judicial harassment, physical threats, targeted surveillance, and unlawful detention facing local human rights defenders across provincial regions.
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: flex-start; gap: 12px; background: #fffbeb; padding: 12px 16px; border-radius: 6px; border: 1px solid #fef3c7;">
-                  <div style="background: #d97706; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 2px;">4</div>
-                  <div>
-                    <h5 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin: 0 0 2px 0;">Capacity Building & Regional Paralegals</h5>
-                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5;">Training regional paralegals, conducting digital security workshops, and empowering local defender networks across 77 districts.</p>
+                <div style="display: flex; flex-wrap: wrap; background: #ffffff; padding: 12px 16px; align-items: center;">
+                  <div style="width: 200px; flex-shrink: 0; font-weight: 700; color: var(--primary-navy); font-size: 13px;">
+                    <i class="fa-solid fa-users" style="color: #059669; margin-right: 8px;"></i>Who It Serves
+                  </div>
+                  <div style="flex: 1; min-width: 200px; color: var(--text-muted); font-size: 13px; line-height: 1.5;">
+                    Grassroots activists, environmental watchdogs, journalists, indigenous leaders, and women human rights defenders across all 7 provinces of Nepal.
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- STEP 4: Impact & Measurable Achievements -->
-            <div style="background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid #9333ea; border-radius: 8px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                <span style="background: #9333ea; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">STEP 4</span>
-                <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">Impact & Measurable Achievements</h4>
+            <!-- CONTAINER 2: Responsive 2-Column Split for Paired Comparisons (Vision vs. Mission) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #059669; display: block; margin-bottom: 4px;">STRATEGIC PURPOSE</span>
+                <h4 style="font-size: 17px; font-weight: 800; color: var(--primary-navy); margin: 0;">Vision & Mission</h4>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #faf5ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #f3e8ff;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-users" style="color: #9333ea; font-size: 16px;"></i>
-                    <span style="font-size: 13px; font-weight: 700; color: var(--primary-navy);">Number of People Reached</span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <!-- Mission Card -->
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <i class="fa-solid fa-bullseye" style="color: #059669; font-size: 18px;"></i>
+                    <h5 style="font-size: 15px; font-weight: 800; color: #065f46; margin: 0;">Our Mission</h5>
                   </div>
-                  <span style="font-size: 13px; font-weight: 800; color: #9333ea; background: #ffffff; padding: 4px 12px; border-radius: 6px; border: 1px solid #e9d5ff;">1,200+ Defenders Monitored & Supported</span>
+                  <p style="font-size: 13px; color: #1e293b; margin: 0; line-height: 1.6;">
+                    Protecting, supporting, and empowering human rights defenders through 24/7 emergency legal aid, rapid relocation, and security monitoring across Nepal.
+                  </p>
                 </div>
 
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #faf5ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #f3e8ff;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-check-to-slot" style="color: #9333ea; font-size: 16px;"></i>
-                    <span style="font-size: 13px; font-weight: 700; color: var(--primary-navy);">Protection Cases Resolved</span>
+                <!-- Vision Card -->
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <i class="fa-solid fa-eye" style="color: #2563eb; font-size: 18px;"></i>
+                    <h5 style="font-size: 15px; font-weight: 800; color: #1e40af; margin: 0;">Our Vision</h5>
                   </div>
-                  <span style="font-size: 13px; font-weight: 800; color: #9333ea; background: #ffffff; padding: 4px 12px; border-radius: 6px; border: 1px solid #e9d5ff;">150+ Emergency Protection Cases</span>
-                </div>
-
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #faf5ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #f3e8ff;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-map-location-dot" style="color: #9333ea; font-size: 16px;"></i>
-                    <span style="font-size: 13px; font-weight: 700; color: var(--primary-navy);">Communities Supported</span>
-                  </div>
-                  <span style="font-size: 13px; font-weight: 800; color: #9333ea; background: #ffffff; padding: 4px 12px; border-radius: 6px; border: 1px solid #e9d5ff;">77 Districts Covered Across 7 Provinces</span>
-                </div>
-
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #faf5ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #f3e8ff;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-diagram-project" style="color: #9333ea; font-size: 16px;"></i>
-                    <span style="font-size: 13px; font-weight: 700; color: var(--primary-navy);">Projects & Missions Completed</span>
-                  </div>
-                  <span style="font-size: 13px; font-weight: 800; color: #9333ea; background: #ffffff; padding: 4px 12px; border-radius: 6px; border: 1px solid #e9d5ff;">45+ Fact-Finding & Policy Projects</span>
+                  <p style="font-size: 13px; color: #1e293b; margin: 0; line-height: 1.6;">
+                    A democratic Nepal where all grassroots advocates, journalists, and civic watchdogs exercise constitutional liberties securely under the rule of law.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <!-- STEP 5: Approach & Guiding Values -->
-            <div style="background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid #0284c7; border-radius: 8px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-                <span style="background: #0284c7; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px;">STEP 5</span>
-                <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin: 0;">Approach & Guiding Values</h4>
+            <!-- CONTAINER 3: Accent Left-Border Cards in a 3-Column Feature Grid (What the Organization Does) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #d97706; display: block; margin-bottom: 4px;">ORGANIZATIONAL EXPERTISE</span>
+                <h4 style="font-size: 17px; font-weight: 800; color: var(--primary-navy); margin: 0;">Key Thematic Programs & Services</h4>
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
-                <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #e0f2fe;">
-                  <i class="fa-solid fa-people-roof" style="color: #0284c7; font-size: 16px; flex-shrink: 0;"></i>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+                <!-- Feature Card 1 -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb; border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <i class="fa-solid fa-shield-halved" style="color: #2563eb; font-size: 16px;"></i>
+                    <h5 style="font-size: 14px; font-weight: 800; color: var(--primary-navy); margin: 0;">Defender Protection</h5>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.55;">
+                    Operating 24/7 emergency hotlines, rapid legal representation, and secure relocation support for threatened defenders.
+                  </p>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <i class="fa-solid fa-gavel" style="color: #059669; font-size: 16px;"></i>
+                    <h5 style="font-size: 14px; font-weight: 800; color: var(--primary-navy); margin: 0;">Policy & Reform</h5>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.55;">
+                    Drafting legislative recommendations and engaging Parliament and courts to strengthen defender protection laws.
+                  </p>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #d97706; border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <i class="fa-solid fa-magnifying-glass-location" style="color: #d97706; font-size: 16px;"></i>
+                    <h5 style="font-size: 14px; font-weight: 800; color: var(--primary-navy); margin: 0;">Field Fact-Finding</h5>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.55;">
+                    Conducting rapid fact-finding missions, documenting violations, and monitoring regional protection helpdesks.
+                  </p>
+                </div>
+
+                <!-- Feature Card 4 -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #9333ea; border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <i class="fa-solid fa-user-ninja" style="color: #9333ea; font-size: 16px;"></i>
+                    <h5 style="font-size: 14px; font-weight: 800; color: var(--primary-navy); margin: 0;">Capacity Building</h5>
+                  </div>
+                  <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.55;">
+                    Training regional paralegals, conducting digital security workshops, and empowering local defender networks across 77 districts.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTAINER 4: Measurable Impact & Achievements -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #9333ea; display: block; margin-bottom: 4px;">MEASURABLE IMPACT</span>
+                <h4 style="font-size: 17px; font-weight: 800; color: var(--primary-navy); margin: 0;">Proven Results & Achievements</h4>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                <div style="background: #faf5ff; border: 1px solid #f3e8ff; border-radius: 12px; padding: 16px; text-align: center;">
+                  <i class="fa-solid fa-users" style="color: #9333ea; font-size: 20px; margin-bottom: 6px;"></i>
+                  <div style="font-size: 20px; font-weight: 800; color: #9333ea; margin-bottom: 2px;">1,200+</div>
+                  <div style="font-size: 12px; font-weight: 700; color: var(--primary-navy);">Defenders Monitored</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Active protection coverage</div>
+                </div>
+
+                <div style="background: #faf5ff; border: 1px solid #f3e8ff; border-radius: 12px; padding: 16px; text-align: center;">
+                  <i class="fa-solid fa-shield-heart" style="color: #9333ea; font-size: 20px; margin-bottom: 6px;"></i>
+                  <div style="font-size: 20px; font-weight: 800; color: #9333ea; margin-bottom: 2px;">150+</div>
+                  <div style="font-size: 12px; font-weight: 700; color: var(--primary-navy);">Cases Resolved</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Emergency intervention</div>
+                </div>
+
+                <div style="background: #faf5ff; border: 1px solid #f3e8ff; border-radius: 12px; padding: 16px; text-align: center;">
+                  <i class="fa-solid fa-map-location-dot" style="color: #9333ea; font-size: 20px; margin-bottom: 6px;"></i>
+                  <div style="font-size: 20px; font-weight: 800; color: #9333ea; margin-bottom: 2px;">77 / 7</div>
+                  <div style="font-size: 12px; font-weight: 700; color: var(--primary-navy);">Districts & Provinces</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Nationwide footprint</div>
+                </div>
+
+                <div style="background: #faf5ff; border: 1px solid #f3e8ff; border-radius: 12px; padding: 16px; text-align: center;">
+                  <i class="fa-solid fa-diagram-project" style="color: #9333ea; font-size: 20px; margin-bottom: 6px;"></i>
+                  <div style="font-size: 20px; font-weight: 800; color: #9333ea; margin-bottom: 2px;">45+</div>
+                  <div style="font-size: 12px; font-weight: 700; color: var(--primary-navy);">Missions & Projects</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">Fact-finding & policy</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTAINER 5: Approach & Guiding Values -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #0284c7; display: block; margin-bottom: 4px;">GUIDING PRINCIPLES</span>
+                <h4 style="font-size: 17px; font-weight: 800; color: var(--primary-navy); margin: 0;">Approach & Organizational Values</h4>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                <div style="display: flex; align-items: flex-start; gap: 12px; background: #f0f9ff; padding: 14px 16px; border-radius: 12px; border: 1px solid #e0f2fe;">
+                  <i class="fa-solid fa-people-roof" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
                   <div>
-                    <strong style="color: var(--primary-navy);">Community-Centered:</strong>
-                    <span style="color: var(--text-muted); margin-left: 4px;">Rooted in grassroots defender needs and local community watchdogs.</span>
+                    <h5 style="font-size: 13px; font-weight: 800; color: var(--primary-navy); margin: 0 0 2px 0;">Community-Centered</h5>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.45;">Rooted in grassroots defender needs and local community watchdogs.</p>
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #e0f2fe;">
-                  <i class="fa-solid fa-hands-holding-circle" style="color: #0284c7; font-size: 16px; flex-shrink: 0;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 12px; background: #f0f9ff; padding: 14px 16px; border-radius: 12px; border: 1px solid #e0f2fe;">
+                  <i class="fa-solid fa-hands-holding-circle" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
                   <div>
-                    <strong style="color: var(--primary-navy);">Inclusive & Equal:</strong>
-                    <span style="color: var(--text-muted); margin-left: 4px;">Prioritizing women, indigenous, and marginalized human rights defenders.</span>
+                    <h5 style="font-size: 13px; font-weight: 800; color: var(--primary-navy); margin: 0 0 2px 0;">Inclusive & Equal</h5>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.45;">Prioritizing women, indigenous, and marginalized defenders.</p>
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #e0f2fe;">
-                  <i class="fa-solid fa-seedling" style="color: #0284c7; font-size: 16px; flex-shrink: 0;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 12px; background: #f0f9ff; padding: 14px 16px; border-radius: 12px; border: 1px solid #e0f2fe;">
+                  <i class="fa-solid fa-seedling" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
                   <div>
-                    <strong style="color: var(--primary-navy);">Sustainable:</strong>
-                    <span style="color: var(--text-muted); margin-left: 4px;">Building long-term paralegal capacity and institutional protection mechanisms.</span>
+                    <h5 style="font-size: 13px; font-weight: 800; color: var(--primary-navy); margin: 0 0 2px 0;">Sustainable</h5>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.45;">Building long-term paralegal capacity and protection mechanisms.</p>
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 16px; border-radius: 6px; border: 1px solid #e0f2fe;">
-                  <i class="fa-solid fa-scale-balanced" style="color: #0284c7; font-size: 16px; flex-shrink: 0;"></i>
+                <div style="display: flex; align-items: flex-start; gap: 12px; background: #f0f9ff; padding: 14px 16px; border-radius: 12px; border: 1px solid #e0f2fe;">
+                  <i class="fa-solid fa-scale-balanced" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
                   <div>
-                    <strong style="color: var(--primary-navy);">Transparent & Accountable:</strong>
-                    <span style="color: var(--text-muted); margin-left: 4px;">Adhering strictly to constitutional principles and democratic governance.</span>
+                    <h5 style="font-size: 13px; font-weight: 800; color: var(--primary-navy); margin: 0 0 2px 0;">Transparent</h5>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.45;">Adhering strictly to constitutional principles and democratic governance.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- STEP 6: Take Action / Calls to Action -->
-            <div style="background: #0c233c; border-radius: 8px; padding: 24px; color: #ffffff; text-align: center; border-left: 4px solid #e11d48;">
-              <div style="display: inline-block; background: #e11d48; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 12px; border-radius: 12px; margin-bottom: 10px;">STEP 6</div>
-              <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #ffffff;">Calls to Action (Take Action With HRD Forum)</h4>
-              <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 18px;">Support human rights defenders across all 7 provinces of Nepal.</p>
+            <!-- CONTAINER 6: Actionable Calls to Action -->
+            <div style="background: linear-gradient(135deg, #0c233c 0%, #1e3a8a 100%); border-radius: 16px; padding: 28px; color: #ffffff; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #93c5fd; display: block; margin-bottom: 6px;">GET INVOLVED</span>
+              <h4 style="font-size: 20px; font-weight: 800; margin: 0 0 8px 0; color: #ffffff;">Take Action With HRD Forum</h4>
+              <p style="font-size: 13px; color: #cbd5e1; margin: 0 0 20px 0; max-width: 540px; margin-left: auto; margin-right: auto;">
+                Support human rights defenders, access resource documents, or report protection concerns across all 7 provinces of Nepal.
+              </p>
               <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <button onclick="closeAboutModal(); openResourcesModal();" class="btn-primary" style="background: #2563eb; color: #ffffff; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
+                <button onclick="closeAboutModal(); openResourcesModal();" class="btn-primary" style="background: #2563eb; color: #ffffff; padding: 11px 22px; border-radius: 8px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
                   <i class="fa-solid fa-folder-open"></i> Learn More (Resources)
                 </button>
-                <button onclick="closeAboutModal(); openMembershipModal();" class="btn-primary" style="background: #059669; color: #ffffff; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
+                <button onclick="closeAboutModal(); openMembershipModal();" class="btn-primary" style="background: #059669; color: #ffffff; padding: 11px 22px; border-radius: 8px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
                   <i class="fa-solid fa-user-plus"></i> Get Involved (Membership)
                 </button>
-                <button onclick="closeAboutModal(); openIncidentModal();" class="btn-primary" style="background: #e11d48; color: #ffffff; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
+                <button onclick="closeAboutModal(); openIncidentModal();" class="btn-primary" style="background: #e11d48; color: #ffffff; padding: 11px 22px; border-radius: 8px; font-size: 13px; font-weight: 700; border: none; cursor: pointer;">
                   <i class="fa-solid fa-hand-holding-heart"></i> Support Our Work (Incident Alert)
                 </button>
               </div>
@@ -1598,11 +1710,25 @@
       }).addTo(map);
     }
 
+    function getProvinceDistricts(name) {
+      if (!name) return 10;
+      const n = name.toLowerCase();
+      if (n.includes('koshi')) return 14;
+      if (n.includes('madhesh')) return 8;
+      if (n.includes('bagmati')) return 13;
+      if (n.includes('gandaki')) return 11;
+      if (n.includes('lumbini')) return 12;
+      if (n.includes('karnali')) return 10;
+      if (n.includes('sudurpashchim')) return 9;
+      return 10;
+    }
+
     // Open Dedicated Province Detail Modal
     function openProvinceDetail(id) {
       const p = globalProvinces.find(item => item.id === id);
       if (!p) return;
 
+      const distCount = p.districts_count || getProvinceDistricts(p.name);
       document.getElementById('provModalTitle').innerHTML = `<i class="fa-solid fa-shield-halved" style="color: var(--accent-blue);"></i> ${p.name}`;
       document.getElementById('provModalBody').innerHTML = `
         <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
@@ -1610,7 +1736,7 @@
           <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;"><i class="fa-solid fa-location-dot"></i> ${p.address}</p>
           <div style="display: flex; gap: 14px; flex-wrap: wrap;">
             <a href="tel:${p.helpline_phone}" style="background: #be123c; color: #fff; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; text-decoration: none;"><i class="fa-solid fa-phone"></i> ${p.helpline_phone}</a>
-            <span style="background: #e0f2fe; color: var(--accent-blue); padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px;"><i class="fa-solid fa-user-shield"></i> ${p.coordinators_count} Attorneys & Coordinators</span>
+            <span style="background: #e0f2fe; color: var(--accent-blue); padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px;"><i class="fa-solid fa-map-location-dot"></i> ${distCount} Districts Covered</span>
             <span style="background: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 12px;"><i class="fa-solid fa-folder-open"></i> ${p.active_cases} Active Cases</span>
           </div>
         </div>
@@ -1672,14 +1798,24 @@
         if (res.ok) {
           globalProvinces = await res.json();
           const grid = document.getElementById('provinceGrid');
-          grid.innerHTML = globalProvinces.map(p => `
-            <div class="province-card" onclick="openProvinceDetail(${p.id})">
-              <h4>${p.name}</h4>
-              <p><strong>${p.base_city}</strong> • ${p.coordinators_count} localized coordinators.</p>
-              <p style="margin-top: 6px; font-size: 11px;">${p.description}</p>
-              <div class="btn-view-province">Inspect Desk Detail <i class="fa-solid fa-arrow-right"></i></div>
+          grid.innerHTML = globalProvinces.map((p, idx) => {
+            const distCount = p.districts_count || getProvinceDistricts(p.name);
+            return `
+            <div class="province-card" onclick="openProvinceDetail(${p.id})" title="Click to inspect ${p.name} details">
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--primary-navy);">${p.name}</h4>
+                  <span style="font-size: 10px; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 3px 9px; border-radius: 12px; border: 1px solid #bae6fd; white-space: nowrap;">PROVINCE ${idx + 1}</span>
+                </div>
+                <p style="font-weight: 600; color: #1e293b; margin-bottom: 8px; font-size: 13px;">
+                  <i class="fa-solid fa-location-dot" style="color: #2563eb; margin-right: 4px;"></i>${p.base_city} &bull; <span style="color: #059669;">${distCount} Districts</span>
+                </p>
+                <p style="font-size: 13px; color: #475569; line-height: 1.55; margin-bottom: 12px;">${p.description}</p>
+              </div>
+              <div class="btn-view-province" style="font-size: 12px; font-weight: 700; color: #2563eb; display: inline-flex; align-items: center; gap: 6px;">Inspect Desk Detail <i class="fa-solid fa-arrow-right"></i></div>
             </div>
-          `).join('');
+          `;
+          }).join('');
 
           initLeafletMap(globalProvinces);
         }
