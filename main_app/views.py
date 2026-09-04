@@ -660,3 +660,61 @@ def admin_collaborations_manage(request, collab_id=None):
         Collaboration.objects.filter(id=collab_id).delete()
         return JsonResponse({"success": True, "message": "Collaboration deleted."})
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+import os
+import uuid
+from django.conf import settings
+
+@csrf_exempt
+@staff_required
+def admin_upload_file(request):
+    """
+    Handles computer file uploads for images, PDFs, and documents in admin portal.
+    Saves files into MEDIA_ROOT / 'uploads' and returns the file URL.
+    """
+    if request.method != 'POST':
+        return JsonResponse({"error": "POST method required"}, status=405)
+
+    uploaded_file = request.FILES.get('file') or request.FILES.get('image') or request.FILES.get('document')
+    if not uploaded_file:
+        return JsonResponse({"error": "No file uploaded"}, status=400)
+
+    upload_dir = settings.MEDIA_ROOT / 'uploads'
+    os.makedirs(upload_dir, exist_ok=True)
+
+    ext = os.path.splitext(uploaded_file.name)[1].lower()
+    unique_filename = f"{uuid.uuid4().hex[:10]}{ext}"
+    file_path = upload_dir / unique_filename
+
+    with open(file_path, 'wb+') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+
+    size_mb = uploaded_file.size / (1024 * 1024)
+    if size_mb >= 1.0:
+        file_size_str = f"{size_mb:.1f} MB"
+    else:
+        file_size_str = f"{max(1, int(uploaded_file.size / 1024))} KB"
+
+    raw_ext = ext.lstrip('.').upper() or 'FILE'
+    if raw_ext == 'PDF':
+        format_display = 'PDF'
+    elif raw_ext in ('JPG', 'JPEG', 'PNG', 'WEBP', 'GIF'):
+        format_display = 'IMAGE'
+    elif raw_ext in ('DOC', 'DOCX', 'TXT'):
+        format_display = 'DOCUMENT'
+    else:
+        format_display = raw_ext
+
+    rel_url = f"/media/uploads/{unique_filename}"
+    size_format_summary = f"{format_display} • {file_size_str}"
+
+    return JsonResponse({
+        "success": True,
+        "url": rel_url,
+        "filename": uploaded_file.name,
+        "file_size": file_size_str,
+        "format": format_display,
+        "summary": size_format_summary
+    })

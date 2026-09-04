@@ -251,7 +251,9 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Image URL *</label>
-                <input type="url" id="nImage" class="form-control" placeholder="https://images.unsplash.com/..." required>
+                <input type="text" id="nImage" class="form-control" placeholder="URL or upload from computer..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Thumbnail from Computer:</label>
+                <input type="file" id="nFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'nImage')">
               </div>
               <div class="form-group">
                 <label>Category</label>
@@ -318,8 +320,10 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Profile Photo URL *</label>
-                <input type="url" id="tImage" class="form-control" placeholder="https://images.unsplash.com/..." required>
+                <label>Profile Photo *</label>
+                <input type="text" id="tImage" class="form-control" placeholder="URL or upload from computer..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Photo from Computer:</label>
+                <input type="file" id="tFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'tImage')">
               </div>
             </div>
             <div class="form-group">
@@ -465,7 +469,9 @@
             </div>
             <div class="form-group">
               <label>Photo Image URL *</label>
-              <input type="url" id="gImage" class="form-control" placeholder="https://images.unsplash.com/..." required>
+              <input type="text" id="gImage" class="form-control" placeholder="URL or upload from computer..." required>
+              <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Photo from Computer:</label>
+              <input type="file" id="gFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'gImage')">
             </div>
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload Photo to Gallery</button>
           </form>
@@ -558,7 +564,9 @@
             <div class="form-row">
               <div class="form-group">
                 <label>File / Download Link *</label>
-                <input type="text" id="rFileUrl" class="form-control" placeholder="#" required>
+                <input type="text" id="rFileUrl" class="form-control" placeholder="URL or upload document..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload PDF / Document from Computer:</label>
+                <input type="file" id="rFilePicker" accept="application/pdf,image/*,.doc,.docx,.ppt,.pptx" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'rFileUrl', 'rFileSize')">
               </div>
               <div class="form-group">
                 <label>File Size & Format</label>
@@ -679,6 +687,41 @@
       if (tabId === 'resourceTab') loadResources();
       if (tabId === 'leadsTab') loadLeads();
       if (tabId === 'alertsTab') loadAlerts();
+    }
+
+    // Computer File Upload Handler
+    async function handleComputerUpload(fileInput, targetUrlInputId, targetSizeInputId = null) {
+      if (!fileInput.files || fileInput.files.length === 0) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const label = fileInput.previousElementSibling;
+      const originalText = label ? label.innerText : '';
+      if (label) label.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Uploading ${file.name}...`;
+
+      try {
+        const res = await fetch('/api/admin/upload-file', {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.url) {
+            document.getElementById(targetUrlInputId).value = data.url;
+            if (targetSizeInputId && data.summary) {
+              document.getElementById(targetSizeInputId).value = data.summary;
+            }
+            showToast(`Uploaded ${data.filename} successfully!`, 'success');
+          }
+        } else {
+          showToast('Failed to upload file from computer.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error while uploading file.', 'error');
+      } finally {
+        if (label) label.innerText = originalText;
+      }
     }
 
     // Login Handler

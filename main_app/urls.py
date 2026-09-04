@@ -41,4 +41,7 @@ urlpatterns = [
     path('api/admin/team/<int:member_id>', views.admin_team_manage, name='admin_team_delete'),
     path('api/admin/collaborations', views.admin_collaborations_manage, name='admin_collaborations_manage'),
     path('api/admin/collaborations/<int:collab_id>', views.admin_collaborations_manage, name='admin_collaborations_delete'),
+
+    # File Upload Route
+    path('api/admin/upload-file', views.admin_upload_file, name='admin_upload_file'),
 ]
