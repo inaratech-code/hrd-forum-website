@@ -1,373 +1,202 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static jazzmin log %}
+{% load i18n static log %}
 
 {% block extrahead %}
-{{ block_super }}
+{{ block.super }}
 <!-- Chart.js for Admin Analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<div class="col-12">
-    <!-- Executive Hero Welcome Banner -->
-    <div class="admin-hero-banner">
+<div class="custom-admin-container" style="display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Executive Hero Banner -->
+    <div style="background: #0f172a; color: #fff; padding: 24px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
         <div>
-            <h1 class="admin-hero-title">
-                <i class="fas fa-shield-alt" style="color: #60a5fa;"></i> HRD Forum Nepal Command Center
+            <h1 style="margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-shield-alt" style="color: #38bdf8;"></i> HRD Forum Nepal Command Center
             </h1>
-            <p class="admin-hero-subtitle">
-                <span class="status-pill-live">
-                    <span class="status-dot-pulse"></span> Network Active
-                </span>
-                <span><i class="fas fa-globe-asia mr-1"></i> 7 Provincial Helpdesks Operational</span>
-                <span><i class="fas fa-clock mr-1"></i> Real-time Database Sync</span>
+            <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; display: flex; gap: 16px; flex-wrap: wrap;">
+                <span><i class="fas fa-circle text-success" style="font-size: 9px;"></i> Network Active</span>
+                <span><i class="fas fa-globe mr-1"></i> 7 Provincial Desks</span>
+                <span><i class="fas fa-database mr-1"></i> Real-time Sync</span>
             </p>
         </div>
-        <div class="hero-actions">
-            <a href="{% url 'admin:main_app_incident_add' %}" class="btn-hero-action btn-hero-action-primary">
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'admin:main_app_incident_add' %}" style="background: #2563eb; color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 6px;">
                 <i class="fas fa-plus-circle"></i> Log Incident
             </a>
-            <a href="/" target="_blank" class="btn-hero-action">
-                <i class="fas fa-external-link-alt"></i> Public Portal
+            <a href="/" target="_blank" style="background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-external-link-alt"></i> Public Site
             </a>
         </div>
     </div>
 
-    <!-- Executive KPI Stat Cards (4-Grid) -->
-    <div class="kpi-grid-4">
-        <!-- KPI 1: Urgent Incidents -->
-        <div class="kpi-v2-card">
-            <div class="kpi-v2-header">
-                <span class="kpi-v2-title">Emergency Cases</span>
-                <div class="kpi-v2-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+    <!-- 4-Grid KPI Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <!-- KPI 1 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Emergency Cases</span>
+                <span style="background: #fee2e2; color: #ef4444; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-exclamation-triangle"></i>
-                </div>
+                </span>
             </div>
-            <div class="kpi-v2-number">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">
                 {{ kpi_incidents_urgent|default:0 }}
-                <span style="font-size: 14px; font-weight: 700; color: #ef4444;">/ {{ kpi_incidents_total|default:0 }} Total</span>
+                <span style="font-size: 0.815rem; color: #94a3b8; font-weight: 500;">/ {{ kpi_incidents_total|default:0 }} Total</span>
             </div>
-            <div class="kpi-v2-progress">
-                <div class="kpi-v2-bar" style="width: 75%; background: #ef4444;"></div>
-            </div>
-            <div class="kpi-v2-footer">
-                <span style="color: #dc2626;"><i class="fas fa-bolt mr-1"></i> Urgent / High Priority</span>
-                <a href="{% url 'admin:main_app_incident_changelist' %}">Review <i class="fas fa-arrow-right"></i></a>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_incident_changelist' %}" style="color: #ef4444; font-weight: 600; text-decoration: none;">Review Cases &rarr;</a>
             </div>
         </div>
 
-        <!-- KPI 2: Pending Memberships -->
-        <div class="kpi-v2-card">
-            <div class="kpi-v2-header">
-                <span class="kpi-v2-title">Defender Network</span>
-                <div class="kpi-v2-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+        <!-- KPI 2 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Pending Members</span>
+                <span style="background: #fef3c7; color: #f59e0b; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-id-card"></i>
-                </div>
+                </span>
             </div>
-            <div class="kpi-v2-number">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">
                 {{ kpi_memberships_pending|default:0 }}
-                <span style="font-size: 14px; font-weight: 700; color: #f59e0b;">/ {{ kpi_memberships_total|default:0 }} Total</span>
+                <span style="font-size: 0.815rem; color: #94a3b8; font-weight: 500;">/ {{ kpi_memberships_total|default:0 }} Total</span>
             </div>
-            <div class="kpi-v2-progress">
-                <div class="kpi-v2-bar" style="width: 60%; background: #f59e0b;"></div>
-            </div>
-            <div class="kpi-v2-footer">
-                <span style="color: #d97706;"><i class="fas fa-user-clock mr-1"></i> Awaiting Verification</span>
-                <a href="{% url 'admin:main_app_membership_changelist' %}">Review <i class="fas fa-arrow-right"></i></a>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_membership_changelist' %}" style="color: #f59e0b; font-weight: 600; text-decoration: none;">Review Requests &rarr;</a>
             </div>
         </div>
 
-        <!-- KPI 3: Published Bulletins -->
-        <div class="kpi-v2-card">
-            <div class="kpi-v2-header">
-                <span class="kpi-v2-title">Rights Bulletins</span>
-                <div class="kpi-v2-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+        <!-- KPI 3 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">News Bulletins</span>
+                <span style="background: #dbeafe; color: #2563eb; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-newspaper"></i>
-                </div>
+                </span>
             </div>
-            <div class="kpi-v2-number">{{ kpi_news_total|default:0 }}</div>
-            <div class="kpi-v2-progress">
-                <div class="kpi-v2-bar" style="width: 90%; background: #3b82f6;"></div>
-            </div>
-            <div class="kpi-v2-footer">
-                <span style="color: #2563eb;"><i class="fas fa-check-circle mr-1"></i> Live Field Reports</span>
-                <a href="{% url 'admin:main_app_news_changelist' %}">Manage <i class="fas fa-arrow-right"></i></a>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">{{ kpi_news_total|default:0 }}</div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_news_changelist' %}" style="color: #2563eb; font-weight: 600; text-decoration: none;">Manage Articles &rarr;</a>
             </div>
         </div>
 
-        <!-- KPI 4: Provincial Desks -->
-        <div class="kpi-v2-card">
-            <div class="kpi-v2-header">
-                <span class="kpi-v2-title">Provincial Network</span>
-                <div class="kpi-v2-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+        <!-- KPI 4 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Active Provinces</span>
+                <span style="background: #dcfce7; color: #10b981; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-map-marked-alt"></i>
-                </div>
+                </span>
             </div>
-            <div class="kpi-v2-number">{{ kpi_provinces_total|default:0 }}</div>
-            <div class="kpi-v2-progress">
-                <div class="kpi-v2-bar" style="width: 100%; background: #10b981;"></div>
-            </div>
-            <div class="kpi-v2-footer">
-                <span style="color: #059669;"><i class="fas fa-shield-alt mr-1"></i> All 7 Provinces Active</span>
-                <a href="{% url 'admin:main_app_province_changelist' %}">Manage <i class="fas fa-arrow-right"></i></a>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">{{ kpi_provinces_total|default:7 }}</div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_province_changelist' %}" style="color: #10b981; font-weight: 600; text-decoration: none;">View Networks &rarr;</a>
             </div>
         </div>
     </div>
 
-    <!-- Visual Interactive Analytics Section (Chart.js) -->
-    <div class="analytics-grid">
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <h3 class="chart-card-title">
-                    <i class="fas fa-chart-line text-primary"></i> Emergency Incident Breakdown & System Overview
-                </h3>
-                <span class="badge badge-light border text-muted">Live Database Telemetry</span>
-            </div>
+    <!-- Analytics Charts -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h3 style="margin: 0 0 16px 0; font-size: 1rem; color: #1e293b;">Database Telemetry Overview</h3>
             <div style="height: 230px; position: relative;">
                 <canvas id="incidentOverviewChart"></canvas>
             </div>
         </div>
-
-        <div class="chart-card">
-            <div class="chart-card-header">
-                <h3 class="chart-card-title">
-                    <i class="fas fa-chart-pie text-info"></i> Incident Priority Ratio
-                </h3>
-            </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h3 style="margin: 0 0 16px 0; font-size: 1rem; color: #1e293b;">Incident Priority Ratio</h3>
             <div style="height: 230px; position: relative;">
                 <canvas id="priorityRatioChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Quick Action Launchpad -->
-    <div class="launchpad-card">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3 class="chart-card-title">
-                <i class="fas fa-rocket text-primary"></i> Administrative Launchpad
-            </h3>
-            <span class="text-muted text-xs">Single-click actions</span>
-        </div>
-        <div class="launchpad-grid">
-            <a href="{% url 'admin:main_app_incident_add' %}" class="launchpad-btn-item">
-                <div class="launchpad-btn-icon" style="background: #ef4444;">
-                    <i class="fas fa-plus-circle"></i>
-                </div>
-                <div class="launchpad-btn-text">
-                    <h5>Log Incident</h5>
-                    <p>Report emergency rights case</p>
-                </div>
-            </a>
-
-            <a href="{% url 'admin:main_app_membership_add' %}" class="launchpad-btn-item">
-                <div class="launchpad-btn-icon" style="background: #f59e0b;">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="launchpad-btn-text">
-                    <h5>Add Membership</h5>
-                    <p>Register human rights defender</p>
-                </div>
-            </a>
-
-            <a href="{% url 'admin:main_app_news_add' %}" class="launchpad-btn-item">
-                <div class="launchpad-btn-icon" style="background: #3b82f6;">
-                    <i class="fas fa-pen-nib"></i>
-                </div>
-                <div class="launchpad-btn-text">
-                    <h5>Publish News</h5>
-                    <p>Create bulletin article</p>
-                </div>
-            </a>
-
-            <a href="/" target="_blank" class="launchpad-btn-item">
-                <div class="launchpad-btn-icon" style="background: #10b981;">
-                    <i class="fas fa-globe"></i>
-                </div>
-                <div class="launchpad-btn-text">
-                    <h5>Public Portal</h5>
-                    <p>Open live website portal</p>
-                </div>
-            </a>
-        </div>
+    <!-- Standard Django Model Application Registry -->
+    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem; color: #1e293b;">
+            <i class="fas fa-database mr-2" style="color: #2563eb;"></i> Application Models
+        </h3>
+        {% include "admin/app_list.html" with app_list=app_list %}
     </div>
-</div>
 
-<!-- Dual Activity Feeds Section -->
-<div class="col-lg-7 col-12">
-    <div class="card card-outline card-primary mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title font-weight-bold">
-                <i class="fas fa-exclamation-circle text-danger mr-2"></i> Recent Emergency Incidents Log
-            </h3>
-            <a href="{% url 'admin:main_app_incident_changelist' %}" class="btn btn-xs btn-outline-primary font-weight-bold">
-                View All ({{ kpi_incidents_total|default:0 }})
-            </a>
-        </div>
-        <div class="card-body p-0 table-responsive">
-            {% if recent_incidents_list %}
-                <table class="custom-admin-table">
-                    <thead>
-                        <tr>
-                            <th>Reporter</th>
-                            <th>Type</th>
-                            <th>Priority</th>
-                            <th>Created</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for inc in recent_incidents_list %}
-                            <tr>
-                                <td class="font-weight-bold">{{ inc.reporter_name }}</td>
-                                <td><span class="text-muted">{{ inc.incident_type|truncatechars:20 }}</span></td>
-                                <td>
-                                    {% if inc.priority == 'Urgent' %}
-                                        <span class="priority-badge-pill priority-urgent">Urgent</span>
-                                    {% elif inc.priority == 'High' %}
-                                        <span class="priority-badge-pill priority-high">High</span>
-                                    {% elif inc.priority == 'Medium' %}
-                                        <span class="priority-badge-pill priority-medium">Medium</span>
-                                    {% else %}
-                                        <span class="priority-badge-pill priority-low">Low</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-muted" style="font-size: 12px;">{{ inc.created_at|date:"M d, H:i" }}</td>
-                                <td>
-                                    <a href="{% url 'admin:main_app_incident_change' inc.id %}" class="btn btn-xs btn-light border">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="p-4 text-center text-muted">
-                    <i class="fas fa-inbox fa-2x mb-2 text-secondary"></i>
-                    <p class="mb-0">No emergency incidents recorded yet.</p>
-                </div>
-            {% endif %}
-        </div>
+    <!-- Audit Log -->
+    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem; color: #1e293b;">
+            <i class="fas fa-history mr-2" style="color: #64748b;"></i> Recent Actions
+        </h3>
+        {% get_admin_log 8 as admin_log for_user user %}
+        {% if not admin_log %}
+            <p style="color: #94a3b8; font-size: 0.875rem; margin: 0;">No recent actions recorded.</p>
+        {% else %}
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                {% for entry in admin_log %}
+                    <li style="font-size: 0.875rem; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: 600; color: #334155;">{{ entry.object_repr }}</span>
+                        <span style="color: #94a3b8; font-size: 0.75rem;">({{ entry.content_type }})</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
-</div>
 
-<div class="col-lg-5 col-12">
-    <div class="card card-outline card-secondary mb-4">
-        <div class="card-header">
-            <h3 class="card-title font-weight-bold">
-                <i class="fas fa-history text-secondary mr-2"></i> Recent Audit Log
-            </h3>
-        </div>
-        <div class="card-body p-3">
-            {% get_admin_log 8 as admin_log for_user user %}
-            {% if not admin_log %}
-                <p class="text-muted text-sm mb-0"><i class="fas fa-info-circle mr-1"></i> No recent admin actions recorded.</p>
-            {% else %}
-                <ul class="timeline timeline-inverse mb-0" style="margin: 0; padding-left: 15px;">
-                    {% for entry in admin_log %}
-                        <li class="mb-2" style="list-style: none;">
-                            <div class="d-flex align-items-center text-sm">
-                                <span class="badge badge-light border mr-2" style="font-size: 11px;">
-                                    {% if entry.is_addition %}<i class="fas fa-plus text-success"></i>{% endif %}
-                                    {% if entry.is_change %}<i class="fas fa-pen text-warning"></i>{% endif %}
-                                    {% if entry.is_deletion %}<i class="fas fa-trash text-danger"></i>{% endif %}
-                                </span>
-                                <div class="text-truncate" style="max-width: 250px;">
-                                    <strong>{{ entry.object_repr }}</strong>
-                                    <span class="text-muted d-block" style="font-size: 11px;">{{ entry.content_type }}</span>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<!-- Database Applications & Models Directory -->
-<div class="col-12 mb-4">
-    <div class="card card-outline card-info">
-        <div class="card-header">
-            <h3 class="card-title font-weight-bold">
-                <i class="fas fa-database text-info mr-2"></i> System Database Applications & Data Models
-            </h3>
-        </div>
-        <div class="card-body p-0">
-            {% include "admin/app_list.html" with app_list=app_list %}
-        </div>
-    </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Overview Bar Chart
-    const ctxBar = document.getElementById('incidentOverviewChart').getContext('2d');
-    new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: ['Urgent Incidents', 'Pending Members', 'News Articles', 'Provincial Desks', 'Total Visitors'],
-            datasets: [{
-                label: 'System Record Counts',
-                data: [
-                    {{ kpi_incidents_urgent|default:0 }},
-                    {{ kpi_memberships_pending|default:0 }},
-                    {{ kpi_news_total|default:0 }},
-                    {{ kpi_provinces_total|default:0 }},
-                    {{ kpi_visitors_total|default:0 }}
-                ],
-                backgroundColor: [
-                    'rgba(239, 68, 68, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(16, 185, 129, 0.8)',
-                    'rgba(139, 92, 246, 0.8)'
-                ],
-                borderRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
+    const ctxBar = document.getElementById('incidentOverviewChart')?.getContext('2d');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Urgent Incidents', 'Pending Members', 'News Articles', 'Provinces', 'Visitors'],
+                datasets: [{
+                    label: 'Records',
+                    data: [
+                        {{ kpi_incidents_urgent|default:0 }},
+                        {{ kpi_memberships_pending|default:0 }},
+                        {{ kpi_news_total|default:0 }},
+                        {{ kpi_provinces_total|default:7 }},
+                        {{ kpi_visitors_total|default:0 }}
+                    ],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'],
+                    borderRadius: 6
+                }]
             },
-            scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                x: { grid: { display: false } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
             }
-        }
-    });
+        });
+    }
 
-    // 2. Priority Ratio Doughnut Chart
-    const ctxPie = document.getElementById('priorityRatioChart').getContext('2d');
-    new Chart(ctxPie, {
-        type: 'doughnut',
-        data: {
-            labels: ['Urgent', 'High', 'Medium', 'Low'],
-            datasets: [{
-                data: [
-                    {{ inc_urgent_count|default:1 }},
-                    {{ inc_high_count|default:1 }},
-                    {{ inc_medium_count|default:1 }},
-                    {{ inc_low_count|default:0 }}
-                ],
-                backgroundColor: [
-                    '#ef4444',
-                    '#f97316',
-                    '#f59e0b',
-                    '#6366f1'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 12 } }
+    const ctxPie = document.getElementById('priorityRatioChart')?.getContext('2d');
+    if (ctxPie) {
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Urgent', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [
+                        {{ inc_urgent_count|default:1 }},
+                        {{ inc_high_count|default:1 }},
+                        {{ inc_medium_count|default:1 }},
+                        {{ inc_low_count|default:0 }}
+                    ],
+                    backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#6366f1']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
             }
-        }
-    });
+        });
+    }
 });
 </script>
 {% endblock %}
