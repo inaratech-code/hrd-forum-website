@@ -1,0 +1,172 @@
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
+from django.urls import reverse
+from main_app.models import (
+    Stats, Province, News, Resource, Membership, Incident,
+    PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
+    TeamMember, Collaboration, NewsFlash
+)
+
+class HRDForumTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        
+        # Create test province
+        self.province = Province.objects.create(
+            name="Bagmati Province Desk (Central HQ)",
+            code="p3",
+            base_city="Kathmandu",
+            coords_lat=27.7172,
+            coords_lng=85.3240,
+            coordinators_count=20,
+            helpline_phone="+977-01-55511400",
+            address="Anamnagar, Kathmandu",
+            active_cases=35,
+            description="HQ Desk",
+            long_summary="Long summary for HQ"
+        )
+        
+        # Create test stats
+        self.stats = Stats.objects.create(
+            provincial_networks=7,
+            monitored_defenders=1200,
+            resolved_cases=150,
+            total_visitors=500
+        )
+        
+        # Create test news
+        self.news = News.objects.create(
+            title="Test News Article",
+            summary="Test news summary",
+            content="Test news full content",
+            category="Safety"
+        )
+        
+        # Create test resource
+        self.resource = Resource.objects.create(
+            title="Test Protection Guide",
+            category="Report",
+            format="PDF",
+            file_size="2.5 MB",
+            file_url="https://example.com/guide.pdf",
+            is_gated=True
+        )
+        
+        # Create test staff user
+        self.staff_user = User.objects.create_superuser(
+            username='admin_test',
+            email='admin@test.org',
+            password='testpassword123'
+        )
+
+    def test_public_api_endpoints(self):
+        """Verify all public read API endpoints return status 200 and valid JSON data."""
+        endpoints = [
+            '/api/stats/',
+            '/api/stats',
+            '/api/provinces/',
+            '/api/provinces',
+            f'/api/provinces/{self.province.id}/',
+            '/api/news/',
+            '/api/news',
+            f'/api/news/{self.news.id}/',
+            '/api/resources/',
+            '/api/resources',
+            '/api/popup/',
+            '/api/popup',
+            '/api/gallery/',
+            '/api/blogs/',
+            '/api/videos/',
+            '/api/news-flashes/',
+            '/api/team/',
+            '/api/collaborations/'
+        ]
+        for url in endpoints:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200, f"Failed GET for {url}")
+
+    def test_form_submissions(self):
+        """Verify public submission endpoints for membership, incident, and gated downloads."""
+        # Membership submission
+        mem_data = {
+            "full_name": "Test Defender",
+            "email": "defender@example.com",
+            "phone": "9800000000",
+            "province": "Bagmati Province",
+            "organization": "Rights NGO",
+            "role": "Monitor"
+        }
+        res_mem = self.client.post('/api/membership/', data=mem_data, content_type='application/json')
+        self.assertEqual(res_mem.status_code, 201)
+        self.assertTrue(Membership.objects.filter(email="defender@example.com").exists())
+
+        # Incident report submission
+        inc_data = {
+            "reporter_name": "Alert Reporter",
+            "contact_info": "9811111111",
+            "province": "Bagmati Province",
+            "incident_type": "Urgent Support",
+            "details": "Urgent emergency situation in district.",
+            "priority": "High"
+        }
+        res_inc = self.client.post('/api/incident/', data=inc_data, content_type='application/json')
+        self.assertEqual(res_inc.status_code, 201)
+        self.assertTrue(Incident.objects.filter(reporter_name="Alert Reporter").exists())
+
+        # Gated download submission
+        gated_data = {
+            "user_name": "Lead User",
+            "user_email": "lead@example.com",
+            "resource_id": self.resource.id
+        }
+        res_gated = self.client.post('/api/resource/download-access/', data=gated_data, content_type='application/json')
+        self.assertEqual(res_gated.status_code, 200)
+        self.assertTrue(GatedDownloadLead.objects.filter(user_email="lead@example.com").exists())
+
+    def test_admin_authentication_and_api(self):
+        """Verify admin login and protected admin API endpoints."""
+        login_data = {
+            "username": "admin_test",
+            "password": "testpassword123"
+        }
+        res_login = self.client.post('/api/admin/login/', data=login_data, content_type='application/json')
+        self.assertEqual(res_login.status_code, 200)
+        self.assertIn('token', res_login.json())
+
+        # Admin fetch incidents and memberships
+        headers = {'HTTP_AUTHORIZATION': 'Bearer hrd_session_admin_secure_token_2026'}
+        res_incidents = self.client.get('/api/incidents/', **headers)
+        self.assertEqual(res_incidents.status_code, 200)
+
+        res_memberships = self.client.get('/api/memberships/', **headers)
+        self.assertEqual(res_memberships.status_code, 200)
+
+    def test_portal_views_access(self):
+        """Verify portal pages redirect unauthenticated users and serve authenticated staff."""
+        # Unauthenticated redirect
+        res_unauth = self.client.get('/portal/')
+        self.assertEqual(res_unauth.status_code, 302)
+
+        # Authenticate staff
+        self.client.force_login(self.staff_user)
+        portal_urls = [
+            '/portal/',
+            '/portal/incidents/',
+            '/portal/memberships/',
+            '/portal/news/',
+            '/portal/gallery/',
+            '/portal/resources/',
+            '/portal/blogs/',
+            '/portal/videos/',
+            '/portal/news-flashes/',
+            '/portal/popups/',
+            '/portal/provinces/',
+            '/portal/team/',
+            '/portal/collaborations/',
+            '/portal/gated-leads/',
+            '/portal/users/',
+            '/portal/groups/'
+        ]
+        for url in portal_urls:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200, f"Portal GET failed for {url}")

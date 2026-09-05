@@ -757,38 +757,134 @@
       margin: 0;
     }
 
-    /* Responsive Queries */
-    @media (max-width: 992px) {
-      .hero h1 { font-size: 36px; }
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-      .province-grid, .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-      .province-card:nth-child(7) { grid-column: span 2; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .about-feature-cards { grid-template-columns: repeat(2, 1fr); }
-      .about-overview-header .section-title { font-size: 28px; }
+    /* Responsive Breakpoints & Fluid UX System */
+    @media (max-width: 1280px) {
+      .container { max-width: 100%; padding: 0 20px; }
+      .news-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
     }
+
+    @media (max-width: 1024px) {
+      .hero { padding: 75px 0 90px 0; }
+      .hero h1 { font-size: 38px; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .province-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .province-card:nth-child(7) { grid-column: span 2; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; gap: 28px; }
+      .about-feature-cards { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .about-overview-header .section-title { font-size: 28px; }
+      #leafletMap { height: 400px; }
+      .top-info { gap: 14px; }
+      .nav-links { gap: 12px; }
+      .nav-links a { font-size: 12px; }
+    }
+
     @media (max-width: 768px) {
       .top-bar { display: none; }
       .mobile-menu-toggle { display: block; }
+      .brand-logo { font-size: 15px; }
+      .brand-logo img { height: 36px; width: 36px; }
+      
       .nav-links {
         display: none;
-        position: absolute; top: 100%; left: 0; right: 0;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
         background: #092347;
-        flex-direction: column; padding: 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        gap: 14px;
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 2px solid #38bdf8;
+        gap: 12px;
+        box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+        max-height: 80vh;
+        overflow-y: auto;
       }
       .nav-links.active { display: flex; }
-      .hero { padding: 60px 0 80px 0; }
-      .hero h1 { font-size: 28px; }
-      .metrics-grid, .province-grid, .gallery-grid { grid-template-columns: 1fr; }
+      .nav-links a { width: 100%; font-size: 13.5px; padding: 10px 12px; border-radius: 8px; }
+      .nav-links a:hover { background: rgba(255,255,255,0.08); }
+      
+      .nav-dropdown .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 6px;
+        padding: 6px 0;
+        border-radius: 8px;
+        min-width: 100%;
+      }
+      .dropdown-menu a { color: #cbd5e1; padding: 10px 16px; font-size: 12.5px; }
+      .dropdown-menu a:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; padding-left: 20px; }
+
+      .btn-alert, .btn-nav { width: 100%; justify-content: center; padding: 12px; text-align: center; }
+
+      .hero { padding: 50px 0 65px 0; }
+      .hero-badge { font-size: 10px; padding: 5px 12px; margin-bottom: 16px; }
+      .hero h1 { font-size: 26px; line-height: 1.3; }
+      .hero p { font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+      .hero-actions { flex-direction: column; gap: 12px; }
+      .btn-hero-primary, .btn-hero-alert { width: 100%; justify-content: center; }
+
+      .section-title { font-size: 22px; }
+      .section-subtitle { font-size: 13px; margin-bottom: 24px; }
+      .about-teaser-section, .provinces-section, .map-section, .news-resources { padding: 45px 0; }
+
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .metric-card { padding: 16px 12px; }
+      .metric-val { font-size: 22px; }
+
+      .province-grid { grid-template-columns: 1fr; gap: 14px; }
       .province-card:nth-child(7) { grid-column: span 1; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .cta-banner .container { flex-direction: column; text-align: center; }
-      .about-overview-section { padding: 50px 0; }
-      .about-feature-cards { grid-template-columns: 1fr; }
-      .about-overview-header .section-title { font-size: 24px; }
-      .about-overview-paragraphs p { font-size: 14.5px; line-height: 1.65; }
+      .province-card { padding: 18px; }
+
+      #leafletMap { height: 320px; }
+
+      .news-grid { grid-template-columns: 1fr; gap: 20px; }
+      .bulletin-box { padding: 18px; }
+
+      .cta-banner { padding: 36px 0; }
+      .cta-banner .container { flex-direction: column; text-align: center; gap: 16px; }
+      .btn-banner { width: 100%; text-align: center; }
+
+      .footer { padding: 45px 0 20px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom { flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+
+      /* Modal Responsiveness */
+      .modal-card {
+        padding: 18px 16px !important;
+        width: 96vw !important;
+        max-height: 92vh !important;
+        border-radius: 12px !important;
+      }
+      .modal-header { margin-bottom: 14px; padding-bottom: 10px; }
+      .modal-title { font-size: 15px !important; }
+      .form-row { grid-template-columns: 1fr !important; gap: 10px; }
+      .sub-nav-pills { gap: 6px; margin-bottom: 16px; }
+      .sub-pill-btn { padding: 6px 12px; font-size: 11px; }
+
+      .team-grid, .collab-grid, .gallery-grid { grid-template-columns: 1fr !important; gap: 14px; }
+      .collab-card { flex-direction: column; align-items: flex-start; }
+      .collab-logo { width: 48px; height: 48px; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 14px; }
+      .brand-logo span { font-size: 14px; }
+      .brand-logo span small { font-size: 8px; letter-spacing: 0.8px; }
+      .hero h1 { font-size: 22px; }
+      .hero p { font-size: 13px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 20px; }
+      .popup-card { width: 96vw; }
+      .popup-header-banner { padding: 20px 16px; }
+      .popup-body { padding: 18px 16px; }
+      .popup-body h3 { font-size: 17px; }
+      .back-to-top { bottom: 16px; right: 16px; width: 38px; height: 38px; font-size: 14px; }
+      .toast-container { left: 14px; right: 14px; bottom: 14px; }
+      .toast { font-size: 12px; padding: 10px 14px; }
     }
   </style>
 </head>

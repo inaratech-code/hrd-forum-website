@@ -177,22 +177,40 @@
     table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
     th { text-align: left; padding: 12px 14px; background-color: #f8fafc; color: var(--primary-navy); font-weight: 700; border-bottom: 1px solid var(--border-color); }
     td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-dark); }
-    tr:hover { background-color: #f8fafc; }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
+    /* Table Container Overflow */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius);
     }
-    .badge-success { background: #d1fae5; color: #065f46; }
-    .badge-warning { background: #fef3c7; color: #92400e; }
-    .badge-info { background: #e0f2fe; color: #0369a1; }
 
     /* Tabs Content */
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
+
+    /* Responsive Queries */
+    @media (max-width: 992px) {
+      .main-content { padding: 24px 20px; }
+      .form-row { grid-template-columns: 1fr; gap: 10px; }
+    }
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .sidebar { width: 100%; padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .nav-menu { display: flex; overflow-x: auto; white-space: nowrap; margin-top: 10px; gap: 6px; padding-bottom: 4px; }
+      .nav-item { margin: 0; }
+      .nav-item a { padding: 8px 14px; border-radius: 6px; border-left: none !important; font-size: 12px; }
+      .nav-item a.active { background-color: var(--accent-blue); }
+      .nav-item[style*="margin-top"] { margin-top: 0 !important; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .page-header h1 { font-size: 20px; }
+      .main-content { padding: 16px 12px; }
+      .card { padding: 16px; margin-bottom: 16px; }
+    }
+    @media (max-width: 480px) {
+      .login-box { padding: 24px 18px; }
+      .login-header h2 { font-size: 19px; }
+    }
   </style>
 </head>
 <body>

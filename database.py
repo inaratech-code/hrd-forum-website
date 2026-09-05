@@ -159,6 +159,46 @@ def init_db():
     )
     ''')
 
+    # Table: Team Members
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_members (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        designation TEXT NOT NULL,
+        category TEXT DEFAULT 'executive',
+        bio TEXT,
+        image_url TEXT,
+        order_index INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
+    # Table: Collaborations
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS collaborations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        category TEXT DEFAULT 'institutional',
+        logo_url TEXT,
+        blurb TEXT,
+        website_url TEXT,
+        order_index INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
+    # Table: News Flashes
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS news_flashes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        text TEXT NOT NULL,
+        link_url TEXT,
+        active INTEGER DEFAULT 1,
+        order_index INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
     # Table: Gated Download Leads
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS gated_downloads (
@@ -176,6 +216,34 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         cursor.execute('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)',
                        ('admin', hash_password('hrdadmin2026')))
+
+    # Seed Team Members if empty
+    cursor.execute('SELECT COUNT(*) FROM team_members')
+    if cursor.fetchone()[0] == 0:
+        team_data = [
+            ('Adv. Ramesh Adhikari', 'Executive Director', 'executive', 'Lead human rights attorney with 18+ years experience advocating for civic space protections.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', 1),
+            ('Sujan Shrestha', 'Chairperson', 'executive', 'Constitutional scholar leading strategic Supreme Court litigation.', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80', 2),
+            ('Maya Tamang', 'Head of Rapid Response', 'executive', 'Coordinates emergency relocation desks across all 7 provinces.', 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80', 3)
+        ]
+        cursor.executemany('INSERT INTO team_members (name, designation, category, bio, image_url, order_index) VALUES (?, ?, ?, ?, ?, ?)', team_data)
+
+    # Seed Collaborations if empty
+    cursor.execute('SELECT COUNT(*) FROM collaborations')
+    if cursor.fetchone()[0] == 0:
+        collab_data = [
+            ('National Human Rights Commission (NHRC)', 'institutional', 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=400&q=80', 'Formal memorandum of understanding for joint fact-finding missions.', '#', 1),
+            ('International Rights Protection Coalition', 'institutional', 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&q=80', 'Global alliance providing emergency grants for high-risk advocates.', '#', 2)
+        ]
+        cursor.executemany('INSERT INTO collaborations (name, category, logo_url, blurb, website_url, order_index) VALUES (?, ?, ?, ?, ?, ?)', collab_data)
+
+    # Seed News Flashes if empty
+    cursor.execute('SELECT COUNT(*) FROM news_flashes')
+    if cursor.fetchone()[0] == 0:
+        flash_data = [
+            ('Urgent Hotline Active: Call +977-01-55511400 for emergency legal assistance across all 7 provinces.', '#', 1, 1),
+            ('National Defender Convention 2026 registrations are now open for regional delegates.', '#', 1, 2)
+        ]
+        cursor.executemany('INSERT INTO news_flashes (text, link_url, active, order_index) VALUES (?, ?, ?, ?)', flash_data)
 
     # Seed Stats if empty
     cursor.execute('SELECT COUNT(*) FROM stats')

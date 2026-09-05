@@ -58,7 +58,7 @@ class ResourceAdmin(ModelAdmin):
 class MembershipAdmin(ModelAdmin):
     list_display = ('full_name', 'email', 'phone', 'province', 'organization', 'role', 'status_badge', 'created_at')
     list_display_links = ('full_name',)
-    search_fields = ('full_name', 'email', 'province', 'organization')
+    search_fields = ('full_name', 'email', 'province__name', 'organization')
     list_filter = ('status', 'province', 'created_at')
     date_hierarchy = 'created_at'
     readonly_fields = ('created_at',)
@@ -79,7 +79,7 @@ class MembershipAdmin(ModelAdmin):
 class IncidentAdmin(ModelAdmin):
     list_display = ('reporter_name', 'province', 'incident_type', 'priority_badge', 'contact_info', 'created_at')
     list_display_links = ('reporter_name',)
-    search_fields = ('reporter_name', 'contact_info', 'province', 'details')
+    search_fields = ('reporter_name', 'contact_info', 'province__name', 'details')
     list_filter = ('province', 'incident_type', 'priority', 'created_at')
     date_hierarchy = 'created_at'
     readonly_fields = ('created_at',)

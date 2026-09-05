@@ -77,6 +77,15 @@ def get_gallery():
     conn.close()
     return jsonify([dict(row) for row in rows])
 
+@app.route('/api/news/<int:news_id>', methods=['GET'])
+def get_news_detail(news_id):
+    conn = database.get_db()
+    row = conn.execute('SELECT * FROM news WHERE id = ?', (news_id,)).fetchone()
+    conn.close()
+    if row:
+        return jsonify(dict(row))
+    return jsonify({"error": "News article not found"}), 404
+
 @app.route('/api/blogs', methods=['GET'])
 def get_blogs():
     conn = database.get_db()
@@ -91,13 +100,42 @@ def get_videos():
     conn.close()
     return jsonify([dict(row) for row in rows])
 
+@app.route('/api/news-flashes', methods=['GET'])
+def get_news_flashes():
+    conn = database.get_db()
+    rows = conn.execute('SELECT * FROM news_flashes WHERE active = 1 ORDER BY order_index ASC, id DESC').fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
+
+@app.route('/api/team', methods=['GET'])
+def get_team():
+    conn = database.get_db()
+    category = request.args.get('category')
+    if category:
+        rows = conn.execute('SELECT * FROM team_members WHERE category = ? ORDER BY order_index ASC, id ASC', (category,)).fetchall()
+    else:
+        rows = conn.execute('SELECT * FROM team_members ORDER BY order_index ASC, id ASC').fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
+
+@app.route('/api/collaborations', methods=['GET'])
+def get_collaborations():
+    conn = database.get_db()
+    category = request.args.get('category')
+    if category:
+        rows = conn.execute('SELECT * FROM collaborations WHERE category = ? ORDER BY order_index ASC, id ASC', (category,)).fetchall()
+    else:
+        rows = conn.execute('SELECT * FROM collaborations ORDER BY order_index ASC, id ASC').fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
+
 # --- GATED DOWNLOAD LOGIC ---
 
 @app.route('/api/resource/download-access', methods=['POST'])
 def record_gated_download():
     data = request.get_json() or {}
-    user_name = data.get('user_name', '').strip()
-    user_email = data.get('user_email', '').strip()
+    user_name = (data.get('user_name') or '').strip()
+    user_email = (data.get('user_email') or '').strip()
     resource_id = data.get('resource_id')
 
     if not user_name or not user_email or not resource_id:
@@ -129,12 +167,12 @@ def record_gated_download():
 @app.route('/api/membership', methods=['POST'])
 def submit_membership():
     data = request.get_json() or {}
-    full_name = data.get('full_name', '').strip()
-    email = data.get('email', '').strip()
-    phone = data.get('phone', '').strip()
-    province = data.get('province', '').strip()
-    organization = data.get('organization', '').strip()
-    role = data.get('role', '').strip()
+    full_name = (data.get('full_name') or '').strip()
+    email = (data.get('email') or '').strip()
+    phone = (data.get('phone') or '').strip()
+    province = (data.get('province') or '').strip()
+    organization = (data.get('organization') or '').strip()
+    role = (data.get('role') or '').strip()
 
     if not full_name or not email or not province:
         return jsonify({"success": False, "error": "Full Name, Email, and Province are required fields."}), 400
@@ -158,12 +196,12 @@ def submit_membership():
 @app.route('/api/incident', methods=['POST'])
 def report_incident():
     data = request.get_json() or {}
-    reporter_name = data.get('reporter_name', '').strip()
-    contact_info = data.get('contact_info', '').strip()
-    province = data.get('province', '').strip()
-    incident_type = data.get('incident_type', 'Urgent Support').strip()
-    details = data.get('details', '').strip()
-    priority = data.get('priority', 'High').strip()
+    reporter_name = (data.get('reporter_name') or '').strip()
+    contact_info = (data.get('contact_info') or '').strip()
+    province = (data.get('province') or '').strip()
+    incident_type = (data.get('incident_type') or 'Urgent Support').strip()
+    details = (data.get('details') or '').strip()
+    priority = (data.get('priority') or 'High').strip()
 
     if not reporter_name or not contact_info or not province or not details:
         return jsonify({"success": False, "error": "Reporter Name, Contact Info, Province, and Details are required."}), 400
@@ -189,8 +227,8 @@ def report_incident():
 @app.route('/api/admin/login', methods=['POST'])
 def admin_login():
     data = request.get_json() or {}
-    username = data.get('username', '').strip()
-    password = data.get('password', '').strip()
+    username = (data.get('username') or '').strip()
+    password = (data.get('password') or '').strip()
 
     if not username or not password:
         return jsonify({"success": False, "error": "Username and password required"}), 400
@@ -212,11 +250,11 @@ def admin_login():
 @app.route('/api/admin/popup', methods=['POST'])
 def update_popup():
     data = request.get_json() or {}
-    image_url = data.get('image_url', '').strip()
-    title = data.get('title', '').strip()
-    subtitle = data.get('subtitle', '').strip()
-    link_url = data.get('link_url', '').strip()
-    link_text = data.get('link_text', 'Learn More').strip()
+    image_url = (data.get('image_url') or '').strip()
+    title = (data.get('title') or '').strip()
+    subtitle = (data.get('subtitle') or '').strip()
+    link_url = (data.get('link_url') or '').strip()
+    link_text = (data.get('link_text') or 'Learn More').strip()
     active = 1 if data.get('active') else 0
 
     conn = database.get_db()
@@ -240,11 +278,11 @@ def update_popup():
 @app.route('/api/admin/news', methods=['POST'])
 def add_news():
     data = request.get_json() or {}
-    title = data.get('title', '').strip()
-    date_str = data.get('date_str', '').strip()
-    image_url = data.get('image_url', '').strip()
-    category = data.get('category', 'News & Updates').strip()
-    summary = data.get('summary', '').strip()
+    title = (data.get('title') or '').strip()
+    date_str = (data.get('date_str') or '').strip()
+    image_url = (data.get('image_url') or '').strip()
+    category = (data.get('category') or 'News & Updates').strip()
+    summary = (data.get('summary') or '').strip()
 
     if not title or not date_str or not image_url:
         return jsonify({"success": False, "error": "Title, Date, and Image URL are required"}), 400
@@ -272,9 +310,9 @@ def delete_news(news_id):
 @app.route('/api/admin/gallery', methods=['POST'])
 def add_gallery():
     data = request.get_json() or {}
-    title = data.get('title', '').strip()
-    image_url = data.get('image_url', '').strip()
-    category = data.get('category', 'Advocacy').strip()
+    title = (data.get('title') or '').strip()
+    image_url = (data.get('image_url') or '').strip()
+    category = (data.get('category') or 'Advocacy').strip()
 
     if not title or not image_url:
         return jsonify({"success": False, "error": "Title and Image URL required"}), 400
@@ -299,11 +337,11 @@ def delete_gallery(item_id):
 @app.route('/api/admin/resources', methods=['POST'])
 def add_resource():
     data = request.get_json() or {}
-    title = data.get('title', '').strip()
-    category = data.get('category', 'Document').strip()
-    fmt = data.get('format', 'PDF').strip()
-    file_size = data.get('file_size', '1.0 MB').strip()
-    file_url = data.get('file_url', '#').strip()
+    title = (data.get('title') or '').strip()
+    category = (data.get('category') or 'Document').strip()
+    fmt = (data.get('format') or 'PDF').strip()
+    file_size = (data.get('file_size') or '1.0 MB').strip()
+    file_url = (data.get('file_url') or '#').strip()
     is_gated = 1 if data.get('is_gated', True) else 0
 
     if not title or not file_url:
@@ -341,6 +379,92 @@ def list_memberships():
     rows = conn.execute('SELECT * FROM memberships ORDER BY created_at DESC').fetchall()
     conn.close()
     return jsonify([dict(row) for row in rows])
+
+@app.route('/api/admin/videos', methods=['POST'])
+def add_video():
+    data = request.get_json() or {}
+    title = (data.get('title') or '').strip()
+    embed_url = (data.get('embed_url') or '').strip()
+    category = (data.get('category') or 'Documentary').strip()
+    date_str = (data.get('date_str') or 'Today').strip()
+
+    if not title or not embed_url:
+        return jsonify({"success": False, "error": "Title and embed URL required"}), 400
+
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO videos (title, embed_url, category, date_str) VALUES (?, ?, ?, ?)',
+                   (title, embed_url, category, date_str))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Video added."})
+
+@app.route('/api/admin/videos/<int:video_id>', methods=['DELETE'])
+def delete_video(video_id):
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM videos WHERE id = ?', (video_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Video deleted."})
+
+@app.route('/api/admin/team', methods=['POST'])
+def add_team_member():
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    designation = (data.get('designation') or '').strip()
+    category = (data.get('category') or 'executive').strip()
+    bio = (data.get('bio') or '').strip()
+    image_url = (data.get('image_url') or '').strip()
+
+    if not name or not designation:
+        return jsonify({"success": False, "error": "Name and designation required"}), 400
+
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO team_members (name, designation, category, bio, image_url) VALUES (?, ?, ?, ?, ?)',
+                   (name, designation, category, bio, image_url))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Team member added."})
+
+@app.route('/api/admin/team/<int:member_id>', methods=['DELETE'])
+def delete_team_member(member_id):
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM team_members WHERE id = ?', (member_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Team member deleted."})
+
+@app.route('/api/admin/collaborations', methods=['POST'])
+def add_collaboration():
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    category = (data.get('category') or 'institutional').strip()
+    logo_url = (data.get('logo_url') or '').strip()
+    blurb = (data.get('blurb') or '').strip()
+    website_url = (data.get('website_url') or '').strip()
+
+    if not name:
+        return jsonify({"success": False, "error": "Partner name required"}), 400
+
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO collaborations (name, category, logo_url, blurb, website_url) VALUES (?, ?, ?, ?, ?)',
+                   (name, category, logo_url, blurb, website_url))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Collaboration partner added."})
+
+@app.route('/api/admin/collaborations/<int:collab_id>', methods=['DELETE'])
+def delete_collaboration(collab_id):
+    conn = database.get_db()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM collaborations WHERE id = ?', (collab_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Collaboration partner deleted."})
 
 @app.route('/api/incidents', methods=['GET'])
 def list_incidents():
