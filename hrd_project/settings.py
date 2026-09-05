@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Fail-safe secret key retrieval: never default to a hardcoded insecure key
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
 if not SECRET_KEY:
     if DEBUG:
@@ -14,9 +14,7 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("The SECRET_KEY environment variable must be set in production.")
 
-# Restrict allowed hosts; never default to '*' in production
-raw_hosts = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost' if DEBUG else '')
-ALLOWED_HOSTS = [h.strip() for h in raw_hosts.split(',') if h.strip()]
+ALLOWED_HOSTS = ['*'] if DEBUG else [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -44,7 +42,7 @@ ROOT_URLCONF = 'hrd_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,3 +109,8 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
+
+# Default Authentication Redirects
+LOGIN_URL = '/portal/login/'
+LOGIN_REDIRECT_URL = '/portal/'
+LOGOUT_REDIRECT_URL = '/portal/login/'

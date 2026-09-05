@@ -1,0 +1,1376 @@
+=== TREE ===
+.
+./hrd_forum.db
+./index.html
+./vercel.json
+./requirements.txt
+./seed_django.py
+./database.py
+./staticfiles
+./staticfiles/unfold
+./staticfiles/unfold/css
+./staticfiles/unfold/js
+./staticfiles/unfold/fonts
+./staticfiles/admin.html
+./staticfiles/css
+./staticfiles/css/custom_admin.css
+./staticfiles/images
+./staticfiles/images/logo.jpg
+./staticfiles/admin
+./staticfiles/admin/css
+./staticfiles/admin/js
+./staticfiles/admin/img
+./staticfiles/jazzmin
+./staticfiles/jazzmin/css
+./staticfiles/jazzmin/plugins
+./staticfiles/jazzmin/js
+./staticfiles/jazzmin/img
+./staticfiles/logo.jpg
+./staticfiles/vendor
+./staticfiles/vendor/bootstrap
+./staticfiles/vendor/fontawesome-free
+./staticfiles/vendor/bootswatch
+./staticfiles/vendor/select2
+./staticfiles/vendor/adminlte
+./main_app
+./main_app/templatetags
+./main_app/templatetags/portal_tags.py
+./main_app/templatetags/__init__.py
+./main_app/templatetags/__pycache__
+./main_app/migrations
+./main_app/migrations/0006_newsflash.py
+./main_app/migrations/0008_province_districts_count.py
+./main_app/migrations/0004_province_helpdesk_email.py
+./main_app/migrations/__init__.py
+./main_app/migrations/0005_news_content.py
+./main_app/migrations/0009_blog_image_collaboration_logo_gallery_image_and_more.py
+./main_app/migrations/__pycache__
+./main_app/migrations/0007_uniquevisitor.py
+./main_app/migrations/0010_alter_blog_options_alter_gateddownloadlead_options_and_more.py
+./main_app/migrations/0003_membership_status.py
+./main_app/migrations/0002_collaboration_teammember_alter_stats_total_visitors.py
+./main_app/migrations/0001_initial.py
+./main_app/models.py
+./main_app/portal_views.py
+./main_app/__init__.py
+./main_app/__pycache__
+./main_app/__pycache__/views.cpython-314.pyc
+./main_app/__pycache__/portal_views.cpython-314.pyc
+./main_app/__pycache__/urls.cpython-314.pyc
+./main_app/__pycache__/admin.cpython-314.pyc
+./main_app/__pycache__/models.cpython-314.pyc
+./main_app/__pycache__/__init__.cpython-314.pyc
+./main_app/__pycache__/apps.cpython-314.pyc
+./main_app/__pycache__/forms.cpython-314.pyc
+./main_app/apps.py
+./main_app/forms.py
+./main_app/admin.py
+./main_app/urls.py
+./main_app/views.py
+./static
+./static/admin.html
+./static/css
+./static/css/custom_admin.css
+./static/images
+./static/images/logo.jpg
+./static/logo.jpg
+./project_dump.txt
+./app.py
+./templates
+./templates/portal
+./templates/portal/generic_form.html
+./templates/portal/gallery_form.html
+./templates/portal/incidents_list.html
+./templates/portal/resource_form.html
+./templates/portal/base_portal.html
+./templates/portal/generic_list.html
+./templates/portal/login.html
+./templates/portal/resource_list.html
+./templates/portal/gallery_list.html
+./templates/portal/dashboard.html
+./templates/portal/confirm_delete.html
+./templates/portal/memberships_list.html
+./templates/admin
+./templates/admin/index.html
+./manage.py
+./hrd_project
+./hrd_project/__init__.py
+./hrd_project/__pycache__
+./hrd_project/__pycache__/urls.cpython-314.pyc
+./hrd_project/__pycache__/settings.cpython-314.pyc
+./hrd_project/__pycache__/wsgi.cpython-314.pyc
+./hrd_project/__pycache__/__init__.cpython-314.pyc
+./hrd_project/settings.py
+./hrd_project/urls.py
+./hrd_project/wsgi.py
+./media
+./media/resources
+./media/resources/5_Article___Aug_2_1.pdf
+./media/resources/4_news_article_-_3_Aug_1.pdf
+./media/uploads
+./media/uploads/3556e38ef2.pdf
+
+=== SETTINGS ===
+import os
+from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Fail-safe secret key retrieval: never default to a hardcoded insecure key
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-local-only-key-do-not-use-in-production'
+    else:
+        raise ImproperlyConfigured("The SECRET_KEY environment variable must be set in production.")
+
+# Restrict allowed hosts; never default to '*' in production
+raw_hosts = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost' if DEBUG else '')
+ALLOWED_HOSTS = [h.strip() for h in raw_hosts.split(',') if h.strip()]
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'main_app',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'hrd_project.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'main_app.views.admin_dashboard_context',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'hrd_project.wsgi.application'
+
+# Database Configuration
+if os.environ.get('VERCEL') or not os.access(BASE_DIR, os.W_OK):
+    db_path = '/tmp/hrd_forum.db'
+else:
+    db_path = BASE_DIR / 'hrd_forum.db'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': db_path,
+    }
+}
+
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Asia/Kathmandu'
+USE_I18N = True
+USE_TZ = True
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Configuration
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT') or 587)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 't')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@hrdforum.org')
+ADMIN_NOTIFICATION_EMAIL = os.environ.get('ADMIN_NOTIFICATION_EMAIL', 'alerts@hrdforum.org')
+
+# Production Security Headers
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
+=== URLS ===
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic.base import RedirectView
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/portal/', permanent=False), name='root-portal-redirect'),
+    path('', include('main_app.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+=== APP URLS ===
+from django.urls import path
+from . import views
+from . import portal_views
+
+urlpatterns = [
+    # Frontend Entry
+    path('', views.index_page, name='index'),
+    path('public/', views.index_page, name='index_public'),
+
+    # Custom Portal Authentication & Dashboard (/portal/)
+    path('portal/login/', portal_views.portal_login_view, name='portal_login'),
+    path('portal/logout/', portal_views.portal_logout_view, name='portal_logout'),
+    path('portal/', portal_views.portal_dashboard_view, name='portal_dashboard'),
+
+    # Photo Gallery CRUD
+    path('portal/gallery/', portal_views.portal_gallery_list, name='portal_gallery_list'),
+    path('portal/gallery/add/', portal_views.portal_gallery_add, name='portal_gallery_add'),
+    path('portal/gallery/<int:photo_id>/edit/', portal_views.portal_gallery_edit, name='portal_gallery_edit'),
+    path('portal/gallery/<int:photo_id>/delete/', portal_views.portal_gallery_delete, name='portal_gallery_delete'),
+
+    # Resources CRUD
+    path('portal/resources/', portal_views.portal_resource_list, name='portal_resource_list'),
+    path('portal/resources/add/', portal_views.portal_resource_add, name='portal_resource_add'),
+    path('portal/resources/<int:res_id>/edit/', portal_views.portal_resource_edit, name='portal_resource_edit'),
+    path('portal/resources/<int:res_id>/delete/', portal_views.portal_resource_delete, name='portal_resource_delete'),
+
+    # Incidents CRUD
+    path('portal/incidents/', portal_views.portal_incidents_list, name='portal_incidents_list'),
+    path('portal/incidents/add/', portal_views.portal_incident_add, name='portal_incident_add'),
+    path('portal/incidents/<int:incident_id>/edit/', portal_views.portal_incident_edit, name='portal_incident_edit'),
+    path('portal/incidents/<int:incident_id>/delete/', portal_views.portal_incident_delete, name='portal_incident_delete'),
+
+    # Memberships CRUD & Actions
+    path('portal/memberships/', portal_views.portal_memberships_list, name='portal_memberships_list'),
+    path('portal/memberships/add/', portal_views.portal_membership_add, name='portal_membership_add'),
+    path('portal/memberships/<int:member_id>/edit/', portal_views.portal_membership_edit, name='portal_membership_edit'),
+    path('portal/memberships/<int:member_id>/approve/', portal_views.portal_membership_approve, name='portal_membership_approve'),
+    path('portal/memberships/<int:member_id>/reject/', portal_views.portal_membership_reject, name='portal_membership_reject'),
+    path('portal/memberships/<int:member_id>/delete/', portal_views.portal_membership_delete, name='portal_membership_delete'),
+
+    # News CRUD
+    path('portal/news/', portal_views.portal_news_list, name='portal_news_list'),
+    path('portal/news/add/', portal_views.portal_news_add, name='portal_news_add'),
+    path('portal/news/<int:item_id>/edit/', portal_views.portal_news_edit, name='portal_news_edit'),
+    path('portal/news/<int:item_id>/delete/', portal_views.portal_news_delete, name='portal_news_delete'),
+
+    # Provinces CRUD
+    path('portal/provinces/', portal_views.portal_province_list, name='portal_province_list'),
+    path('portal/provinces/add/', portal_views.portal_province_add, name='portal_province_add'),
+    path('portal/provinces/<int:prov_id>/edit/', portal_views.portal_province_edit, name='portal_province_edit'),
+    path('portal/provinces/<int:prov_id>/delete/', portal_views.portal_province_delete, name='portal_province_delete'),
+
+    # Team Members CRUD
+    path('portal/team/', portal_views.portal_team_list, name='portal_team_list'),
+    path('portal/team/add/', portal_views.portal_team_add, name='portal_team_add'),
+    path('portal/team/<int:member_id>/edit/', portal_views.portal_team_edit, name='portal_team_edit'),
+    path('portal/team/<int:member_id>/delete/', portal_views.portal_team_delete, name='portal_team_delete'),
+
+    # Blogs CRUD
+    path('portal/blogs/', portal_views.portal_blog_list, name='portal_blog_list'),
+    path('portal/blogs/add/', portal_views.portal_blog_add, name='portal_blog_add'),
+    path('portal/blogs/<int:blog_id>/edit/', portal_views.portal_blog_edit, name='portal_blog_edit'),
+    path('portal/blogs/<int:blog_id>/delete/', portal_views.portal_blog_delete, name='portal_blog_delete'),
+
+    # Videos CRUD
+    path('portal/videos/', portal_views.portal_video_list, name='portal_video_list'),
+    path('portal/videos/add/', portal_views.portal_video_add, name='portal_video_add'),
+    path('portal/videos/<int:video_id>/edit/', portal_views.portal_video_edit, name='portal_video_edit'),
+    path('portal/videos/<int:video_id>/delete/', portal_views.portal_video_delete, name='portal_video_delete'),
+
+    # Collaborations CRUD
+    path('portal/collaborations/', portal_views.portal_collaboration_list, name='portal_collaboration_list'),
+    path('portal/collaborations/add/', portal_views.portal_collaboration_add, name='portal_collaboration_add'),
+    path('portal/collaborations/<int:collab_id>/edit/', portal_views.portal_collaboration_edit, name='portal_collaboration_edit'),
+    path('portal/collaborations/<int:collab_id>/delete/', portal_views.portal_collaboration_delete, name='portal_collaboration_delete'),
+
+    # News Flashes CRUD
+    path('portal/news-flashes/', portal_views.portal_news_flash_list, name='portal_news_flash_list'),
+    path('portal/news-flashes/add/', portal_views.portal_news_flash_add, name='portal_news_flash_add'),
+    path('portal/news-flashes/<int:flash_id>/edit/', portal_views.portal_news_flash_edit, name='portal_news_flash_edit'),
+    path('portal/news-flashes/<int:flash_id>/delete/', portal_views.portal_news_flash_delete, name='portal_news_flash_delete'),
+
+    # Popup Config CRUD
+    path('portal/popups/', portal_views.portal_popup_list, name='portal_popup_list'),
+    path('portal/popups/add/', portal_views.portal_popup_add, name='portal_popup_add'),
+    path('portal/popups/<int:popup_id>/edit/', portal_views.portal_popup_edit, name='portal_popup_edit'),
+    path('portal/popups/<int:popup_id>/delete/', portal_views.portal_popup_delete, name='portal_popup_delete'),
+
+    # Gated Leads
+    path('portal/gated-leads/', portal_views.portal_gated_leads_list, name='portal_gated_leads_list'),
+
+    # Users & Groups
+    path('portal/users/', portal_views.portal_user_list, name='portal_user_list'),
+    path('portal/users/add/', portal_views.portal_user_add, name='portal_user_add'),
+    path('portal/users/<int:user_id>/edit/', portal_views.portal_user_edit, name='portal_user_edit'),
+    path('portal/users/<int:user_id>/delete/', portal_views.portal_user_delete, name='portal_user_delete'),
+
+    path('portal/groups/', portal_views.portal_group_list, name='portal_group_list'),
+    path('portal/groups/add/', portal_views.portal_group_add, name='portal_group_add'),
+    path('portal/groups/<int:group_id>/edit/', portal_views.portal_group_edit, name='portal_group_edit'),
+    path('portal/groups/<int:group_id>/delete/', portal_views.portal_group_delete, name='portal_group_delete'),
+
+    # Public Read API Endpoints
+    path('api/stats/', views.api_stats, name='api_stats'),
+    path('api/provinces/', views.api_provinces, name='api_provinces'),
+    path('api/provinces/<int:prov_id>/', views.api_province_detail, name='api_province_detail'),
+    path('api/news/', views.api_news, name='api_news'),
+    path('api/news/<int:news_id>/', views.api_news_detail, name='api_news_detail'),
+    path('api/resources/', views.api_resources, name='api_resources'),
+    path('api/popup/', views.api_popup, name='api_popup'),
+    path('api/gallery/', views.api_gallery, name='api_gallery'),
+    path('api/blogs/', views.api_blogs, name='api_blogs'),
+    path('api/videos/', views.api_videos, name='api_videos'),
+    path('api/news-flashes/', views.api_news_flashes, name='api_news_flashes'),
+    path('api/team/', views.api_team, name='api_team'),
+    path('api/collaborations/', views.api_collaborations, name='api_collaborations'),
+
+    # Public Submissions / Actions
+    path('api/membership/', views.submit_membership, name='submit_membership'),
+    path('api/incident/', views.submit_incident, name='submit_incident'),
+    path('api/resource/download-access/', views.request_gated_download, name='request_gated_download'),
+
+    # Legacy Admin API
+    path('api/admin/login/', views.admin_login, name='admin_login'),
+    path('api/admin/logout/', views.admin_logout, name='admin_logout'),
+    path('api/admin/news/', views.admin_news_manage, name='admin_news_manage'),
+    path('api/admin/popup/', views.admin_popup_manage, name='admin_popup_manage'),
+    path('api/admin/gallery/', views.admin_gallery_manage, name='admin_gallery_manage'),
+    path('api/admin/resources/', views.admin_resources_manage, name='admin_resources_manage'),
+    path('api/admin/incidents/', views.admin_incidents_list, name='admin_incidents_list'),
+    path('api/admin/memberships/', views.admin_memberships_list, name='admin_memberships_list'),
+]
+=== MODELS ===
+from django.db import models
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+
+class Stats(models.Model):
+    provincial_networks = models.PositiveIntegerField(default=7)
+    monitored_defenders = models.PositiveIntegerField(default=1200)
+    resolved_cases = models.PositiveIntegerField(default=150)
+    total_visitors = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "Statistics Metrics"
+
+    def save(self, *args, **kwargs):
+        # Enforce singleton pattern (only one stats row allowed)
+        if not self.pk and Stats.objects.exists():
+            raise ValidationError("There can be only one Stats instance.")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Stats: {self.provincial_networks} Networks, {self.monitored_defenders}+ Defenders"
+
+
+class UniqueVisitor(models.Model):
+    ip_address = models.GenericIPAddressField()
+    session_key = models.CharField(max_length=255, blank=True, default='')
+    first_visited = models.DateTimeField(auto_now_add=True)
+    last_visited = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Unique Visitors Log"
+
+    def __str__(self):
+        return f"Unique Visitor ({self.ip_address})"
+
+
+class Province(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    code = models.CharField(max_length=20, unique=True)
+    base_city = models.CharField(max_length=100)
+    coords_lat = models.FloatField()
+    coords_lng = models.FloatField()
+    coordinators_count = models.PositiveIntegerField(default=10)
+    districts_count = models.PositiveIntegerField(default=10)
+    helpline_phone = models.CharField(max_length=50)
+    address = models.CharField(max_length=255)
+    helpdesk_email = models.EmailField(blank=True, default='')
+    active_cases = models.PositiveIntegerField(default=0)
+    description = models.TextField()
+    long_summary = models.TextField()
+
+    def __str__(self):
+        return f"{self.name} ({self.base_city})"
+
+
+class News(models.Model):
+    title = models.CharField(max_length=255)
+    published_date = models.DateField(default=timezone.now)
+    image = models.ImageField(upload_to='news/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    category = models.CharField(max_length=50, default='News & Updates')
+    summary = models.TextField(blank=True, null=True)
+    content = models.TextField(blank=True, default='')
+
+    class Meta:
+        verbose_name_plural = "News & Updates"
+        ordering = ['-published_date']
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ''
+
+    def __str__(self):
+        return self.title
+
+
+class Resource(models.Model):
+    title = models.CharField(max_length=255)
+    category = models.CharField(max_length=50, default='Document')
+    format = models.CharField(max_length=20, default='PDF')
+    file_size = models.CharField(max_length=50, default='2.0 MB')
+    file_upload = models.FileField(upload_to='resources/', blank=True, null=True)
+    file_url = models.URLField(max_length=500, blank=True, null=True)
+    is_gated = models.BooleanField(default=True)
+
+    @property
+    def display_file(self):
+        if self.file_upload:
+            return self.file_upload.url
+        return self.file_url or ''
+
+    def __str__(self):
+        return f"{self.title} ({self.format})"
+
+
+class Membership(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    full_name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=50, blank=True, null=True)
+    province = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='memberships')
+    organization = models.CharField(max_length=200, blank=True, null=True)
+    role = models.CharField(max_length=150, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.full_name} ({self.province.name}) - {self.get_status_display()}"
+
+
+class Incident(models.Model):
+    reporter_name = models.CharField(max_length=150)
+    contact_info = models.CharField(max_length=200)
+    province = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='incidents')
+    incident_type = models.CharField(max_length=100, default='Urgent Support')
+    details = models.TextField()
+    priority = models.CharField(max_length=50, default='High')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"ALERT: {self.incident_type} - {self.province.name} ({self.reporter_name})"
+
+
+class PopupConfig(models.Model):
+    image = models.ImageField(upload_to='popups/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    title = models.CharField(max_length=200)
+    subtitle = models.TextField(blank=True, null=True)
+    link_url = models.CharField(max_length=500, default='#')
+    link_text = models.CharField(max_length=100, default='Learn More')
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Homepage Popup Banners"
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ''
+
+    def __str__(self):
+        return f"Popup: {self.title} ({'Active' if self.active else 'Disabled'})"
+
+
+class Gallery(models.Model):
+    title = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='gallery/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    category = models.CharField(max_length=50, default='Advocacy')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Photo Gallery"
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ''
+
+    def __str__(self):
+        return self.title
+
+
+class Blog(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=100)
+    published_date = models.DateField(default=timezone.now)
+    content = models.TextField()
+    image = models.ImageField(upload_to='blogs/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-published_date']
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ''
+
+    def __str__(self):
+        return self.title
+
+
+class Video(models.Model):
+    title = models.CharField(max_length=255)
+    embed_url = models.URLField(max_length=500)
+    category = models.CharField(max_length=50, default='Documentary')
+    published_date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
+
+
+class GatedDownloadLead(models.Model):
+    user_name = models.CharField(max_length=150)
+    user_email = models.EmailField()
+    resource = models.ForeignKey(
+        Resource,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='leads'
+    )
+    resource_title = models.CharField(max_length=255, blank=True, default='')
+    downloaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Gated Download Leads"
+        ordering = ['-downloaded_at']
+
+    def save(self, *args, **kwargs):
+        if self.resource and not self.resource_title:
+            self.resource_title = self.resource.title
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user_name} ({self.user_email}) -> {self.resource_title}"
+
+
+class TeamMember(models.Model):
+    CATEGORY_CHOICES = [
+        ('executive', 'Executive Team'),
+        ('advisory', 'Advisory Board'),
+        ('general', 'General Members'),
+    ]
+
+    name = models.CharField(max_length=150)
+    designation = models.CharField(max_length=150)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='executive')
+    bio = models.TextField(blank=True, default='')
+    image = models.ImageField(upload_to='team/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Team Members"
+        ordering = ['order_index', 'id']
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ''
+
+    def __str__(self):
+        return f"{self.name} ({self.get_category_display()})"
+
+
+class Collaboration(models.Model):
+    CATEGORY_CHOICES = [
+        ('institutional', 'Institutional Collaboration'),
+        ('individual', 'Individual Collaboration'),
+    ]
+
+    name = models.CharField(max_length=150)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='institutional')
+    logo = models.ImageField(upload_to='collaborations/', blank=True, null=True)
+    logo_url = models.URLField(max_length=500, blank=True, null=True)
+    blurb = models.TextField()
+    website_url = models.URLField(max_length=500, blank=True, default='')
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Collaborations"
+        ordering = ['order_index', 'id']
+
+    @property
+    def display_logo(self):
+        if self.logo:
+            return self.logo.url
+        return self.logo_url or ''
+
+    def __str__(self):
+        return f"{self.name} ({self.get_category_display()})"
+
+
+class NewsFlash(models.Model):
+    text = models.CharField(max_length=255)
+    link_url = models.URLField(max_length=500, blank=True, null=True)
+    active = models.BooleanField(default=True)
+    order_index = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "News Flashes / Ticker"
+        ordering = ['order_index', '-created_at']
+
+    def __str__(self):
+        return self.text
+=== VIEWS ===
+import os
+import json
+import uuid
+import logging
+from pathlib import Path
+from functools import wraps
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.core.mail import send_mail
+from django.contrib.auth import authenticate, login, logout
+from django.db.models import F
+
+from .models import (
+    Stats, Province, News, Resource, Membership, Incident,
+    PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
+    TeamMember, Collaboration, NewsFlash, UniqueVisitor
+)
+
+logger = logging.getLogger(__name__)
+
+# UTILITY HELPERS
+
+def admin_dashboard_context(request):
+    if request.path.startswith('/admin/'):
+        try:
+            incidents_total = Incident.objects.count()
+            incidents_urgent = Incident.objects.filter(priority__in=['Urgent', 'High']).count()
+            memberships_pending = Membership.objects.filter(status='pending').count()
+            memberships_total = Membership.objects.count()
+            news_total = News.objects.count()
+            provinces_total = Province.objects.count()
+
+            # Priority counts
+            inc_urgent = Incident.objects.filter(priority='Urgent').count()
+            inc_high = Incident.objects.filter(priority='High').count()
+            inc_medium = Incident.objects.filter(priority='Medium').count()
+            inc_low = Incident.objects.filter(priority='Low').count()
+
+            recent_incidents = list(Incident.objects.order_by('-created_at')[:5])
+            recent_memberships = list(Membership.objects.order_by('-created_at')[:5])
+
+            stats_obj = Stats.objects.first()
+            visitors_total = stats_obj.total_visitors if stats_obj else UniqueVisitor.objects.count()
+
+            return {
+                'kpi_incidents_total': incidents_total,
+                'kpi_incidents_urgent': incidents_urgent,
+                'kpi_memberships_pending': memberships_pending,
+                'kpi_memberships_total': memberships_total,
+                'kpi_news_total': news_total,
+                'kpi_provinces_total': provinces_total,
+                'kpi_visitors_total': visitors_total,
+                'inc_urgent_count': inc_urgent,
+                'inc_high_count': inc_high,
+                'inc_medium_count': inc_medium,
+                'inc_low_count': inc_low,
+                'recent_incidents_list': recent_incidents,
+                'recent_memberships_list': recent_memberships,
+            }
+        except Exception as e:
+            logger.error(f"Error building admin context: {e}")
+    return {}
+
+def _get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', '127.0.0.1')
+
+def _track_visitor(request):
+    try:
+        if not request.session.session_key:
+            request.session.save()
+
+        ip = _get_client_ip(request)
+        session_key = request.session.session_key or ''
+        has_visited = request.session.get('has_visited_hrd', False)
+
+        if not has_visited:
+            visitor, created = UniqueVisitor.objects.get_or_create(
+                ip_address=ip,
+                defaults={'session_key': session_key}
+            )
+            request.session['has_visited_hrd'] = True
+
+            if created:
+                stats = Stats.objects.first()
+                if not stats:
+                    Stats.objects.create(total_visitors=1)
+                else:
+                    Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
+            else:
+                visitor.save(update_fields=['last_visited'])
+    except Exception as e:
+        logger.warning(f"Visitor tracking failed: {e}")
+
+def parse_request_data(request):
+    if request.content_type == 'application/json':
+        try:
+            return json.loads(request.body.decode('utf-8'))
+        except (ValueError, UnicodeDecodeError):
+            return {}
+    return request.POST.dict()
+
+def staff_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not (request.user and request.user.is_authenticated and request.user.is_staff):
+            return JsonResponse({"success": False, "error": "Unauthorized access. Staff credentials required."}, status=401)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+# PUBLIC READ ENDPOINTS
+
+def index_page(request):
+    _track_visitor(request)
+    return render(request, 'index.html')
+
+def api_stats(request):
+    _track_visitor(request)
+    stats = Stats.objects.first()
+    if not stats:
+        stats = Stats.objects.create(total_visitors=0)
+
+    return JsonResponse({
+        "provincial_networks": stats.provincial_networks,
+        "monitored_defenders": str(stats.monitored_defenders),
+        "resolved_cases": str(stats.resolved_cases),
+        "total_visitors": stats.total_visitors,
+    })
+
+def api_provinces(request):
+    provinces = Province.objects.all().order_by('id')
+    data = [{
+        "id": p.id,
+        "name": p.name,
+        "code": p.code,
+        "base_city": p.base_city,
+        "coords_lat": p.coords_lat,
+        "coords_lng": p.coords_lng,
+        "coordinators_count": p.coordinators_count,
+        "districts_count": p.districts_count,
+        "helpline_phone": p.helpline_phone,
+        "address": p.address,
+        "active_cases": p.active_cases,
+        "description": p.description,
+        "long_summary": p.long_summary
+    } for p in provinces]
+    return JsonResponse(data, safe=False)
+
+def api_province_detail(request, prov_id):
+    try:
+        p = Province.objects.get(pk=prov_id)
+        return JsonResponse({
+            "id": p.id,
+            "name": p.name,
+            "code": p.code,
+            "base_city": p.base_city,
+            "coords_lat": p.coords_lat,
+            "coords_lng": p.coords_lng,
+            "coordinators_count": p.coordinators_count,
+            "districts_count": p.districts_count,
+            "helpline_phone": p.helpline_phone,
+            "address": p.address,
+            "active_cases": p.active_cases,
+            "description": p.description,
+            "long_summary": p.long_summary
+        })
+    except Province.DoesNotExist:
+        return JsonResponse({"error": "Province not found"}, status=404)
+
+def api_news(request):
+    news_items = News.objects.all().order_by('-published_date')
+    data = [{
+        "id": n.id,
+        "title": n.title,
+        "date_str": str(n.published_date),
+        "image_url": n.display_image,
+        "category": n.category,
+        "summary": n.summary,
+        "content": n.content or n.summary or ''
+    } for n in news_items]
+    return JsonResponse(data, safe=False)
+
+def api_news_detail(request, news_id):
+    try:
+        n = News.objects.get(pk=news_id)
+        return JsonResponse({
+            "id": n.id,
+            "title": n.title,
+            "date_str": str(n.published_date),
+            "image_url": n.display_image,
+            "category": n.category,
+            "summary": n.summary,
+            "content": n.content or n.summary or ''
+        })
+    except News.DoesNotExist:
+        return JsonResponse({"error": "News article not found"}, status=404)
+
+def api_resources(request):
+    resources = Resource.objects.all().order_by('id')
+    data = [{
+        "id": r.id,
+        "title": r.title,
+        "category": r.category,
+        "format": r.format,
+        "file_size": r.file_size,
+        "file_url": r.display_file,
+        "is_gated": r.is_gated
+    } for r in resources]
+    return JsonResponse(data, safe=False)
+
+def api_popup(request):
+    popup = PopupConfig.objects.filter(active=True).first()
+    if popup:
+        return JsonResponse({
+            "id": popup.id,
+            "image_url": popup.display_image,
+            "title": popup.title,
+            "subtitle": popup.subtitle,
+            "link_url": popup.link_url,
+            "link_text": popup.link_text,
+            "active": 1 if popup.active else 0
+        })
+    return JsonResponse({"active": 0})
+
+def api_gallery(request):
+    photos = Gallery.objects.all().order_by('-id')
+    data = [{
+        "id": g.id,
+        "title": g.title,
+        "image_url": g.display_image,
+        "category": g.category
+    } for g in photos]
+    return JsonResponse(data, safe=False)
+
+def api_blogs(request):
+    blogs = Blog.objects.all().order_by('-published_date')
+    data = [{
+        "id": b.id,
+        "title": b.title,
+        "author": b.author,
+        "date_str": str(b.published_date),
+        "content": b.content,
+        "image_url": b.display_image
+    } for b in blogs]
+    return JsonResponse(data, safe=False)
+
+def api_videos(request):
+    videos = Video.objects.all().order_by('-published_date')
+    data = [{
+        "id": v.id,
+        "title": v.title,
+        "embed_url": v.embed_url,
+        "category": v.category,
+        "date_str": str(v.published_date)
+    } for v in videos]
+    return JsonResponse(data, safe=False)
+
+def api_news_flashes(request):
+    flashes = NewsFlash.objects.filter(active=True).order_by('order_index', '-created_at')
+    data = [{
+        "id": f.id,
+        "text": f.text,
+        "link_url": f.link_url or ''
+    } for f in flashes]
+    return JsonResponse(data, safe=False)
+
+def api_team(request):
+    category = request.GET.get('category')
+    queryset = TeamMember.objects.all()
+    if category:
+        queryset = queryset.filter(category=category)
+    data = [{
+        "id": item.id,
+        "name": item.name,
+        "designation": item.designation,
+        "category": item.category,
+        "bio": item.bio,
+        "image_url": item.display_image,
+        "order_index": item.order_index
+    } for item in queryset]
+    return JsonResponse(data, safe=False)
+
+def api_collaborations(request):
+    category = request.GET.get('category')
+    queryset = Collaboration.objects.all()
+    if category:
+        queryset = queryset.filter(category=category)
+    data = [{
+        "id": item.id,
+        "name": item.name,
+        "category": item.category,
+        "logo_url": item.display_logo,
+        "blurb": item.blurb,
+        "website_url": item.website_url,
+        "order_index": item.order_index
+    } for item in queryset]
+    return JsonResponse(data, safe=False)
+
+# PUBLIC SUBMISSIONS
+
+@csrf_exempt
+def request_gated_download(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    data = parse_request_data(request)
+    user_name = (data.get('user_name') or '').strip()
+    user_email = (data.get('user_email') or '').strip()
+    resource_id = data.get('resource_id')
+
+    if not user_name or not user_email or not resource_id:
+        return JsonResponse({"success": False, "error": "Name, Email, and Resource ID required."}, status=400)
+
+    try:
+        res_obj = Resource.objects.get(pk=resource_id)
+    except Resource.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Resource not found."}, status=404)
+
+    GatedDownloadLead.objects.create(
+        user_name=user_name,
+        user_email=user_email,
+        resource=res_obj,
+        resource_title=res_obj.title
+    )
+
+    return JsonResponse({
+        "success": True,
+        "download_url": res_obj.display_file,
+        "message": f"Thank you, {user_name}. Your download has been authorized!"
+    })
+
+@csrf_exempt
+def submit_membership(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    data = parse_request_data(request)
+    full_name = (data.get('full_name') or '').strip()
+    email = (data.get('email') or '').strip()
+    phone = (data.get('phone') or '').strip()
+    province_raw = (data.get('province') or '').strip()
+    organization = (data.get('organization') or '').strip()
+    role = (data.get('role') or '').strip()
+
+    if not full_name or not email or not province_raw:
+        return JsonResponse({"success": False, "error": "Full Name, Email, and Province are required."}, status=400)
+
+    province_clean = province_raw.replace('Province', '').strip()
+    prov_obj = Province.objects.filter(name__icontains=province_clean).first()
+    if not prov_obj:
+        return JsonResponse({"success": False, "error": f"Invalid province: {province_raw}"}, status=400)
+
+    m = Membership.objects.create(
+        full_name=full_name,
+        email=email,
+        phone=phone,
+        province=prov_obj,
+        organization=organization,
+        role=role
+    )
+
+    try:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@hrdforum.org')
+        admin_email = getattr(settings, 'ADMIN_NOTIFICATION_EMAIL', 'alerts@hrdforum.org')
+
+        admin_subject = f"[NEW MEMBERSHIP] {m.full_name} - {prov_obj.name}"
+        admin_body = (
+            f"NEW MEMBERSHIP APPLICATION (#{m.id})\n"
+            f"Name: {m.full_name}\nEmail: {m.email}\nPhone: {m.phone or 'N/A'}\n"
+            f"Province: {prov_obj.name}\nOrganization: {m.organization or 'N/A'}\n"
+            f"Submitted At: {m.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+        send_mail(admin_subject, admin_body, from_email, [admin_email], fail_silently=True)
+
+        applicant_subject = "HRD Forum Nepal Membership Application Confirmation"
+        applicant_body = (
+            f"Dear {m.full_name},\n\n"
+            f"Thank you for applying to the HRD Forum Nepal network in {prov_obj.name}.\n"
+            f"Your application (Ref #{m.id}) is under review.\n\n"
+            f"Regards,\nHRD Forum Nepal"
+        )
+        send_mail(applicant_subject, applicant_body, from_email, [m.email], fail_silently=True)
+    except Exception as err:
+        logger.error(f"Membership email error for ID #{m.id}: {err}")
+
+    return JsonResponse({
+        "success": True,
+        "id": m.id,
+        "message": "Membership application submitted successfully!"
+    }, status=201)
+
+@csrf_exempt
+def submit_incident(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    data = parse_request_data(request)
+    reporter_name = (data.get('reporter_name') or '').strip()
+    contact_info = (data.get('contact_info') or '').strip()
+    province_raw = (data.get('province') or '').strip()
+    incident_type = (data.get('incident_type') or 'Urgent Support').strip()
+    details = (data.get('details') or '').strip()
+    priority = (data.get('priority') or 'High').strip()
+
+    if not reporter_name or not contact_info or not province_raw or not details:
+        return JsonResponse({"success": False, "error": "Reporter Name, Contact Info, Province, and Details required."}, status=400)
+
+    province_clean = province_raw.replace('Province', '').strip()
+    prov_obj = Province.objects.filter(name__icontains=province_clean).first()
+    if not prov_obj:
+        return JsonResponse({"success": False, "error": f"Invalid province: {province_raw}"}, status=400)
+
+    inc = Incident.objects.create(
+        reporter_name=reporter_name,
+        contact_info=contact_info,
+        province=prov_obj,
+        incident_type=incident_type,
+        details=details,
+        priority=priority
+    )
+
+    try:
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@hrdforum.org')
+        admin_email = getattr(settings, 'ADMIN_NOTIFICATION_EMAIL', 'alerts@hrdforum.org')
+
+        recipients = [admin_email]
+        if prov_obj.helpdesk_email and prov_obj.helpdesk_email not in recipients:
+            recipients.append(prov_obj.helpdesk_email)
+
+        subject = f"[URGENT ALERT] {inc.incident_type} - {prov_obj.name} (#{inc.id})"
+        body = (
+            f"URGENT INCIDENT REPORT (#{inc.id})\n"
+            f"Reporter: {inc.reporter_name}\nContact: {inc.contact_info}\n"
+            f"Province: {prov_obj.name}\nPriority: {inc.priority}\n"
+            f"Details:\n{inc.details}"
+        )
+        send_mail(subject, body, from_email, recipients, fail_silently=True)
+    except Exception as err:
+        logger.error(f"Incident email error #{inc.id}: {err}")
+
+    return JsonResponse({
+        "success": True,
+        "id": inc.id,
+        "message": "Incident report logged securely."
+    }, status=201)
+
+# AUTHENTICATION
+
+@csrf_exempt
+def admin_login(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+    data = parse_request_data(request)
+    username = (data.get('username') or '').strip()
+    password = (data.get('password') or '').strip()
+
+    user = authenticate(request, username=username, password=password)
+    if user and user.is_staff:
+        login(request, user)
+        return JsonResponse({"success": True, "message": "Admin authorization successful!"})
+
+    return JsonResponse({"success": False, "error": "Invalid credentials or non-staff access."}, status=401)
+
+@csrf_exempt
+def admin_logout(request):
+    logout(request)
+    return JsonResponse({"success": True, "message": "Logged out successfully."})
+
+# PROTECTED ADMIN ENDPOINTS
+
+@csrf_exempt
+@staff_required
+def admin_news_manage(request, news_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        if news_id:
+            try:
+                n = News.objects.get(pk=news_id)
+                n.title = data.get('title', n.title)
+                n.summary = data.get('summary', n.summary)
+                n.content = data.get('content', n.content)
+                n.category = data.get('category', n.category)
+                n.image_url = data.get('image_url', n.image_url)
+                n.save()
+                return JsonResponse({"success": True, "id": n.id, "message": "News item updated."})
+            except News.DoesNotExist:
+                return JsonResponse({"error": "News not found"}, status=404)
+        else:
+            n = News.objects.create(
+                title=data.get('title', 'News Update'),
+                category=data.get('category', 'General'),
+                summary=data.get('summary', ''),
+                content=data.get('content', ''),
+                image_url=data.get('image_url', '')
+            )
+            return JsonResponse({"success": True, "id": n.id, "message": "News item published."})
+
+    elif request.method == 'DELETE' and news_id:
+        News.objects.filter(id=news_id).delete()
+        return JsonResponse({"success": True, "message": "News item deleted."})
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_popup_manage(request):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        popup = PopupConfig.objects.first() or PopupConfig()
+        popup.image_url = data.get('image_url', popup.image_url)
+        popup.title = data.get('title', popup.title)
+        popup.subtitle = data.get('subtitle', popup.subtitle)
+        popup.link_url = data.get('link_url', popup.link_url)
+        popup.link_text = data.get('link_text', popup.link_text)
+        popup.active = bool(int(data.get('active', 1)))
+        popup.save()
+        return JsonResponse({"success": True, "message": "Popup configuration updated!"})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_gallery_manage(request, photo_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        g = Gallery.objects.create(
+            title=data.get('title', 'Gallery Photo'),
+            image_url=data.get('image_url', ''),
+            category=data.get('category', 'General')
+        )
+        return JsonResponse({"success": True, "id": g.id, "message": "Photo saved."})
+    elif request.method == 'DELETE' and photo_id:
+        Gallery.objects.filter(id=photo_id).delete()
+        return JsonResponse({"success": True, "message": "Photo deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_video_manage(request, video_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        v = Video.objects.create(
+            title=data.get('title', 'Video Documentary'),
+            embed_url=data.get('embed_url', ''),
+            category=data.get('category', 'Documentary')
+        )
+        return JsonResponse({"success": True, "id": v.id, "message": "Video published."})
+    elif request.method == 'DELETE' and video_id:
+        Video.objects.filter(id=video_id).delete()
+        return JsonResponse({"success": True, "message": "Video deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_resources_manage(request, res_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        r = Resource.objects.create(
+            title=data.get('title', 'Resource Document'),
+            category=data.get('category', 'Document'),
+            format=data.get('format', 'PDF'),
+            file_size=data.get('file_size', '2.0 MB'),
+            file_url=data.get('file_url', ''),
+            is_gated=bool(data.get('is_gated', True))
+        )
+        return JsonResponse({"success": True, "id": r.id, "message": "Resource saved."})
+    elif request.method == 'DELETE' and res_id:
+        Resource.objects.filter(id=res_id).delete()
+        return JsonResponse({"success": True, "message": "Resource deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_team_manage(request, member_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        t = TeamMember.objects.create(
+            name=data.get('name', 'Team Member'),
+            designation=data.get('designation', 'Coordinator'),
+            category=data.get('category', 'executive'),
+            bio=data.get('bio', ''),
+            image_url=data.get('image_url', ''),
+            order_index=int(data.get('order_index', 0))
+        )
+        return JsonResponse({"success": True, "id": t.id, "message": "Team member saved."})
+    elif request.method == 'DELETE' and member_id:
+        TeamMember.objects.filter(id=member_id).delete()
+        return JsonResponse({"success": True, "message": "Team member deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_collaborations_manage(request, collab_id=None):
+    if request.method == 'POST':
+        data = parse_request_data(request)
+        c = Collaboration.objects.create(
+            name=data.get('name', 'Partner Organization'),
+            category=data.get('category', 'institutional'),
+            logo_url=data.get('logo_url', ''),
+            blurb=data.get('blurb', ''),
+            website_url=data.get('website_url', ''),
+            order_index=int(data.get('order_index', 0))
+        )
+        return JsonResponse({"success": True, "id": c.id, "message": "Collaboration saved."})
+    elif request.method == 'DELETE' and collab_id:
+        Collaboration.objects.filter(id=collab_id).delete()
+        return JsonResponse({"success": True, "message": "Collaboration deleted."})
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@staff_required
+def admin_gated_logs(request):
+    leads = GatedDownloadLead.objects.all().order_by('-downloaded_at')
+    res = [{
+        "id": l.id,
+        "user_name": l.user_name,
+        "user_email": l.user_email,
+        "resource_title": l.resource_title or "Document",
+        "downloaded_at": l.downloaded_at.strftime('%Y-%m-%d %H:%M') if l.downloaded_at else ""
+    } for l in leads]
+    return JsonResponse(res, safe=False)
+
+@csrf_exempt
+@staff_required
+def admin_incidents_list(request):
+    incidents = Incident.objects.select_related('province').all().order_by('-created_at')
+    res = [{
+        "id": i.id,
+        "reporter_name": i.reporter_name,
+        "contact_info": i.contact_info,
+        "province": i.province.name if hasattr(i.province, 'name') else str(i.province),
+        "incident_type": i.incident_type,
+        "details": i.details,
+        "priority": i.priority,
+        "created_at": i.created_at.strftime('%Y-%m-%d %H:%M')
+    } for i in incidents]
+    return JsonResponse(res, safe=False)
+
+@csrf_exempt
+@staff_required
+def admin_memberships_list(request):
+    members = Membership.objects.select_related('province').all().order_by('-created_at')
+    res = [{
+        "id": m.id,
+        "full_name": m.full_name,
+        "email": m.email,
+        "phone": m.phone,
+        "province": m.province.name if hasattr(m.province, 'name') else str(m.province),
+        "organization": m.organization,
+        "role": m.role,
+        "status": m.status,
+        "created_at": m.created_at.strftime('%Y-%m-%d %H:%M')
+    } for m in members]
+    return JsonResponse(res, safe=False)
+
+ALLOWED_EXTENSIONS = {'.pdf', '.jpg', '.jpeg', '.png', '.webp', '.doc', '.docx', '.txt'}
+
+@csrf_exempt
+@staff_required
+def admin_upload_file(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "POST method required"}, status=405)
+
+    uploaded_file = request.FILES.get('file') or request.FILES.get('image') or request.FILES.get('document')
+    if not uploaded_file:
+        return JsonResponse({"error": "No file uploaded"}, status=400)
+
+    ext = os.path.splitext(uploaded_file.name)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return JsonResponse({"error": f"File type {ext} not allowed"}, status=400)
+
+    upload_dir = Path(settings.MEDIA_ROOT) / 'uploads'
+    os.makedirs(upload_dir, exist_ok=True)
+
+    unique_filename = f"{uuid.uuid4().hex[:10]}{ext}"
+    file_path = upload_dir / unique_filename
+
+    with open(file_path, 'wb+') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+
+    size_mb = uploaded_file.size / (1024 * 1024)
+    file_size_str = f"{size_mb:.1f} MB" if size_mb >= 1.0 else f"{max(1, int(uploaded_file.size / 1024))} KB"
+
+    raw_ext = ext.lstrip('.').upper() or 'FILE'
+    format_display = 'PDF' if raw_ext == 'PDF' else ('IMAGE' if raw_ext in ('JPG', 'JPEG', 'PNG', 'WEBP') else 'DOCUMENT')
+    rel_url = f"{settings.MEDIA_URL}uploads/{unique_filename}"
+
+    return JsonResponse({
+        "success": True,
+        "url": rel_url,
+        "filename": uploaded_file.name,
+        "file_size": file_size_str,
+        "format": format_display,
+        "summary": f"{format_display} • {file_size_str}"
+    })
