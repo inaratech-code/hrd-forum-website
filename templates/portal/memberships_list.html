@@ -1,0 +1,58 @@
+{% extends "portal/base_portal.html" %}
+
+{% block title %}Membership Applications | HRD Forum Portal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fas fa-id-card text-blue-600"></i>
+                <span>Defender Membership Applications</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">Review and verify applications submitted by human rights advocates</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-navy-900 text-white font-bold text-[11px] uppercase tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-4">Full Name</th>
+                        <th class="py-3.5 px-4">Email</th>
+                        <th class="py-3.5 px-4">Phone</th>
+                        <th class="py-3.5 px-4">Province Desk</th>
+                        <th class="py-3.5 px-4">Organization</th>
+                        <th class="py-3.5 px-4">Status</th>
+                        <th class="py-3.5 px-4">Submitted</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    {% for m in memberships %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 font-bold text-slate-900">{{ m.full_name }}</td>
+                        <td class="py-3 px-4 text-slate-600">{{ m.email }}</td>
+                        <td class="py-3 px-4 text-slate-600 font-mono text-[11px]">{{ m.phone|default:"-" }}</td>
+                        <td class="py-3 px-4 text-slate-700 font-semibold">{{ m.province.name }}</td>
+                        <td class="py-3 px-4 text-slate-600">{{ m.organization|default:"-" }}</td>
+                        <td class="py-3 px-4">
+                            {% if m.status == 'approved' %}
+                            <span class="bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">Approved</span>
+                            {% elif m.status == 'rejected' %}
+                            <span class="bg-red-100 text-red-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">Rejected</span>
+                            {% else %}
+                            <span class="bg-amber-100 text-amber-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-slate-500">{{ m.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="py-8 text-center text-slate-400">No membership applications found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

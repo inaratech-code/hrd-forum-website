@@ -1,0 +1,63 @@
+{% extends "portal/base_portal.html" %}
+
+{% block title %}{% if is_edit %}Edit Resource{% else %}Add Resource{% endif %} | HRD Forum Portal{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <a href="{% url 'portal_resource_list' %}" class="text-xs font-bold text-teal-700 hover:underline inline-flex items-center space-x-1 mb-1">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Resources List</span>
+            </a>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">{% if is_edit %}Edit Resource{% else %}Add New Resource Document{% endif %}</h1>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl p-6 md:p-8 space-y-6">
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Document Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Category</label>
+                    {{ form.category }}
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Format</label>
+                    {{ form.format }}
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Size</label>
+                    {{ form.file_size }}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Upload</label>
+                {{ form.file_upload }}
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Or File URL</label>
+                {{ form.file_url }}
+            </div>
+
+            <div class="flex items-center space-x-3 pt-2">
+                {{ form.is_gated }}
+                <label class="text-xs font-bold text-slate-700">Require Lead Registration Form (Gated Access)</label>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex justify-end space-x-3">
+                <a href="{% url 'portal_resource_list' %}" class="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Cancel</a>
+                <button type="submit" class="px-6 py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-lg shadow-teal-700/20 transition">Save Resource</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

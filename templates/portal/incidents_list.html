@@ -1,0 +1,58 @@
+{% extends "portal/base_portal.html" %}
+
+{% block title %}Emergency Incidents | HRD Forum Portal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fas fa-exclamation-triangle text-amber-500"></i>
+                <span>Emergency Incidents Log</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">Real-time alerts submitted by human rights defenders across Nepal</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-navy-900 text-white font-bold text-[11px] uppercase tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-4">Reporter Name</th>
+                        <th class="py-3.5 px-4">Province</th>
+                        <th class="py-3.5 px-4">Incident Type</th>
+                        <th class="py-3.5 px-4">Priority</th>
+                        <th class="py-3.5 px-4">Contact Info</th>
+                        <th class="py-3.5 px-4">Created Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    {% for inc in incidents %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 font-bold text-slate-900">{{ inc.reporter_name }}</td>
+                        <td class="py-3 px-4 text-slate-600 font-medium">{{ inc.province.name }}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-700">{{ inc.incident_type }}</td>
+                        <td class="py-3 px-4">
+                            {% if inc.priority == 'Urgent' %}
+                            <span class="bg-red-100 text-red-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">URGENT</span>
+                            {% elif inc.priority == 'High' %}
+                            <span class="bg-orange-100 text-orange-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">HIGH</span>
+                            {% elif inc.priority == 'Medium' %}
+                            <span class="bg-amber-100 text-amber-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">MEDIUM</span>
+                            {% else %}
+                            <span class="bg-blue-100 text-blue-800 font-extrabold px-2.5 py-0.5 rounded-full text-[11px]">LOW</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-slate-600 font-mono text-[11px]">{{ inc.contact_info }}</td>
+                        <td class="py-3 px-4 text-slate-500">{{ inc.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="py-8 text-center text-slate-400">No incident alerts logged yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

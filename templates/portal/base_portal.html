@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HRD Forum Portal{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        brand: {
+                            teal: '#0f766e',
+                            'teal-dark': '#0d655e',
+                            blue: '#2563eb',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-navy-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'portal_dashboard' %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-teal-600/30 border border-teal-500/40 flex items-center justify-center text-teal-400 font-extrabold text-lg group-hover:scale-105 transition">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg tracking-tight text-white block leading-none">HRD Forum</span>
+                        <span class="text-xs text-slate-400 font-medium">Management Portal</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Top Controls -->
+            <div class="flex items-center space-x-4">
+                <a href="/" target="_blank" class="hidden sm:inline-flex items-center space-x-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                    <i class="fas fa-globe text-teal-400"></i>
+                    <span>Live Web Portal</span>
+                </a>
+
+                {% if user.is_authenticated %}
+                <div class="flex items-center space-x-3 pl-3 border-l border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <span class="hidden md:inline-block text-xs font-semibold text-slate-200">{{ user.username }}</span>
+                    </div>
+                    <a href="{% url 'portal_logout' %}" class="text-slate-400 hover:text-red-400 text-sm p-1.5 transition" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Portal Body Layout -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        {% if user.is_authenticated %}
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <nav class="bg-navy-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-1">
+                <div class="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Navigation</div>
+                
+                <a href="{% url 'portal_dashboard' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition {% if request.resolver_match.url_name == 'portal_dashboard' %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <i class="fas fa-chart-pie w-5 text-center text-teal-400"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'portal_gallery_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition {% if 'gallery' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <i class="fas fa-images w-5 text-center text-teal-400"></i>
+                    <span>Photo Gallery</span>
+                </a>
+
+                <a href="{% url 'portal_resource_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition {% if 'resource' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <i class="fas fa-file-alt w-5 text-center text-teal-400"></i>
+                    <span>Resources</span>
+                </a>
+
+                <a href="{% url 'portal_incidents_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition {% if 'incidents' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <i class="fas fa-exclamation-triangle w-5 text-center text-amber-400"></i>
+                    <span>Incidents</span>
+                </a>
+
+                <a href="{% url 'portal_memberships_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition {% if 'memberships' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
+                    <i class="fas fa-id-card w-5 text-center text-blue-400"></i>
+                    <span>Memberships</span>
+                </a>
+
+                <div class="pt-4 border-t border-slate-800 mt-4 px-3">
+                    <a href="/admin/" target="_blank" class="flex items-center space-x-2 text-xs text-slate-400 hover:text-teal-400 transition">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Django Core Admin</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        {% endif %}
+
+        <!-- Main Content Area -->
+        <main class="flex-1 w-full space-y-6">
+
+            <!-- Toast / Flash Notifications -->
+            {% if messages %}
+            <div class="space-y-3">
+                {% for message in messages %}
+                <div class="p-4 rounded-xl shadow-sm border flex items-center justify-between transition-all duration-300
+                    {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800
+                    {% elif message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800
+                    {% elif message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-800
+                    {% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}">
+                    <div class="flex items-center space-x-3 font-semibold text-sm">
+                        {% if message.tags == 'error' %}<i class="fas fa-exclamation-circle text-red-600 text-lg"></i>
+                        {% elif message.tags == 'success' %}<i class="fas fa-check-circle text-emerald-600 text-lg"></i>
+                        {% else %}<i class="fas fa-info-circle text-blue-600 text-lg"></i>{% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 text-sm p-1">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            &copy; 2026 HRD Forum Nepal. Standalone Management Portal.
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

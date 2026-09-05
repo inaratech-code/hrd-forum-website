@@ -1,0 +1,186 @@
+{% extends "portal/base_portal.html" %}
+
+{% block title %}Photo Gallery Management | HRD Forum Portal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action Bar Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fas fa-images text-teal-600"></i>
+                <span>Photo Gallery Management</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">Manage human rights advocacy media, workshop photos, and event galleries ({{ total_count }} Entries)</p>
+        </div>
+
+        <!-- Prominent + Add Photo Button -->
+        <a href="{% url 'portal_gallery_add' %}" class="inline-flex items-center justify-center space-x-2 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg shadow-teal-700/20 transition group">
+            <i class="fas fa-plus-circle text-teal-300 group-hover:scale-110 transition"></i>
+            <span>+ Add Photo</span>
+        </a>
+    </div>
+
+    <!-- Filter & Search Controls Bar -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
+        <form method="GET" action="{% url 'portal_gallery_list' %}" class="flex flex-col md:flex-row gap-4 justify-between items-center">
+            
+            <!-- Category Filter Pills -->
+            <div class="flex flex-wrap gap-1.5 w-full md:w-auto">
+                {% for cat in categories %}
+                <a href="?category={{ cat }}{% if query %}&q={{ query }}{% endif %}" 
+                   class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1
+                   {% if selected_category == cat or selected_category == '' and cat == 'All' %}
+                   bg-teal-700 text-white shadow-sm
+                   {% else %}
+                   bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900
+                   {% endif %}">
+                    <span>{{ cat }}</span>
+                </a>
+                {% endfor %}
+            </div>
+
+            <!-- Search Input Field -->
+            <div class="relative w-full md:w-72">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search title or category..."
+                       class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none text-xs font-medium text-slate-900">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-xs">
+                    <i class="fas fa-search"></i>
+                </span>
+                {% if query %}
+                <a href="{% url 'portal_gallery_list' %}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs">
+                    <i class="fas fa-times"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Gallery Grid View -->
+    {% if photos %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {% for photo in photos %}
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col group">
+            
+            <!-- Thumbnail Image Badge with fixed 55x38 style / card cover -->
+            <div class="relative w-full h-44 bg-slate-100 overflow-hidden">
+                {% if photo.display_image %}
+                <img src="{{ photo.display_image }}" alt="{{ photo.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                {% else %}
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 space-y-1">
+                    <i class="fas fa-image text-3xl"></i>
+                    <span class="text-xs">No Image Preview</span>
+                </div>
+                {% endif %}
+
+                <!-- Category Pill Badge -->
+                <div class="absolute top-3 left-3">
+                    <span class="bg-teal-800/90 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg backdrop-blur-sm shadow-sm border border-teal-600/30">
+                        {{ photo.category }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Card Body Content -->
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 line-clamp-2 leading-snug hover:text-teal-700 transition">
+                        <a href="{% url 'portal_gallery_edit' photo.id %}">{{ photo.title }}</a>
+                    </h3>
+                    <p class="text-[11px] text-slate-400 font-medium mt-1">
+                        <i class="far fa-clock mr-1"></i>{{ photo.created_at|date:"M d, Y · H:i" }}
+                    </p>
+                </div>
+
+                <!-- Action Controls: Edit & Delete -->
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <a href="{% url 'portal_gallery_edit' photo.id %}" class="flex-1 inline-flex items-center justify-center space-x-1.5 bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-700 font-bold text-xs py-2 px-3 rounded-xl border border-slate-200 transition">
+                        <i class="fas fa-edit text-teal-600"></i>
+                        <span>Edit</span>
+                    </a>
+                    
+                    <a href="{% url 'portal_gallery_delete' photo.id %}" class="inline-flex items-center justify-center space-x-1 bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 font-bold text-xs py-2 px-3 rounded-xl border border-slate-200 transition" title="Delete Photo">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Data Table View Option -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mt-8">
+        <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Tabular Data Overview</h3>
+            <span class="text-xs text-slate-400">{{ photos|length }} Total Records</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-navy-900 text-white font-bold text-[11px] uppercase tracking-wider">
+                    <tr>
+                        <th class="py-3 px-4">Thumbnail</th>
+                        <th class="py-3 px-4">Title</th>
+                        <th class="py-3 px-4">Category</th>
+                        <th class="py-3 px-4">Created Date</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    {% for photo in photos %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-2.5 px-4">
+                            {% if photo.display_image %}
+                            <img src="{{ photo.display_image }}" class="w-14 h-10 object-cover rounded-lg border border-slate-200">
+                            {% else %}
+                            <div class="w-14 h-10 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="py-2.5 px-4 font-bold text-slate-900">
+                            <a href="{% url 'portal_gallery_edit' photo.id %}" class="hover:text-teal-700 transition">{{ photo.title }}</a>
+                        </td>
+                        <td class="py-2.5 px-4">
+                            <span class="bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-full font-bold text-[11px]">
+                                {{ photo.category }}
+                            </span>
+                        </td>
+                        <td class="py-2.5 px-4 text-slate-500">{{ photo.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="py-2.5 px-4 text-right space-x-2">
+                            <a href="{% url 'portal_gallery_edit' photo.id %}" class="text-teal-700 hover:text-teal-900 font-bold px-2 py-1 bg-teal-50 rounded-lg hover:bg-teal-100 transition">Edit</a>
+                            <a href="{% url 'portal_gallery_delete' photo.id %}" class="text-red-600 hover:text-red-800 font-bold px-2 py-1 bg-red-50 rounded-lg hover:bg-red-100 transition">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-4">
+        <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center text-3xl mx-auto">
+            <i class="fas fa-images"></i>
+        </div>
+        <div class="space-y-1">
+            <h3 class="text-base font-extrabold text-slate-800">No Photo Gallery Items Found</h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                {% if query %}
+                No matches found for search query "<span class="font-bold text-slate-700">{{ query }}</span>".
+                {% else %}
+                Get started by uploading your first photo to the gallery.
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'portal_gallery_add' %}" class="inline-flex items-center space-x-2 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition">
+            <i class="fas fa-plus"></i>
+            <span>Add New Photo Now</span>
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

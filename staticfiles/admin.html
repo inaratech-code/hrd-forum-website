@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | HRD Forum Nepal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-navy: #0e2a47;
+      --secondary-navy: #091d31;
+      --accent-blue: #0284c7;
+      --crimson-alert: #be123c;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --bg-light: #f8fafc;
+      --border-color: #e2e8f0;
+      --radius: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #f1f5f9; color: var(--text-dark); }
+    a { text-decoration: none; color: inherit; }
+
+    /* Login Screen */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--secondary-navy) 0%, var(--primary-navy) 100%);
+      padding: 20px;
+    }
+    .login-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 36px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-header i { font-size: 36px; color: var(--accent-blue); margin-bottom: 10px; }
+    .login-header h2 { font-size: 22px; font-weight: 800; color: var(--primary-navy); }
+    .login-header p { font-size: 13px; color: var(--text-muted); }
+
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background-color: var(--secondary-navy);
+      color: #94a3b8;
+      padding: 24px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-brand {
+      padding: 0 24px 24px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-brand i { color: var(--accent-blue); }
+    .nav-menu {
+      list-style: none;
+      margin-top: 16px;
+    }
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .nav-item a:hover, .nav-item a.active {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 800; color: var(--primary-navy); }
+
+    /* Cards & Tables */
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--primary-navy); margin-bottom: 6px; }
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text-dark);
+      background-color: #f8fafc;
+      outline: none;
+    }
+    .form-control:focus { border-color: var(--accent-blue); background-color: #ffffff; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn-primary { background-color: var(--accent-blue); color: #ffffff; }
+    .btn-danger { background-color: var(--crimson-alert); color: #ffffff; padding: 6px 12px; font-size: 11px; }
+    .btn-outline { border: 1px solid var(--border-color); background: #ffffff; color: var(--text-dark); }
+    .btn:hover { opacity: 0.9; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    th { text-align: left; padding: 12px 14px; background-color: #f8fafc; color: var(--primary-navy); font-weight: 700; border-bottom: 1px solid var(--border-color); }
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-dark); }
+    tr:hover { background-color: #f8fafc; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+
+    /* Tabs Content */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN CONTAINER -->
+  <div class="login-container" id="loginScreen">
+    <div class="login-box">
+      <div class="login-header">
+        <img src="/static/images/logo.jpg" alt="HRD Forum Logo" style="height: 60px; width: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid var(--accent-blue);">
+        <h2>HRD Forum Portal</h2>
+        <p>Admin Authorization & Management</p>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUser" class="form-control" placeholder="admin" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard</button>
+      </form>
+      <p style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 16px;">Default credentials: <strong>admin</strong> / <strong>hrdadmin2026</strong></p>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD LAYOUT -->
+  <div class="admin-layout" id="adminDashboard" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/static/images/logo.jpg" alt="HRD Forum Logo" style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover;">
+        <span>HRD Admin Portal</span>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a onclick="switchTab('newsTab')" class="active" id="nav-newsTab"><i class="fa-solid fa-newspaper"></i> News & Updates</a></li>
+        <li class="nav-item"><a onclick="switchTab('teamTab')" id="nav-teamTab"><i class="fa-solid fa-user-group"></i> HRD Team Members</a></li>
+        <li class="nav-item"><a onclick="switchTab('collabTab')" id="nav-collabTab"><i class="fa-solid fa-handshake"></i> Collaborations</a></li>
+        <li class="nav-item"><a onclick="switchTab('popupTab')" id="nav-popupTab"><i class="fa-solid fa-image"></i> Popup Banner</a></li>
+        <li class="nav-item"><a onclick="switchTab('galleryTab')" id="nav-galleryTab"><i class="fa-solid fa-images"></i> Photo Gallery</a></li>
+        <li class="nav-item"><a onclick="switchTab('resourceTab')" id="nav-resourceTab"><i class="fa-solid fa-file-arrow-up"></i> Resource Uploads</a></li>
+        <li class="nav-item"><a onclick="switchTab('leadsTab')" id="nav-leadsTab"><i class="fa-solid fa-users"></i> Gated Download Leads</a></li>
+        <li class="nav-item"><a onclick="switchTab('alertsTab')" id="nav-alertsTab"><i class="fa-solid fa-bell"></i> Incidents & Members</a></li>
+        <li class="nav-item" style="margin-top: 40px;"><a onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1 id="pageTitle">News Management</h1>
+        <a href="/" target="_blank" class="btn btn-outline"><i class="fa-solid fa-globe"></i> View Public Site</a>
+      </div>
+
+      <!-- TAB 1: NEWS MANAGEMENT -->
+      <div class="tab-pane active" id="newsTab">
+        <div class="card">
+          <div class="card-title">Publish New Announcement / News</div>
+          <form onsubmit="handleAddNews(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Article Title *</label>
+                <input type="text" id="nTitle" class="form-control" placeholder="Headline..." required>
+              </div>
+              <div class="form-group">
+                <label>Publication Date *</label>
+                <input type="text" id="nDate" class="form-control" placeholder="15 AUG 2026" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Image URL *</label>
+                <input type="text" id="nImage" class="form-control" placeholder="URL or upload from computer..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Thumbnail from Computer:</label>
+                <input type="file" id="nFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'nImage')">
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="nCategory" class="form-control">
+                  <option value="Safety">Safety</option>
+                  <option value="Policy">Policy</option>
+                  <option value="Assembly">Assembly</option>
+                  <option value="Advocacy">Advocacy</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Short Summary</label>
+              <textarea id="nSummary" class="form-control" rows="2" placeholder="Brief summary snippet..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Full Article Content</label>
+              <textarea id="nContent" class="form-control" rows="4" placeholder="Full multiline article body content..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Publish Article</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Published News Feed</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Thumbnail</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="newsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: HRD TEAM MEMBERS -->
+      <div class="tab-pane" id="teamTab">
+        <div class="card">
+          <div class="card-title">Add HRD Team Member</div>
+          <form onsubmit="handleAddTeam(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="tName" class="form-control" placeholder="e.g. Adv. Sunita Shrestha" required>
+              </div>
+              <div class="form-group">
+                <label>Designation / Role *</label>
+                <input type="text" id="tDesignation" class="form-control" placeholder="e.g. Executive Director" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Team Tier Category *</label>
+                <select id="tCategory" class="form-control">
+                  <option value="executive">Executive Team (Leadership)</option>
+                  <option value="advisory">Advisory Board</option>
+                  <option value="general">General Member (Field Coordinator)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Profile Photo *</label>
+                <input type="text" id="tImage" class="form-control" placeholder="URL or upload from computer..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Photo from Computer:</label>
+                <input type="file" id="tFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'tImage')">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Short Bio</label>
+              <textarea id="tBio" class="form-control" rows="2" placeholder="Brief summary of experience & advocacy background..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add Team Member</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Registered Team Roster</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Category Tier</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="teamTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB: COLLABORATIONS -->
+      <div class="tab-pane" id="collabTab">
+        <div class="card">
+          <div class="card-title">Add Strategic Collaboration Partner</div>
+          <form onsubmit="handleAddCollab(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Partner / Ally Name *</label>
+                <input type="text" id="cName" class="form-control" placeholder="e.g. National Human Rights Commission" required>
+              </div>
+              <div class="form-group">
+                <label>Collaboration Type *</label>
+                <select id="cCategory" class="form-control">
+                  <option value="institutional">Institutional Collaboration (Partner NGO/Coalition)</option>
+                  <option value="individual">Individual Collaboration (Expert/Legal Counsel)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Logo / Image URL *</label>
+                <input type="url" id="cLogo" class="form-control" placeholder="https://images.unsplash.com/..." required>
+              </div>
+              <div class="form-group">
+                <label>Website Link</label>
+                <input type="text" id="cWebsite" class="form-control" placeholder="#">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Descriptive Blurb *</label>
+              <textarea id="cBlurb" class="form-control" rows="2" placeholder="Concise overview of partnership scope & collaboration focus..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-handshake"></i> Add Collaboration Partner</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Collaborations & Partnerships Directory</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Logo</th>
+                <th>Partner Name</th>
+                <th>Category</th>
+                <th>Descriptive Blurb</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="collabTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: POPUP BANNER CONFIG -->
+      <div class="tab-pane" id="popupTab">
+        <div class="card">
+          <div class="card-title">Homepage Announcement Popup Configuration</div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Configure the featured pop-up image lightbox banner that appears when visitors land on the homepage.</p>
+          <form onsubmit="handleUpdatePopup(event)">
+            <div class="form-group">
+              <label>Popup Image URL *</label>
+              <input type="url" id="pImageUrl" class="form-control" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Headline Title *</label>
+                <input type="text" id="pTitle" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Link Text</label>
+                <input type="text" id="pLinkText" class="form-control" placeholder="Register Now">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Subtitle / Description</label>
+              <textarea id="pSubtitle" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="form-row" style="align-items: center;">
+              <div class="form-group">
+                <label>Target URL</label>
+                <input type="text" id="pLinkUrl" class="form-control" placeholder="#">
+              </div>
+              <div class="form-group" style="margin-top: 18px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="pActive" style="width: 18px; height: 18px;">
+                  Enable Announcement Pop-Up
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Banner Settings</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3: PHOTO GALLERY -->
+      <div class="tab-pane" id="galleryTab">
+        <div class="card">
+          <div class="card-title">Add Photo to Gallery</div>
+          <form onsubmit="handleAddGallery(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Photo Caption / Title *</label>
+                <input type="text" id="gTitle" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="gCategory" class="form-control">
+                  <option value="Assemblies">Assemblies</option>
+                  <option value="Training">Training</option>
+                  <option value="Fact-Finding">Fact-Finding</option>
+                  <option value="Advocacy">Advocacy</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Photo Image URL *</label>
+              <input type="text" id="gImage" class="form-control" placeholder="URL or upload from computer..." required>
+              <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload Photo from Computer:</label>
+              <input type="file" id="gFilePicker" accept="image/*" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'gImage')">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload Photo to Gallery</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Gallery Photo Collection</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Preview</th>
+                <th>Caption</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="galleryTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-title">Add YouTube Video to Gallery</div>
+          <form onsubmit="handleAddVideo(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Video Title *</label>
+                <input type="text" id="vTitle" class="form-control" placeholder="e.g. National Assembly Summit 2025" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="vCategory" class="form-control">
+                  <option value="Documentary">Documentary</option>
+                  <option value="Assembly Documentary">Assembly Documentary</option>
+                  <option value="Field Report">Field Report</option>
+                  <option value="Workshop">Workshop Video</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>YouTube URL / Watch Link *</label>
+                <input type="url" id="vEmbedUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=..." required>
+              </div>
+              <div class="form-group">
+                <label>Publication Date</label>
+                <input type="text" id="vDate" class="form-control" placeholder="e.g. 18 NOV 2025">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-film"></i> Publish YouTube Video</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">YouTube Video Collection</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>YouTube URL</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="videoTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: RESOURCE UPLOADS -->
+      <div class="tab-pane" id="resourceTab">
+        <div class="card">
+          <div class="card-title">Add Downloadable Document, Video, or Blog</div>
+          <form onsubmit="handleAddResource(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Title *</label>
+                <input type="text" id="rTitle" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Resource Category *</label>
+                <select id="rCategory" class="form-control">
+                  <option value="Report">Report (PDF Format)</option>
+                  <option value="Publication">Publication (Reading Material)</option>
+                  <option value="By-Laws">By-Laws (Guidelines & Policy)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>File / Download Link *</label>
+                <input type="text" id="rFileUrl" class="form-control" placeholder="URL or upload document..." required>
+                <label style="font-size: 11px; color: var(--accent-blue); margin-top: 6px; font-weight: 600; display: block;">📁 Upload PDF / Document from Computer:</label>
+                <input type="file" id="rFilePicker" accept="application/pdf,image/*,.doc,.docx,.ppt,.pptx" class="form-control" style="font-size: 11px; padding: 4px;" onchange="handleComputerUpload(this, 'rFileUrl', 'rFileSize')">
+              </div>
+              <div class="form-group">
+                <label>File Size & Format</label>
+                <input type="text" id="rFileSize" class="form-control" placeholder="PDF • 3.2 MB">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-arrow-up"></i> Publish Resource</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Resource Library Downloads</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="resourceTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: GATED DOWNLOAD LEADS -->
+      <div class="tab-pane" id="leadsTab">
+        <div class="card">
+          <div class="card-title">
+            <span>Gated Document Access Leads</span>
+            <button class="btn btn-outline" onclick="loadLeads()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Users who provided their name and email to access downloadable publications.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>Email Address</th>
+                <th>Downloaded Resource</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 6: INCIDENTS & MEMBERS -->
+      <div class="tab-pane" id="alertsTab">
+        <div class="card">
+          <div class="card-title">Urgent Incident Reports</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Reporter</th>
+                <th>Contact</th>
+                <th>Province</th>
+                <th>Type</th>
+                <th>Details</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="incidentsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Membership Applications</div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Province</th>
+                <th>Org & Role</th>
+              </tr>
+            </thead>
+            <tbody id="membershipsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Tab Switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item a').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById('nav-' + tabId).classList.add('active');
+
+      const titles = {
+        newsTab: 'News & Updates Management',
+        teamTab: 'HRD Team Roster Management',
+        collabTab: 'Strategic Collaborations Directory',
+        popupTab: 'Homepage Announcement Popup',
+        galleryTab: 'Photo Gallery Management',
+        resourceTab: 'Resource & Video Uploads',
+        leadsTab: 'Gated Document Access Leads',
+        alertsTab: 'Incident Alerts & Membership Applications'
+      };
+      document.getElementById('pageTitle').innerText = titles[tabId] || 'Admin Dashboard';
+
+      if (tabId === 'newsTab') loadNews();
+      if (tabId === 'teamTab') loadTeamAdmin();
+      if (tabId === 'collabTab') loadCollabAdmin();
+      if (tabId === 'popupTab') loadPopup();
+      if (tabId === 'galleryTab') loadGallery();
+      if (tabId === 'resourceTab') loadResources();
+      if (tabId === 'leadsTab') loadLeads();
+      if (tabId === 'alertsTab') loadAlerts();
+    }
+
+    // Computer File Upload Handler
+    async function handleComputerUpload(fileInput, targetUrlInputId, targetSizeInputId = null) {
+      if (!fileInput.files || fileInput.files.length === 0) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const label = fileInput.previousElementSibling;
+      const originalText = label ? label.innerText : '';
+      if (label) label.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Uploading ${file.name}...`;
+
+      try {
+        const res = await fetch('/api/admin/upload-file', {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.url) {
+            document.getElementById(targetUrlInputId).value = data.url;
+            if (targetSizeInputId && data.summary) {
+              document.getElementById(targetSizeInputId).value = data.summary;
+            }
+            showToast(`Uploaded ${data.filename} successfully!`, 'success');
+          }
+        } else {
+          showToast('Failed to upload file from computer.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error while uploading file.', 'error');
+      } finally {
+        if (label) label.innerText = originalText;
+      }
+    }
+
+    // Login Handler
+    async function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value;
+      const p = document.getElementById('loginPass').value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          localStorage.setItem('hrd_admin_token', data.token);
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('adminDashboard').style.display = 'flex';
+          switchTab('newsTab');
+        } else {
+          alert(data.error || 'Login failed');
+        }
+      } catch (err) {
+        alert('Connection error');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('hrd_admin_token');
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+
+    // LOADERS & ACTIONS
+    async function loadNews() {
+      const res = await fetch('/api/news');
+      if (res.ok) {
+        const news = await res.json();
+        document.getElementById('newsTableBody').innerHTML = news.map(n => `
+          <tr>
+            <td>#${n.id}</td>
+            <td><img src="${n.image_url}" style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;"></td>
+            <td><strong>${n.title}</strong></td>
+            <td><span class="badge badge-success">${n.category}</span></td>
+            <td>${n.date_str}</td>
+            <td><button class="btn btn-danger" onclick="deleteNews(${n.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddNews(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('nTitle').value,
+        date_str: document.getElementById('nDate').value,
+        image_url: document.getElementById('nImage').value,
+        category: document.getElementById('nCategory').value,
+        summary: document.getElementById('nSummary').value,
+        content: document.getElementById('nContent').value || document.getElementById('nSummary').value
+      };
+      const res = await fetch('/api/admin/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('News published!');
+        document.getElementById('nTitle').value = '';
+        document.getElementById('nSummary').value = '';
+        document.getElementById('nContent').value = '';
+        loadNews();
+      }
+    }
+
+    async function deleteNews(id) {
+      if (confirm('Delete this article?')) {
+        await fetch(`/api/admin/news/${id}`, { method: 'DELETE' });
+        loadNews();
+      }
+    }
+
+    async function loadPopup() {
+      const res = await fetch('/api/popup');
+      if (res.ok) {
+        const p = await res.json();
+        document.getElementById('pImageUrl').value = p.image_url || '';
+        document.getElementById('pTitle').value = p.title || '';
+        document.getElementById('pSubtitle').value = p.subtitle || '';
+        document.getElementById('pLinkUrl').value = p.link_url || '#';
+        document.getElementById('pLinkText').value = p.link_text || 'Learn More';
+        document.getElementById('pActive').checked = p.active === 1;
+      }
+    }
+
+    async function handleUpdatePopup(e) {
+      e.preventDefault();
+      const payload = {
+        image_url: document.getElementById('pImageUrl').value,
+        title: document.getElementById('pTitle').value,
+        subtitle: document.getElementById('pSubtitle').value,
+        link_url: document.getElementById('pLinkUrl').value,
+        link_text: document.getElementById('pLinkText').value,
+        active: document.getElementById('pActive').checked ? 1 : 0
+      };
+      const res = await fetch('/api/admin/popup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) alert('Popup banner settings updated!');
+    }
+
+    async function loadGallery() {
+      const res = await fetch('/api/gallery');
+      if (res.ok) {
+        const photos = await res.json();
+        document.getElementById('galleryTableBody').innerHTML = photos.map(g => `
+          <tr>
+            <td>#${g.id}</td>
+            <td><img src="${g.image_url}" style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;"></td>
+            <td>${g.title}</td>
+            <td><span class="badge badge-warning">${g.category}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteGallery(${g.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+      loadVideosAdmin();
+    }
+
+    async function loadVideosAdmin() {
+      const res = await fetch('/api/videos');
+      if (res.ok) {
+        const videos = await res.json();
+        const tbody = document.getElementById('videoTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = videos.map(v => `
+          <tr>
+            <td>#${v.id}</td>
+            <td>${v.title}</td>
+            <td><a href="${v.embed_url}" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">${v.embed_url}</a></td>
+            <td><span class="badge badge-warning">${v.category}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteVideo(${v.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddGallery(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('gTitle').value,
+        image_url: document.getElementById('gImage').value,
+        category: document.getElementById('gCategory').value
+      };
+      const res = await fetch('/api/admin/gallery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Photo uploaded to gallery!');
+        document.getElementById('gTitle').value = '';
+        document.getElementById('gImage').value = '';
+        loadGallery();
+      }
+    }
+
+    async function deleteGallery(id) {
+      if (confirm('Remove photo from gallery?')) {
+        await fetch(`/api/admin/gallery/${id}`, { method: 'DELETE' });
+        loadGallery();
+      }
+    }
+
+    async function handleAddVideo(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('vTitle').value,
+        embed_url: document.getElementById('vEmbedUrl').value,
+        category: document.getElementById('vCategory').value,
+        date_str: document.getElementById('vDate').value || 'Today'
+      };
+      const res = await fetch('/api/admin/videos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('YouTube video published!');
+        document.getElementById('vTitle').value = '';
+        document.getElementById('vEmbedUrl').value = '';
+        document.getElementById('vDate').value = '';
+        loadVideosAdmin();
+      }
+    }
+
+    async function deleteVideo(id) {
+      if (confirm('Remove YouTube video?')) {
+        await fetch(`/api/admin/videos/${id}`, { method: 'DELETE' });
+        loadVideosAdmin();
+      }
+    }
+
+    async function loadResources() {
+      const res = await fetch('/api/resources');
+      if (res.ok) {
+        const resources = await res.json();
+        document.getElementById('resourceTableBody').innerHTML = resources.map(r => `
+          <tr>
+            <td>#${r.id}</td>
+            <td><strong>${r.title}</strong></td>
+            <td>${r.category}</td>
+            <td>${r.file_size}</td>
+            <td><button class="btn btn-danger" onclick="deleteResource(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddResource(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('rTitle').value,
+        category: document.getElementById('rCategory').value,
+        file_size: document.getElementById('rFileSize').value || 'PDF • 2.0 MB',
+        file_url: document.getElementById('rFileUrl').value,
+        is_gated: true
+      };
+      const res = await fetch('/api/admin/resources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Resource published!');
+        loadResources();
+      }
+    }
+
+    async function deleteResource(id) {
+      if (confirm('Delete resource file?')) {
+        await fetch(`/api/admin/resources/${id}`, { method: 'DELETE' });
+        loadResources();
+      }
+    }
+
+    async function loadLeads() {
+      const res = await fetch('/api/admin/gated-logs');
+      if (res.ok) {
+        const leads = await res.json();
+        document.getElementById('leadsTableBody').innerHTML = leads.map(l => `
+          <tr>
+            <td>#${l.id}</td>
+            <td><strong>${l.user_name}</strong></td>
+            <td>${l.user_email}</td>
+            <td>${l.resource_title}</td>
+            <td>${l.downloaded_at}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function loadAlerts() {
+      const incRes = await fetch('/api/incidents');
+      if (incRes.ok) {
+        const incidents = await incRes.json();
+        document.getElementById('incidentsTableBody').innerHTML = incidents.map(i => `
+          <tr>
+            <td>#${i.id}</td>
+            <td><strong>${i.reporter_name}</strong></td>
+            <td>${i.contact_info}</td>
+            <td>${i.province}</td>
+            <td><span class="badge badge-warning">${i.incident_type}</span></td>
+            <td>${i.details}</td>
+            <td>${i.created_at}</td>
+          </tr>
+        `).join('');
+      }
+
+      const memRes = await fetch('/api/memberships');
+      if (memRes.ok) {
+        const members = await memRes.json();
+        document.getElementById('membershipsTableBody').innerHTML = members.map(m => `
+          <tr>
+            <td>#${m.id}</td>
+            <td><strong>${m.full_name}</strong></td>
+            <td>${m.email}</td>
+            <td>${m.phone || '-'}</td>
+            <td>${m.province}</td>
+            <td>${m.organization || '-'} (${m.role || '-'})</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // TEAM & COLLABORATION ADMIN HANDLERS
+    async function loadTeamAdmin() {
+      const res = await fetch('/api/team');
+      if (res.ok) {
+        const members = await res.json();
+        document.getElementById('teamTableBody').innerHTML = members.map(m => `
+          <tr>
+            <td>#${m.id}</td>
+            <td><img src="${m.image_url}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td>
+            <td><strong>${m.name}</strong></td>
+            <td>${m.designation}</td>
+            <td><span class="badge badge-info">${m.category}</span></td>
+            <td><button class="btn btn-danger" onclick="deleteTeamMember(${m.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddTeam(e) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('tName').value,
+        designation: document.getElementById('tDesignation').value,
+        category: document.getElementById('tCategory').value,
+        image_url: document.getElementById('tImage').value,
+        bio: document.getElementById('tBio').value
+      };
+      const res = await fetch('/api/admin/team', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Team member added successfully!');
+        document.getElementById('tName').value = '';
+        document.getElementById('tDesignation').value = '';
+        document.getElementById('tBio').value = '';
+        loadTeamAdmin();
+      }
+    }
+
+    async function deleteTeamMember(id) {
+      if (confirm('Delete this team member profile?')) {
+        await fetch(`/api/admin/team/${id}`, { method: 'DELETE' });
+        loadTeamAdmin();
+      }
+    }
+
+    async function loadCollabAdmin() {
+      const res = await fetch('/api/collaborations');
+      if (res.ok) {
+        const collabs = await res.json();
+        document.getElementById('collabTableBody').innerHTML = collabs.map(c => `
+          <tr>
+            <td>#${c.id}</td>
+            <td><img src="${c.logo_url}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;"></td>
+            <td><strong>${c.name}</strong></td>
+            <td><span class="badge badge-warning">${c.category}</span></td>
+            <td style="max-width: 250px;">${c.blurb}</td>
+            <td><button class="btn btn-danger" onclick="deleteCollaboration(${c.id})"><i class="fa-solid fa-trash"></i> Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function handleAddCollab(e) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('cName').value,
+        category: document.getElementById('cCategory').value,
+        logo_url: document.getElementById('cLogo').value,
+        blurb: document.getElementById('cBlurb').value,
+        website_url: document.getElementById('cWebsite').value
+      };
+      const res = await fetch('/api/admin/collaborations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Collaboration partner added successfully!');
+        document.getElementById('cName').value = '';
+        document.getElementById('cBlurb').value = '';
+        loadCollabAdmin();
+      }
+    }
+
+    async function deleteCollaboration(id) {
+      if (confirm('Delete this collaboration partner?')) {
+        await fetch(`/api/admin/collaborations/${id}`, { method: 'DELETE' });
+        loadCollabAdmin();
+      }
+    }
+  </script>
+</body>
+</html>
