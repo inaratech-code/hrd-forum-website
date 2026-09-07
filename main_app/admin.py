@@ -4,7 +4,7 @@ from django.utils.html import mark_safe
 
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
-    PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
+    PopupConfig, Gallery, Video, GatedDownloadLead,
     TeamMember, Collaboration, NewsFlash, UniqueVisitor
 )
 
@@ -142,21 +142,6 @@ class GalleryAdmin(ModelAdmin):
         return "No image"
     preview_image.short_description = "Preview"
 
-
-@admin.register(Blog)
-class BlogAdmin(ModelAdmin):
-    list_display = ('thumbnail_preview', 'title', 'author', 'published_date', 'created_at')
-    list_display_links = ('title', 'thumbnail_preview')
-    search_fields = ('title', 'author', 'content')
-    list_filter = ('published_date', 'created_at')
-    date_hierarchy = 'published_date'
-
-    def thumbnail_preview(self, obj):
-        img = obj.display_image
-        if img:
-            return mark_safe(f'<img src="{img}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 6px;" />')
-        return "-"
-    thumbnail_preview.short_description = "Thumbnail"
 
 
 @admin.register(Video)

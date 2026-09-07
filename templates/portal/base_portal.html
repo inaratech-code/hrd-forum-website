@@ -131,11 +131,6 @@
                             <span>Resources</span>
                         </a>
 
-                        <a href="{% url 'portal_blog_list' %}" class="flex items-center space-x-3 px-3 py-2 rounded-xl font-semibold text-xs transition {% if 'blogs' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
-                            <i class="fas fa-pen-nib w-4 text-center text-purple-400"></i>
-                            <span>Blogs & Articles</span>
-                        </a>
-
                         <a href="{% url 'portal_video_list' %}" class="flex items-center space-x-3 px-3 py-2 rounded-xl font-semibold text-xs transition {% if 'videos' in request.path %}bg-teal-700 text-white shadow-sm{% else %}text-slate-300 hover:bg-slate-800 hover:text-white{% endif %}">
                             <i class="fas fa-video w-4 text-center text-red-400"></i>
                             <span>Videos</span>
