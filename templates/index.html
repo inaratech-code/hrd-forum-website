@@ -1173,7 +1173,7 @@
             <li><a onclick="openMembershipModal()" style="color: #38bdf8; font-weight: 700;"><i class="fa-solid fa-id-card" style="margin-right: 4px;"></i> Apply for Membership</a></li>
             <li><a onclick="openResourcesModal()">Annual Protection Reports</a></li>
             <li><a onclick="openResourcesModal()">Policy & Legal Manuals</a></li>
-            <li><a href="/portal/" style="color: #60a5fa; font-weight: 600;"><i class="fa-solid fa-user-shield" style="margin-right: 4px;"></i> Staff Admin Portal</a></li>
+            <li><a href="/portal/" style="color: #60a5fa; font-weight: 600;"><i class="fa-solid fa-user-shield" style="margin-right: 4px;"></i> Admin Portal</a></li>
           </ul>
         </div>
 
@@ -1601,9 +1601,12 @@
       if (!document.getElementById('leafletMap')) return;
       if (leafletMapInstance) leafletMapInstance.remove();
 
+      // Anamnagar, Kathmandu coordinates
+      const anamNagarLatLng = [27.7007, 85.3283];
+
       leafletMapInstance = L.map('leafletMap', {
-        center: [28.3949, 84.1240],
-        zoom: 7,
+        center: anamNagarLatLng,
+        zoom: 15,
         scrollWheelZoom: false
       });
 
@@ -1611,28 +1614,14 @@
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(leafletMapInstance);
 
-      provinces.forEach(p => {
-        let latLng = null;
-        const pName = (p.name || '').toLowerCase();
-        for (const [key, coords] of Object.entries(provinceCoordinates)) {
-          if (pName.includes(key)) {
-            latLng = coords;
-            break;
-          }
-        }
-
-        if (latLng) {
-          const marker = L.marker(latLng).addTo(leafletMapInstance);
-          leafletMarkersMap[p.id] = marker;
-          marker.bindPopup(`
-            <div style="font-size: 13px; padding: 6px; min-width: 180px;">
-              <strong style="color: #092347; font-size: 14px;">${p.name}</strong><br>
-              <span style="color: #475569;">Base City: ${p.base_city}</span><br>
-              <a href="tel:${p.helpline_phone}" style="display: inline-block; margin-top: 6px; background: #be123c; color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-phone"></i> ${p.helpline_phone}</a>
-            </div>
-          `);
-        }
-      });
+      const marker = L.marker(anamNagarLatLng).addTo(leafletMapInstance);
+      marker.bindPopup(`
+        <div style="font-size: 13px; padding: 6px; min-width: 180px;">
+          <strong style="color: #092347; font-size: 14px;">Central HQ (Bagmati Desk)</strong><br>
+          <span style="color: #475569;">Anamnagar, Kathmandu, Nepal</span><br>
+          <a href="tel:+9779851180690" style="display: inline-block; margin-top: 6px; background: #be123c; color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-phone"></i> +977 985-1180690</a>
+        </div>
+      `).openPopup();
 
       setTimeout(() => {
         leafletMapInstance.invalidateSize();
