@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline
-from django.utils.html import mark_safe
+from django.utils.html import mark_safe, escape
 
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
@@ -122,23 +122,23 @@ class GalleryAdmin(ModelAdmin):
     def thumbnail_preview(self, obj):
         img = obj.display_image
         if img:
-            return mark_safe(f'<img src="{img}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;" />')
+            return mark_safe(f'<img src="{escape(img)}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;" />')
         return "-"
     thumbnail_preview.short_description = "Thumbnail"
 
     def clickable_title(self, obj):
-        return mark_safe(f'<strong style="color: #0f766e; font-weight: 700;">{obj.title}</strong>')
+        return mark_safe(f'<strong style="color: #0f766e; font-weight: 700;">{escape(obj.title)}</strong>')
     clickable_title.short_description = "Title"
 
     def category_badge(self, obj):
         cat = obj.category or 'General'
-        return mark_safe(f'<span class="badge" style="background-color: #0f766e; color: #ffffff; padding: 5px 12px; border-radius: 12px; font-weight: 700;">{cat}</span>')
+        return mark_safe(f'<span class="badge" style="background-color: #0f766e; color: #ffffff; padding: 5px 12px; border-radius: 12px; font-weight: 700;">{escape(cat)}</span>')
     category_badge.short_description = "Category"
 
     def preview_image(self, obj):
         img = obj.display_image
         if img:
-            return mark_safe(f'<img src="{img}" style="max-width: 320px; max-height: 240px; object-fit: cover; border-radius: 8px;" />')
+            return mark_safe(f'<img src="{escape(img)}" style="max-width: 320px; max-height: 240px; object-fit: cover; border-radius: 8px;" />')
         return "No image"
     preview_image.short_description = "Preview"
 

@@ -241,3 +241,38 @@ class HRDForumTestCase(TestCase):
         for url in all_portal_urls:
             res = self.client.get(url)
             self.assertEqual(res.status_code, 200, f"Superuser GET failed for {url}")
+
+    def test_sqli_and_xss_input_resilience(self):
+        """Verify that search filters and public form endpoints safely handle SQLi and XSS payloads without raising unhandled errors or reflecting raw scripts."""
+        sqli_payload = "' OR '1'='1' --"
+        xss_payload = "<script>alert('xss')</script>"
+
+        # 1. Search filter with SQLi / XSS
+        search_urls = [
+            f'/portal/news/?q={sqli_payload}',
+            f'/portal/news/?q={xss_payload}',
+            f'/portal/incidents/?q={sqli_payload}',
+            f'/portal/incidents/?q={xss_payload}',
+        ]
+        self.client.force_login(self.superuser_a)
+        for url in search_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200)
+            self.assertNotIn("<script>alert('xss')</script>", res.content.decode('utf-8'))
+
+        # 2. Form submission with XSS & SQLi payloads
+        mem_payload = {
+            "full_name": xss_payload,
+            "email": "xss_test@example.com",
+            "phone": "9800000000",
+            "province": "Bagmati Province",
+            "organization": sqli_payload,
+            "role": "Monitor"
+        }
+        res_mem = self.client.post('/api/membership/', data=mem_payload, content_type='application/json')
+        self.assertEqual(res_mem.status_code, 201)
+
+        # Confirm data is stored verbatim via ORM parameterization without executing SQLi
+        mem_obj = Membership.objects.get(email="xss_test@example.com")
+        self.assertEqual(mem_obj.full_name, xss_payload)
+        self.assertEqual(mem_obj.organization, sqli_payload)
