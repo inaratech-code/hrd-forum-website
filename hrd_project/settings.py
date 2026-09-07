@@ -14,7 +14,21 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("The SECRET_KEY environment variable must be set in production.")
 
-ALLOWED_HOSTS = ['*'] if DEBUG else [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
+ALLOWED_HOSTS = [
+    'ihrdf.org',
+    'www.ihrdf.org',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ihrdf.org',
+    'https://www.ihrdf.org',
+    'https://*.onrender.com',
+]
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
