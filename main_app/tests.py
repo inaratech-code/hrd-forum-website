@@ -52,11 +52,28 @@ class HRDForumTestCase(TestCase):
             is_gated=True
         )
         
-        # Create test staff user
-        self.staff_user = User.objects.create_superuser(
-            username='admin_test',
-            email='admin@test.org',
+        # Create test superuser A
+        self.superuser_a = User.objects.create_superuser(
+            username='admin_a',
+            email='admin_a@test.org',
             password='testpassword123'
+        )
+
+        # Create test staff user B
+        self.staff_user_b = User.objects.create_user(
+            username='staff_b',
+            email='staff_b@test.org',
+            password='testpassword123',
+            is_staff=True
+        )
+
+        # Create test regular non-staff user C
+        self.regular_user_c = User.objects.create_user(
+            username='user_c',
+            email='user_c@test.org',
+            password='testpassword123',
+            is_staff=False,
+            is_superuser=False
         )
 
     def test_public_api_endpoints(self):
@@ -126,7 +143,7 @@ class HRDForumTestCase(TestCase):
     def test_admin_authentication_and_api(self):
         """Verify admin login and protected admin API endpoints."""
         login_data = {
-            "username": "admin_test",
+            "username": "admin_a",
             "password": "testpassword123"
         }
         res_login = self.client.post('/api/admin/login/', data=login_data, content_type='application/json')
@@ -141,22 +158,76 @@ class HRDForumTestCase(TestCase):
         res_memberships = self.client.get('/api/memberships/', **headers)
         self.assertEqual(res_memberships.status_code, 200)
 
-    def test_portal_views_access(self):
-        """Verify portal pages redirect unauthenticated users and serve authenticated staff."""
-        # Unauthenticated redirect
+    def test_unauthenticated_and_non_staff_authorization_boundaries(self):
+        """Verify unauthenticated and standard non-staff users cannot access portal routes or admin APIs."""
+        # Unauthenticated redirect to login
         res_unauth = self.client.get('/portal/')
         self.assertEqual(res_unauth.status_code, 302)
 
-        # Authenticate staff
-        self.client.force_login(self.staff_user)
-        portal_urls = [
+        # Unauthenticated access to protected API returns 401
+        res_api_unauth = self.client.get('/api/incidents/')
+        self.assertEqual(res_api_unauth.status_code, 401)
+
+        # Non-staff user C logged in
+        self.client.force_login(self.regular_user_c)
+
+        # Non-staff redirected from portal routes
+        res_non_staff_portal = self.client.get('/portal/')
+        self.assertEqual(res_non_staff_portal.status_code, 302)
+
+        # Non-staff denied access to protected API
+        res_non_staff_api = self.client.get('/api/incidents/')
+        self.assertEqual(res_non_staff_api.status_code, 401)
+
+    def test_staff_vs_superuser_vertical_authorization(self):
+        """Verify staff User B can access operational portal views but is denied access to user/group admin views."""
+        # Authenticate staff User B (non-superuser)
+        self.client.force_login(self.staff_user_b)
+
+        # Staff can access operational pages
+        operational_urls = [
             '/portal/',
             '/portal/incidents/',
             '/portal/memberships/',
             '/portal/news/',
             '/portal/gallery/',
             '/portal/resources/',
-            '/portal/blogs/',
+            '/portal/videos/',
+            '/portal/news-flashes/',
+            '/portal/popups/',
+            '/portal/provinces/',
+            '/portal/team/',
+            '/portal/collaborations/',
+            '/portal/gated-leads/'
+        ]
+        for url in operational_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200, f"Staff access failed for {url}")
+
+        # Staff User B cannot access superuser-only user/group management views
+        superuser_urls = [
+            '/portal/users/',
+            '/portal/users/add/',
+            f'/portal/users/{self.superuser_a.id}/edit/',
+            f'/portal/users/{self.superuser_a.id}/delete/',
+            '/portal/groups/',
+            '/portal/groups/add/'
+        ]
+        for url in superuser_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 302, f"Staff user B should be redirected for superuser route {url}")
+
+    def test_superuser_full_authorization(self):
+        """Verify Superuser A has full access to all operational and user management portal pages."""
+        self.client.force_login(self.superuser_a)
+
+        all_portal_urls = [
+            '/portal/',
+            '/portal/incidents/',
+            '/portal/memberships/',
+            '/portal/news/',
+            '/portal/gallery/',
+            '/portal/resources/',
             '/portal/videos/',
             '/portal/news-flashes/',
             '/portal/popups/',
@@ -167,6 +238,6 @@ class HRDForumTestCase(TestCase):
             '/portal/users/',
             '/portal/groups/'
         ]
-        for url in portal_urls:
-            response = self.client.get(url)
-            self.assertEqual(response.status_code, 200, f"Portal GET failed for {url}")
+        for url in all_portal_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200, f"Superuser GET failed for {url}")

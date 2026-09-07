@@ -28,6 +28,15 @@ def staff_required(view_func):
     return actual_decorator(view_func)
 
 
+def superuser_required(view_func):
+    """Decorator requiring superuser privileges for admin user/group management."""
+    actual_decorator = user_passes_test(
+        lambda u: u.is_authenticated and u.is_superuser,
+        login_url='/portal/login/'
+    )
+    return actual_decorator(view_func)
+
+
 # AUTHENTICATION VIEWS
 
 def portal_login_view(request):
@@ -1118,7 +1127,7 @@ def portal_gated_leads_list(request):
 
 # USERS & GROUPS MANAGEMENT
 
-@staff_required
+@superuser_required
 def portal_user_list(request):
     query = request.GET.get('q', '').strip()
     users = User.objects.all()
@@ -1146,7 +1155,7 @@ def portal_user_list(request):
     })
 
 
-@staff_required
+@superuser_required
 def portal_user_add(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -1167,7 +1176,7 @@ def portal_user_add(request):
     })
 
 
-@staff_required
+@superuser_required
 def portal_user_edit(request, user_id):
     usr = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
@@ -1189,7 +1198,7 @@ def portal_user_edit(request, user_id):
     })
 
 
-@staff_required
+@superuser_required
 def portal_user_delete(request, user_id):
     usr = get_object_or_404(User, id=user_id)
     if usr.id == request.user.id:
@@ -1209,7 +1218,7 @@ def portal_user_delete(request, user_id):
     })
 
 
-@staff_required
+@superuser_required
 def portal_group_list(request):
     query = request.GET.get('q', '').strip()
     groups = Group.objects.all()
@@ -1230,7 +1239,7 @@ def portal_group_list(request):
     })
 
 
-@staff_required
+@superuser_required
 def portal_group_add(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
@@ -1251,7 +1260,7 @@ def portal_group_add(request):
     })
 
 
-@staff_required
+@superuser_required
 def portal_group_edit(request, group_id):
     grp = get_object_or_404(Group, id=group_id)
     if request.method == 'POST':
@@ -1273,7 +1282,7 @@ def portal_group_edit(request, group_id):
     })
 
 
-@staff_required
+@superuser_required
 def portal_group_delete(request, group_id):
     grp = get_object_or_404(Group, id=group_id)
     if request.method == 'POST':
@@ -1287,3 +1296,4 @@ def portal_group_delete(request, group_id):
         'item_type': 'Group Role',
         'cancel_url': 'portal_group_list'
     })
+
