@@ -62,7 +62,7 @@
 
                 <!-- Custom Dropzone & Preview Box -->
                 <div id="dropzone" 
-                     onclick="document.getElementById('gallery-file-input').click()"
+                     onclick="(document.getElementById('gallery-file-input') || document.querySelector('input[type=\'file\']')).click()"
                      class="border-2 border-dashed border-slate-300 hover:border-teal-600 bg-slate-50 hover:bg-teal-50/30 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden group">
                     
                     <!-- Preview Image Image Tag -->
@@ -121,7 +121,7 @@
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const fileInput = document.getElementById('gallery-file-input');
+    const fileInput = document.getElementById('gallery-file-input') || document.querySelector('input[type="file"]');
     const dropzone = document.getElementById('dropzone');
     const previewWrapper = document.getElementById('preview-wrapper');
     const imagePreview = document.getElementById('image-preview');

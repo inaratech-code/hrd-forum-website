@@ -1604,11 +1604,10 @@
       if (!document.getElementById('leafletMap')) return;
       if (leafletMapInstance) leafletMapInstance.remove();
 
-      // Thapagaun, New Baneshwor, Kathmandu coordinates
-      const thapagaunLatLng = [27.6939, 85.3340];
+      const thapagaunCoords = [27.6939, 85.3340];
 
       leafletMapInstance = L.map('leafletMap', {
-        center: thapagaunLatLng,
+        center: thapagaunCoords,
         zoom: 15,
         scrollWheelZoom: false
       });
@@ -1617,10 +1616,10 @@
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(leafletMapInstance);
 
-      const marker = L.marker(thapagaunLatLng).addTo(leafletMapInstance);
+      const marker = L.marker(thapagaunCoords).addTo(leafletMapInstance);
       marker.bindPopup(`
-        <div style="font-size: 13px; padding: 6px; min-width: 180px;">
-          <strong style="color: #092347; font-size: 14px;">Central HQ (Bagmati Desk)</strong><br>
+        <div style="font-size: 13px; padding: 6px; min-width: 200px;">
+          <strong style="color: #092347; font-size: 14px;">Human Rights Defenders Forum Nepal</strong><br>
           <span style="color: #475569;">Thapagaun, New Baneshwor, Kathmandu, Nepal</span><br>
           <a href="tel:+9779851180690" style="display: inline-block; margin-top: 6px; background: #0D47A1; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; text-decoration: none;"><i class="fa-solid fa-phone"></i> +977 985-1180690</a>
         </div>

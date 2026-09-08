@@ -46,7 +46,7 @@ try:
              'High-density advocacy missions protecting localized civil advocates.',
              'Monitors gender-based violence, election observers, and grassroots paralegals in dense border corridor districts.'),
 
-            ('Bagmati Province Desk (Central HQ)', 'p3', 'Kathmandu HQ', 27.7172, 85.3240, 20, '+977-01-55511400', 'Anamnagar, Central Complex, Kathmandu', 35, 13,
+            ('Bagmati Province Desk (Central HQ)', 'p3', 'Kathmandu HQ', 27.6939, 85.3340, 20, '+977-01-55511400', 'Thapagaun, New Baneshwor, Kathmandu', 35, 13,
              'Integrating central judicial lobbying with operational rapid response desks.',
              'Serves as the national command hub integrating Supreme Court litigation support, diplomatic liaison, and emergency security funds.'),
 

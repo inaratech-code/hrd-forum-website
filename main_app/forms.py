@@ -26,7 +26,7 @@ class GalleryForm(forms.ModelForm):
                 ('Assemblies', 'Assemblies'),
                 ('General', 'General'),
             ], attrs={'class': SELECT_CLASS}),
-            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'gallery-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://example.com/image.jpg (Optional URL fallback)'}),
         }
 
@@ -40,7 +40,7 @@ class ResourceForm(forms.ModelForm):
             'category': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Report, Guide, Policy...'}),
             'format': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'PDF, DOCX, ZIP...'}),
             'file_size': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': '2.5 MB'}),
-            'file_upload': forms.FileInput(attrs={'class': FILE_CLASS}),
+            'file_upload': forms.FileInput(attrs={'class': FILE_CLASS, 'id': 'resource-file-input'}),
             'file_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
             'is_gated': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
         }
@@ -56,7 +56,7 @@ class NewsForm(forms.ModelForm):
             'published_date': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
             'summary': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Short brief summary...'}),
             'content': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 6, 'placeholder': 'Full article body...'}),
-            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'news-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
         }
 
@@ -126,7 +126,7 @@ class PopupConfigForm(forms.ModelForm):
             'link_url': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'link_text': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'active': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
-            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'popup-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
         }
 
@@ -140,7 +140,7 @@ class BlogForm(forms.ModelForm):
             'author': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'published_date': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
             'content': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 6}),
-            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'blog-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
         }
 
@@ -167,7 +167,7 @@ class TeamMemberForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': SELECT_CLASS}),
             'bio': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
             'order_index': forms.NumberInput(attrs={'class': INPUT_CLASS}),
-            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'team-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
         }
 
@@ -182,7 +182,7 @@ class CollaborationForm(forms.ModelForm):
             'blurb': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
             'website_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
             'order_index': forms.NumberInput(attrs={'class': INPUT_CLASS}),
-            'logo': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'logo': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'collab-file-input'}),
             'logo_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
         }
 

@@ -20,7 +20,7 @@ class HRDForumTestCase(TestCase):
             coords_lng=85.3240,
             coordinators_count=20,
             helpline_phone="+977-01-55511400",
-            address="Anamnagar, Kathmandu",
+            address="Thapagaun, New Baneshwor, Kathmandu",
             active_cases=35,
             description="HQ Desk",
             long_summary="Long summary for HQ"
