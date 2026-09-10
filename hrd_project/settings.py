@@ -83,23 +83,18 @@ TEMPLATES = [
 
 import dj_database_url
 
-# Database Configuration: PostgreSQL Production Engine (Neon / Supabase / Railway / Vercel Postgres)
-DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or os.environ.get('POSTGRES_URL_NON_POOLING')
+# Database Configuration: Cloud PostgreSQL (Neon DB) with Local Fallback
+DEFAULT_DATABASE_URL = 'postgresql://neondb_owner:npg_L2o5GsliXRty@ep-fragrant-dust-a7575oci.ap-southeast-2.aws.neon.tech/neondb?sslmode=require'
+DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or DEFAULT_DATABASE_URL
 
-if DATABASE_URL:
+if DATABASE_URL and not os.environ.get('USE_LOCAL_SQLITE'):
     DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
             conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True if 'sqlite' not in DATABASE_URL.lower() else False,
+            ssl_require=True if 'sqlite' not in DATABASE_URL.lower() else False
         )
     }
-elif os.environ.get('VERCEL'):
-    raise ImproperlyConfigured(
-        "DATABASE_URL environment variable is required on Vercel to connect to PostgreSQL and prevent data loss. "
-        "Please add DATABASE_URL (e.g. postgresql://user:pass@ep-xyz.neon.tech/hrd_forum?sslmode=require) in Vercel project settings."
-    )
 else:
     DATABASES = {
         'default': {
