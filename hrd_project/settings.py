@@ -83,18 +83,28 @@ TEMPLATES = [
 
 import dj_database_url
 
-# Database Configuration: Cloud PostgreSQL (Neon DB) with Local Fallback
+# Database Configuration: Cloud PostgreSQL (Neon DB) with Local SQLite Fallback
 DEFAULT_DATABASE_URL = 'postgresql://neondb_owner:npg_L2o5GsliXRty@ep-fragrant-dust-a7575oci.ap-southeast-2.aws.neon.tech/neondb?sslmode=require'
-DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or DEFAULT_DATABASE_URL
+DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
 
-if DATABASE_URL and not os.environ.get('USE_LOCAL_SQLITE'):
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True if 'sqlite' not in DATABASE_URL.lower() else False
-        )
-    }
+use_sqlite = os.environ.get('USE_LOCAL_SQLITE', 'False').lower() in ('true', '1', 't')
+
+if DATABASE_URL and not use_sqlite:
+    try:
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=DATABASE_URL,
+                conn_max_age=600,
+                ssl_require=True if 'sqlite' not in DATABASE_URL.lower() else False
+            )
+        }
+    except Exception:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'hrd_forum.db',
+            }
+        }
 else:
     DATABASES = {
         'default': {
