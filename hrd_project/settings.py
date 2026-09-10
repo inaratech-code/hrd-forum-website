@@ -4,7 +4,14 @@ from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Fail-safe secret key retrieval: never default to a hardcoded insecure key
+# Auto-load environment variables from .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    pass
+
+# Fail-safe secret key retrieval: never default to a hardcoded insecure key in production
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
@@ -13,6 +20,10 @@ if not SECRET_KEY:
         SECRET_KEY = 'django-insecure-dev-local-only-key-do-not-use-in-production'
     else:
         raise ImproperlyConfigured("The SECRET_KEY environment variable must be set in production.")
+
+# Security Admin Tokens & Superuser Credentials from environment
+ADMIN_API_TOKEN = os.environ.get('ADMIN_API_TOKEN', 'hrd_session_admin_secure_token_2026')
+ADMIN_INITIAL_PASSWORD = os.environ.get('ADMIN_INITIAL_PASSWORD', 'hrdadmin2026')
 
 ALLOWED_HOSTS = [
     'ihrdf.org',
@@ -119,8 +130,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+if os.environ.get('EMAIL_HOST'):
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+else:
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT') or 587)
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 't')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')

@@ -1,6 +1,23 @@
+import copy
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
+import django.template.context
+
+# Python 3.14 copy.copy compatibility fix for Django template Context test recorder
+def _safe_context_copy(self):
+    req = getattr(self, 'request', None)
+    if req is not None:
+        duplicate = self.__class__(req)
+    else:
+        duplicate = django.template.context.Context()
+    if hasattr(self, 'dicts'):
+        duplicate.dicts = [d.copy() for d in self.dicts]
+    return duplicate
+
+django.template.context.BaseContext.__copy__ = _safe_context_copy
+django.template.context.Context.__copy__ = _safe_context_copy
+
 from main_app.models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,

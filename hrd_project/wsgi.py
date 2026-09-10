@@ -127,6 +127,11 @@ try:
 
         Collaboration.objects.create(name='Adv. Govinda K.C.', category='individual', logo_url='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', blurb='Senior Advocate offering emergency bail litigation and habeas corpus writs across Supreme and High Courts.', website_url='#', order_index=1)
         Collaboration.objects.create(name='Dr. Anita Bhattarai', category='individual', logo_url='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', blurb='Digital security expert providing encrypted communication channels and digital forensics support for field monitors.', website_url='#', order_index=2)
+
+    from main_app.models import Video
+    if not Video.objects.exists():
+        Video.objects.create(title='Voices of Frontline Defenders in Nepal', embed_url='https://www.youtube.com/embed/5qap5aO4i9A', category='Documentary', published_date=date(2025, 6, 1))
+        Video.objects.create(title='Provincial Helpdesk Operations & Protection Protocols', embed_url='https://www.youtube.com/embed/L_LUpnjgPso', category='Training', published_date=date(2025, 9, 15))
 except Exception as e:
     print(f"WSGI Auto-Migration Info: {e}")
 

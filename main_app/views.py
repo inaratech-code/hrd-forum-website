@@ -108,8 +108,9 @@ def parse_request_data(request):
 def staff_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
+        admin_token = getattr(settings, 'ADMIN_API_TOKEN', os.environ.get('ADMIN_API_TOKEN', 'hrd_session_admin_secure_token_2026'))
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-        is_token_auth = 'hrd_session_admin_secure_token_2026' in auth_header
+        is_token_auth = (admin_token and admin_token in auth_header)
         if not (is_token_auth or (request.user and request.user.is_authenticated and request.user.is_staff)):
             return JsonResponse({"success": False, "error": "Unauthorized access. Staff credentials required."}, status=401)
         return view_func(request, *args, **kwargs)
@@ -472,9 +473,10 @@ def admin_login(request):
     user = authenticate(request, username=username, password=password)
     if user and user.is_staff:
         login(request, user)
+        token = getattr(settings, 'ADMIN_API_TOKEN', os.environ.get('ADMIN_API_TOKEN', 'hrd_session_admin_secure_token_2026'))
         return JsonResponse({
             "success": True,
-            "token": "hrd_session_admin_secure_token_2026",
+            "token": token,
             "username": username,
             "message": "Admin authorization successful!"
         })

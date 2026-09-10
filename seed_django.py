@@ -135,4 +135,8 @@ if not Collaboration.objects.exists():
     Collaboration.objects.create(name='person h', category='individual', logo_url='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', blurb='Senior Advocate offering emergency bail litigation and habeas corpus writs.', website_url='#', order_index=1)
     Collaboration.objects.create(name='person i', category='individual', logo_url='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', blurb='Digital security expert providing encrypted communication channels.', website_url='#', order_index=2)
 
+if not Video.objects.exists():
+    Video.objects.create(title='Voices of Frontline Defenders in Nepal', embed_url='https://www.youtube.com/embed/5qap5aO4i9A', category='Documentary', published_date=date(2025, 6, 1))
+    Video.objects.create(title='Provincial Helpdesk Operations & Protection Protocols', embed_url='https://www.youtube.com/embed/L_LUpnjgPso', category='Training', published_date=date(2025, 9, 15))
+
 print("\n--- SEEDING COMPLETED SUCCESSFULLY ---")
