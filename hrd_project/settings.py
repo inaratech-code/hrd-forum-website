@@ -70,20 +70,32 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'hrd_project.wsgi.application'
+import dj_database_url
 
-# Database Configuration
-if os.environ.get('VERCEL') or not os.access(BASE_DIR, os.W_OK):
-    db_path = '/tmp/hrd_forum.db'
-else:
-    db_path = BASE_DIR / 'hrd_forum.db'
+# Database Configuration: PostgreSQL Production Engine (Neon / Supabase / Railway / Vercel Postgres)
+DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or os.environ.get('POSTGRES_URL_NON_POOLING')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': db_path,
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True if 'sqlite' not in DATABASE_URL.lower() else False,
+        )
     }
-}
+elif os.environ.get('VERCEL'):
+    raise ImproperlyConfigured(
+        "DATABASE_URL environment variable is required on Vercel to connect to PostgreSQL and prevent data loss. "
+        "Please add DATABASE_URL (e.g. postgresql://user:pass@ep-xyz.neon.tech/hrd_forum?sslmode=require) in Vercel project settings."
+    )
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'hrd_forum.db',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
