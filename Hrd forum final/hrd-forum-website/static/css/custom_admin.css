@@ -1,0 +1,5 @@
+from django import template
+
+register = template.Library()
+
+# Add any custom template filters/tags your views require below

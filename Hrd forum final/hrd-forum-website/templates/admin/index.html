@@ -1,0 +1,202 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static log %}
+
+{% block extrahead %}
+{{ block.super }}
+<!-- Chart.js for Admin Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="custom-admin-container" style="display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Executive Hero Banner -->
+    <div style="background: #0f172a; color: #fff; padding: 24px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+            <h1 style="margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-shield-alt" style="color: #38bdf8;"></i> HRD Forum Nepal Command Center
+            </h1>
+            <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; display: flex; gap: 16px; flex-wrap: wrap;">
+                <span><i class="fas fa-circle text-success" style="font-size: 9px;"></i> Network Active</span>
+                <span><i class="fas fa-globe mr-1"></i> 7 Provincial Desks</span>
+                <span><i class="fas fa-database mr-1"></i> Real-time Sync</span>
+            </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'admin:main_app_incident_add' %}" style="background: #2563eb; color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-plus-circle"></i> Log Incident
+            </a>
+            <a href="/" target="_blank" style="background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-external-link-alt"></i> Public Site
+            </a>
+        </div>
+    </div>
+
+    <!-- 4-Grid KPI Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <!-- KPI 1 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Emergency Cases</span>
+                <span style="background: #fee2e2; color: #ef4444; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">
+                {{ kpi_incidents_urgent|default:0 }}
+                <span style="font-size: 0.815rem; color: #94a3b8; font-weight: 500;">/ {{ kpi_incidents_total|default:0 }} Total</span>
+            </div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_incident_changelist' %}" style="color: #ef4444; font-weight: 600; text-decoration: none;">Review Cases &rarr;</a>
+            </div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Pending Members</span>
+                <span style="background: #fef3c7; color: #f59e0b; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-id-card"></i>
+                </span>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">
+                {{ kpi_memberships_pending|default:0 }}
+                <span style="font-size: 0.815rem; color: #94a3b8; font-weight: 500;">/ {{ kpi_memberships_total|default:0 }} Total</span>
+            </div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_membership_changelist' %}" style="color: #f59e0b; font-weight: 600; text-decoration: none;">Review Requests &rarr;</a>
+            </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">News Bulletins</span>
+                <span style="background: #dbeafe; color: #2563eb; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-newspaper"></i>
+                </span>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">{{ kpi_news_total|default:0 }}</div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_news_changelist' %}" style="color: #2563eb; font-weight: 600; text-decoration: none;">Manage Articles &rarr;</a>
+            </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.875rem; font-weight: 600; color: #64748b;">Active Provinces</span>
+                <span style="background: #dcfce7; color: #10b981; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-map-marked-alt"></i>
+                </span>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">{{ kpi_provinces_total|default:7 }}</div>
+            <div style="margin-top: 12px; font-size: 0.815rem;">
+                <a href="{% url 'admin:main_app_province_changelist' %}" style="color: #10b981; font-weight: 600; text-decoration: none;">View Networks &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Charts -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h3 style="margin: 0 0 16px 0; font-size: 1rem; color: #1e293b;">Database Telemetry Overview</h3>
+            <div style="height: 230px; position: relative;">
+                <canvas id="incidentOverviewChart"></canvas>
+            </div>
+        </div>
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h3 style="margin: 0 0 16px 0; font-size: 1rem; color: #1e293b;">Incident Priority Ratio</h3>
+            <div style="height: 230px; position: relative;">
+                <canvas id="priorityRatioChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Standard Django Model Application Registry -->
+    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem; color: #1e293b;">
+            <i class="fas fa-database mr-2" style="color: #2563eb;"></i> Application Models
+        </h3>
+        {% include "admin/app_list.html" with app_list=app_list %}
+    </div>
+
+    <!-- Audit Log -->
+    <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem; color: #1e293b;">
+            <i class="fas fa-history mr-2" style="color: #64748b;"></i> Recent Actions
+        </h3>
+        {% get_admin_log 8 as admin_log for_user user %}
+        {% if not admin_log %}
+            <p style="color: #94a3b8; font-size: 0.875rem; margin: 0;">No recent actions recorded.</p>
+        {% else %}
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                {% for entry in admin_log %}
+                    <li style="font-size: 0.875rem; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: 600; color: #334155;">{{ entry.object_repr }}</span>
+                        <span style="color: #94a3b8; font-size: 0.75rem;">({{ entry.content_type }})</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const ctxBar = document.getElementById('incidentOverviewChart')?.getContext('2d');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Urgent Incidents', 'Pending Members', 'News Articles', 'Provinces', 'Visitors'],
+                datasets: [{
+                    label: 'Records',
+                    data: [
+                        {{ kpi_incidents_urgent|default:0 }},
+                        {{ kpi_memberships_pending|default:0 }},
+                        {{ kpi_news_total|default:0 }},
+                        {{ kpi_provinces_total|default:7 }},
+                        {{ kpi_visitors_total|default:0 }}
+                    ],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    const ctxPie = document.getElementById('priorityRatioChart')?.getContext('2d');
+    if (ctxPie) {
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Urgent', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [
+                        {{ inc_urgent_count|default:1 }},
+                        {{ inc_high_count|default:1 }},
+                        {{ inc_medium_count|default:1 }},
+                        {{ inc_low_count|default:0 }}
+                    ],
+                    backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#6366f1']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

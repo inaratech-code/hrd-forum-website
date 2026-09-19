@@ -1,0 +1,141 @@
+{% extends "portal/base_portal.html" %}
+
+{% block title %}Dashboard | HRD Forum Portal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Welcome Hero Banner -->
+    <div class="bg-gradient-to-r from-navy-900 via-slate-900 to-navy-800 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="space-y-2 z-10">
+            <div class="inline-flex items-center space-x-2 bg-teal-500/20 border border-teal-400/30 text-teal-300 text-xs font-bold px-3 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                <span>Portal Active & Synced</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">HRD Forum Executive Hub</h1>
+            <p class="text-slate-300 text-sm max-w-xl">
+                Dedicated management portal for defender networks, emergency incidents, field reports, and public resources.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 z-10">
+            <a href="{% url 'portal_gallery_add' %}" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 text-xs">
+                <i class="fas fa-plus-circle"></i>
+                <span>+ Add Photo</span>
+            </a>
+            <a href="{% url 'portal_resource_add' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 text-xs">
+                <i class="fas fa-file-upload"></i>
+                <span>+ Add Resource</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Executive KPI Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Card 1: Urgent Incidents -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Urgent Cases</span>
+                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-extrabold text-slate-900">
+                {{ kpi_incidents_urgent }}
+                <span class="text-xs font-bold text-red-500">/ {{ kpi_incidents_total }} Total</span>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 border-t border-slate-100">
+                <span>Emergency Support</span>
+                <a href="{% url 'portal_incidents_list' %}" class="text-teal-700 hover:underline">View All &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Card 2: Pending Memberships -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Members</span>
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fas fa-id-card"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-extrabold text-slate-900">
+                {{ kpi_memberships_pending }}
+                <span class="text-xs font-bold text-amber-500">/ {{ kpi_memberships_total }} Total</span>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 border-t border-slate-100">
+                <span>Defender Requests</span>
+                <a href="{% url 'portal_memberships_list' %}" class="text-teal-700 hover:underline">Review &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Card 3: Photo Gallery Total -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Photo Gallery</span>
+                <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-lg font-bold">
+                    <i class="fas fa-images"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-extrabold text-slate-900">{{ kpi_gallery_total }}</div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 border-t border-slate-100">
+                <span>Advocacy Media</span>
+                <a href="{% url 'portal_gallery_list' %}" class="text-teal-700 hover:underline">Manage Gallery &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Card 4: Resources -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Resources</span>
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-extrabold text-slate-900">{{ kpi_resources_total }}</div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 border-t border-slate-100">
+                <span>Guides & Reports</span>
+                <a href="{% url 'portal_resource_list' %}" class="text-teal-700 hover:underline">Manage Documents &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Photo Gallery Showcase -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
+                <i class="fas fa-images text-teal-600"></i>
+                <span>Recent Photo Gallery Uploads</span>
+            </h2>
+            <a href="{% url 'portal_gallery_list' %}" class="text-xs font-bold text-teal-700 hover:underline">View All Gallery &rarr;</a>
+        </div>
+
+        {% if recent_gallery %}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {% for photo in recent_gallery %}
+            <div class="group relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-[4/3]">
+                {% if photo.display_image %}
+                    <img src="{{ photo.display_image }}" alt="{{ photo.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                        <i class="fas fa-image text-2xl"></i>
+                    </div>
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition p-2 flex flex-col justify-end">
+                    <p class="text-white text-xs font-bold truncate">{{ photo.title }}</p>
+                    <div class="flex space-x-2 mt-1">
+                        <a href="{% url 'portal_gallery_edit' photo.id %}" class="text-[10px] bg-teal-600 text-white font-bold px-2 py-0.5 rounded">Edit</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8 text-slate-400">
+            <i class="fas fa-image text-3xl mb-2"></i>
+            <p class="text-sm font-medium">No photo gallery entries available.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
