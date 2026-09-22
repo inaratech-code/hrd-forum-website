@@ -258,6 +258,59 @@ class TeamMember(models.Model):
         return f"{self.name} ({self.get_category_display()})"
 
 
+class SiteSettings(models.Model):
+    vision_text = models.TextField(blank=True, default='To establish a society where human rights are respected, protected, and fulfilled for all.')
+    mission_text = models.TextField(blank=True, default='To protect and empower frontline human rights defenders across Nepal through legal support, capacity building, and national coordination.')
+    hero_image = models.ImageField(upload_to='hero/', blank=True, null=True)
+    
+    # Bank Details for Support Us Page
+    bank_qr_image = models.ImageField(upload_to='bank/', blank=True, null=True)
+    bank_name = models.CharField(max_length=150, default='Nepal Bank Limited')
+    bank_account_name = models.CharField(max_length=150, default='HRD Forum Nepal')
+    bank_account_no = models.CharField(max_length=100, default='0011223344556677')
+    bank_branch = models.CharField(max_length=150, default='Kathmandu Main')
+
+    class Meta:
+        verbose_name_plural = 'Site Settings'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return 'Global Site Settings'
+
+
+class SupportContribution(models.Model):
+    name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField(blank=True, null=True)
+    receipt_image = models.ImageField(upload_to='contributions/')
+    notes = models.TextField(blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"Contribution from {self.name}"
+
+
+class OrganizationalUpdate(models.Model):
+    title = models.CharField(max_length=255)
+    date_posted = models.DateField(default=timezone.now)
+    document_attachment = models.FileField(upload_to='updates/documents/', blank=True, null=True)
+    description = models.TextField(blank=True, default='')
+    is_urgent = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = "Organizational Updates"
+        ordering = ['-date_posted', '-id']
+
+    def __str__(self):
+        return self.title
+
+
 class Collaboration(models.Model):
     CATEGORY_CHOICES = [
         ('institutional', 'Institutional Collaboration'),

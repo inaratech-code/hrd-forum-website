@@ -12,6 +12,7 @@ except ImportError:
     pass
 
 # Fail-safe secret key retrieval: never default to a hardcoded insecure key in production
+# SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
@@ -93,7 +94,10 @@ TEMPLATES = [
     },
 ]
 
-import dj_database_url
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 # Database Configuration: PostgreSQL Production Engine (Neon / Supabase / Railway / Vercel Postgres)
 DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL') or os.environ.get('POSTGRES_URL_NON_POOLING')

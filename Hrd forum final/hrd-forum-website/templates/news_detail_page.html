@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ news.title }} - HRD Forum Nepal{% endblock %}
+{% block meta_description %}{{ news.summary|default:news.title|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container text-center">
+        <h1 class="page-title">News & Announcements</h1>
+        <p class="page-subtitle">Stay updated with the latest from HRD Forum Nepal</p>
+    </div>
+</div>
+
+<div class="container" style="padding: 60px 0; max-width: 900px;">
+    <!-- Article Header -->
+    <div style="margin-bottom: 30px;">
+        <span class="badge" style="background-color: #0f766e; color: #fff; padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 12px; margin-bottom: 12px; display: inline-block;">
+            {{ news.category }}
+        </span>
+        <h1 style="font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 16px; line-height: 1.3;">
+            {{ news.title }}
+        </h1>
+        <div style="color: #64748b; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-regular fa-calendar"></i>
+            <span>{{ news.published_date|date:"F d, Y" }}</span>
+        </div>
+    </div>
+
+    <!-- Article Image -->
+    {% if news.image %}
+    <div style="margin-bottom: 40px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+        <img src="{{ news.image.url }}" alt="{{ news.title }}" style="width: 100%; height: auto; display: block; max-height: 500px; object-fit: cover;">
+    </div>
+    {% endif %}
+
+    <!-- Article Content -->
+    <div style="font-size: 16px; line-height: 1.8; color: #334155; margin-bottom: 60px;">
+        {% if news.content %}
+            {{ news.content|safe|linebreaks }}
+        {% elif news.summary %}
+            {{ news.summary|safe|linebreaks }}
+        {% else %}
+            <p>No additional content provided.</p>
+        {% endif %}
+    </div>
+    
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 50px;">
+
+    <!-- Recent News Suggestions -->
+    {% if recent_news %}
+    <div>
+        <h3 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-newspaper text-brand-teal"></i> Recent News
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+            {% for item in recent_news %}
+            <a href="{% url 'news_detail' item.id %}" style="display: block; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.25s ease; text-decoration: none; color: inherit; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                {% if item.image %}
+                <div style="height: 160px; overflow: hidden;">
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                {% endif %}
+                <div style="padding: 20px;">
+                    <div style="color: #64748b; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
+                        {{ item.published_date|date:"M d, Y" }}
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; line-height: 1.4;">
+                        {{ item.title }}
+                    </h4>
+                    <span style="color: #0f766e; font-size: 13px; font-weight: 700;">Read More <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i></span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

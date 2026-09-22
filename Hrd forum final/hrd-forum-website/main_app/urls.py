@@ -6,6 +6,10 @@ urlpatterns = [
     # Frontend Entry
     path('', views.index_page, name='index'),
     path('public/', views.index_page, name='index_public'),
+    path('support/', views.support_page_view, name='support_page'),
+    path('about/', views.about_page, name='about_page'),
+    path('gallery/', views.gallery_page, name='gallery_page'),
+    path('news/<int:news_id>/', views.news_detail_page, name='news_detail'),
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
 
@@ -45,6 +49,12 @@ urlpatterns = [
     path('portal/news/add/', portal_views.portal_news_add, name='portal_news_add'),
     path('portal/news/<int:item_id>/edit/', portal_views.portal_news_edit, name='portal_news_edit'),
     path('portal/news/<int:item_id>/delete/', portal_views.portal_news_delete, name='portal_news_delete'),
+
+    # Updates CRUD
+    path('portal/updates/', portal_views.portal_updates_list, name='portal_updates_list'),
+    path('portal/updates/add/', portal_views.portal_updates_add, name='portal_updates_add'),
+    path('portal/updates/<int:item_id>/edit/', portal_views.portal_updates_edit, name='portal_updates_edit'),
+    path('portal/updates/<int:item_id>/delete/', portal_views.portal_updates_delete, name='portal_updates_delete'),
 
     # Provinces CRUD
     path('portal/provinces/', portal_views.portal_province_list, name='portal_province_list'),
@@ -88,8 +98,9 @@ urlpatterns = [
     path('portal/popups/<int:popup_id>/edit/', portal_views.portal_popup_edit, name='portal_popup_edit'),
     path('portal/popups/<int:popup_id>/delete/', portal_views.portal_popup_delete, name='portal_popup_delete'),
 
-    # Gated Leads
+    # Gated Leads & Support
     path('portal/gated-leads/', portal_views.portal_gated_leads_list, name='portal_gated_leads_list'),
+    path('portal/support-contributions/', portal_views.portal_contributions_list, name='portal_contributions_list'),
 
     # Users & Groups
     path('portal/users/', portal_views.portal_user_list, name='portal_user_list'),
@@ -103,8 +114,10 @@ urlpatterns = [
     path('portal/groups/<int:group_id>/delete/', portal_views.portal_group_delete, name='portal_group_delete'),
 
     path('portal/settings/', portal_views.portal_settings_view, name='portal_settings'),
+    path('portal/site-settings/', portal_views.portal_site_settings_view, name='portal_site_settings'),
 
     # Public Read API Endpoints (With and without trailing slashes)
+    path('api/settings/', views.api_site_settings, name='api_site_settings'),
     path('api/stats/', views.api_stats, name='api_stats'),
     path('api/stats', views.api_stats),
     path('api/provinces/', views.api_provinces, name='api_provinces'),
@@ -117,6 +130,8 @@ urlpatterns = [
     path('api/news', views.api_news),
     path('api/news/<int:news_id>/', views.api_news_detail, name='api_news_detail'),
     path('api/news/<int:news_id>', views.api_news_detail),
+    path('api/updates/', views.api_updates, name='api_updates'),
+    path('api/updates', views.api_updates),
     path('api/resources/', views.api_resources, name='api_resources'),
     path('api/resources', views.api_resources),
     path('api/popup/', views.api_popup, name='api_popup'),

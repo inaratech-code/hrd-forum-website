@@ -1,0 +1,118 @@
+{% extends "portal/base_portal.html" %}
+{% block title %}Site Settings - HRD Forum Portal{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Global Site Settings</h1>
+        <p class="text-xs text-slate-500 font-medium mt-1">Manage about page, mission, vision, and support text.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        {% csrf_token %}
+        <div class="p-6 sm:p-8 space-y-6">
+            {% if form.non_field_errors %}
+                <div class="rounded-lg bg-red-50 p-4 border-l-4 border-red-500 mb-6">
+                    <p class="text-sm text-red-700 font-medium">{{ form.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+            <div class="space-y-6">
+                
+                <!-- Group 1: Vision & Mission -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-bullseye text-teal-600 mr-2"></i> Vision & Mission</span>
+                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
+                            Save Group
+                        </button>
+                    </h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        {% for field in form %}
+                            {% if field.name == 'vision_text' or field.name == 'mission_text' %}
+                                <div class="flex flex-col space-y-1.5">
+                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Group 2: Banner Images -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
+                        <span><i class="fa-regular fa-images text-teal-600 mr-2"></i> Page Banners</span>
+                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
+                            Save Group
+                        </button>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for field in form %}
+                            {% if field.name == 'hero_image' %}
+                                <div class="flex flex-col space-y-1.5">
+                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
+                                    
+                                    {% if form.instance.hero_image %}
+                                    <div class="mb-2 p-2 bg-slate-100 border border-slate-200 rounded-lg flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded overflow-hidden bg-white border border-slate-200">
+                                                <img src="{{ form.instance.hero_image.url }}" alt="Hero" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="text-xs text-slate-600 font-medium truncate max-w-[200px]">
+                                                {{ form.instance.hero_image.name }}
+                                            </div>
+                                        </div>
+                                        <a href="{{ form.instance.hero_image.url }}" target="_blank" class="text-teal-600 hover:text-teal-700 text-[11px] font-bold">View</a>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {{ field }}
+                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Group 3: Bank & Support Details -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-building-columns text-teal-600 mr-2"></i> Bank Transfer Details</span>
+                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
+                            Save Group
+                        </button>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for field in form %}
+                            {% if field.name == 'bank_qr_image' or field.name == 'bank_name' or field.name == 'bank_account_name' or field.name == 'bank_account_no' or field.name == 'bank_branch' %}
+                                <div class="flex flex-col space-y-1.5">
+                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
+                                    
+                                    {% if field.name == 'bank_qr_image' and form.instance.bank_qr_image %}
+                                    <div class="mb-2 p-2 bg-slate-100 border border-slate-200 rounded-lg flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded overflow-hidden bg-white border border-slate-200">
+                                                <img src="{{ form.instance.bank_qr_image.url }}" alt="QR" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="text-xs text-slate-600 font-medium truncate max-w-[200px]">
+                                                {{ form.instance.bank_qr_image.name }}
+                                            </div>
+                                        </div>
+                                        <a href="{{ form.instance.bank_qr_image.url }}" target="_blank" class="text-teal-600 hover:text-teal-700 text-[11px] font-bold">View</a>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {{ field }}
+                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

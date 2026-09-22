@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User, Group
 from .models import (
-    Gallery, Resource, Incident, Membership, News, Province,
-    PopupConfig, Blog, Video, TeamMember, Collaboration, NewsFlash
+    Resource, Province, Membership, Incident, News,
+    PopupConfig, Gallery, Blog, Video, TeamMember, 
+    Collaboration, NewsFlash, SiteSettings, SupportContribution
 )
 
 # HELPER INPUT STYLES
@@ -36,12 +37,10 @@ class GalleryForm(forms.ModelForm):
 class ResourceForm(forms.ModelForm):
     class Meta:
         model = Resource
-        fields = ['title', 'category', 'format', 'file_size', 'file_upload', 'file_url', 'is_gated']
+        fields = ['title', 'category', 'file_upload', 'file_url', 'is_gated']
         widgets = {
             'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Document title...'}),
-            'category': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Report, Guide, Policy...'}),
-            'format': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'PDF, DOCX, ZIP...'}),
-            'file_size': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': '2.5 MB'}),
+            'category': forms.Select(attrs={'class': SELECT_CLASS}),
             'file_upload': forms.FileInput(attrs={'class': FILE_CLASS, 'id': 'resource-file-input'}),
             'file_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
             'is_gated': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
@@ -60,6 +59,20 @@ class NewsForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 6, 'placeholder': 'Full article body...'}),
             'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'news-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
+        }
+
+
+class OrganizationalUpdateForm(forms.ModelForm):
+    class Meta:
+        from .models import OrganizationalUpdate
+        model = OrganizationalUpdate
+        fields = ['title', 'date_posted', 'description', 'is_urgent', 'document_attachment']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Update title...'}),
+            'date_posted': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
+            'description': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4, 'placeholder': 'Full details...'}),
+            'is_urgent': forms.CheckboxInput(attrs={'class': 'form-checkbox h-5 w-5 text-cobalt-accent'}),
+            'document_attachment': forms.FileInput(attrs={'class': FILE_CLASS}),
         }
 
 
@@ -260,4 +273,36 @@ class GroupForm(forms.ModelForm):
         fields = ['name']
         widgets = {
             'name': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Group / Role Name'}),
+        }
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            'vision_text', 'mission_text', 
+            'hero_image', 'bank_qr_image',
+            'bank_name', 'bank_account_name', 'bank_account_no', 'bank_branch'
+        ]
+        widgets = {
+            'vision_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
+            'mission_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
+            'hero_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'hero-file-input'}),
+            'bank_qr_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'qr-file-input'}),
+            'bank_name': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'bank_account_name': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'bank_account_no': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'bank_branch': forms.TextInput(attrs={'class': INPUT_CLASS}),
+        }
+
+class SupportContributionForm(forms.ModelForm):
+    class Meta:
+        model = SupportContribution
+        fields = ['name', 'phone', 'email', 'receipt_image', 'notes']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Full Name'}),
+            'phone': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Phone Number'}),
+            'email': forms.EmailInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Email Address'}),
+            'receipt_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*'}),
+            'notes': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Any additional notes...'}),
         }

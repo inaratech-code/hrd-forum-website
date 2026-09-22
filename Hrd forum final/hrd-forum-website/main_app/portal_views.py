@@ -13,12 +13,12 @@ from .models import (
     Gallery, Resource, Incident, Membership, News, Province,
     Stats, UniqueVisitor, Blog, Video, TeamMember, Collaboration,
     NewsFlash, PopupConfig, GatedDownloadLead
-)
+, SiteSettings)
 from .forms import (
     GalleryForm, ResourceForm, NewsForm, ProvinceForm, MembershipForm,
     IncidentForm, PopupConfigForm, BlogForm, VideoForm, TeamMemberForm,
     CollaborationForm, NewsFlashForm, UserForm, GroupForm, PortalPasswordChangeForm
-)
+, SiteSettingsForm)
 
 logger = logging.getLogger(__name__)
 
@@ -567,6 +567,87 @@ def portal_news_delete(request, item_id):
         'object_title': item.title,
         'item_type': 'News Article',
         'cancel_url': 'portal_news_list'
+    })
+
+
+# ORGANIZATIONAL UPDATES CRUD
+
+@staff_required
+def portal_updates_list(request):
+    from .models import OrganizationalUpdate
+    query = request.GET.get('q', '').strip()
+    updates = OrganizationalUpdate.objects.all()
+
+    if query:
+        updates = updates.filter(Q(title__icontains=query) | Q(description__icontains=query))
+
+    updates = updates.order_by('-date_posted', '-id')
+
+    return render(request, 'portal/generic_list.html', {
+        'items': updates,
+        'query': query,
+        'title': 'Organizational Updates',
+        'module_slug': 'updates',
+        'headers': ['Title', 'Date Posted', 'Urgent?'],
+        'fields': ['title', 'date_posted', 'is_urgent'],
+        'add_url': 'portal_updates_add',
+        'edit_url_name': 'portal_updates_edit',
+        'delete_url_name': 'portal_updates_delete',
+    })
+
+
+@staff_required
+def portal_updates_add(request):
+    from .forms import OrganizationalUpdateForm
+    if request.method == 'POST':
+        form = OrganizationalUpdateForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Organizational Update added successfully.")
+            return redirect('portal_updates_list')
+    else:
+        form = OrganizationalUpdateForm()
+    return render(request, 'portal/generic_form.html', {
+        'form': form,
+        'title': 'Add Organizational Update',
+        'back_url': 'portal_updates_list'
+    })
+
+
+@staff_required
+def portal_updates_edit(request, item_id):
+    from .models import OrganizationalUpdate
+    from .forms import OrganizationalUpdateForm
+    item = get_object_or_404(OrganizationalUpdate, id=item_id)
+    if request.method == 'POST':
+        form = OrganizationalUpdateForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Organizational Update updated successfully.")
+            return redirect('portal_updates_list')
+    else:
+        form = OrganizationalUpdateForm(instance=item)
+    return render(request, 'portal/generic_form.html', {
+        'form': form,
+        'title': f"Edit Update: {item.title}",
+        'back_url': 'portal_updates_list'
+    })
+
+
+@staff_required
+def portal_updates_delete(request, item_id):
+    from .models import OrganizationalUpdate
+    item = get_object_or_404(OrganizationalUpdate, id=item_id)
+    if request.method == 'POST':
+        title = item.title
+        item.delete()
+        messages.success(request, f"Update '{title}' deleted.")
+        return redirect('portal_updates_list')
+
+    return render(request, 'portal/confirm_delete.html', {
+        'object_title': item.title,
+        'item_type': 'Organizational Update',
+        'cancel_url': 'portal_updates_list'
     })
 
 
@@ -1345,20 +1426,60 @@ def portal_group_delete(request, group_id):
 
 # ACCOUNT SETTINGS
 
+
+
+
+
+
 @staff_required
-def portal_settings_view(request):
-    password_form = PortalPasswordChangeForm(user=request.user)
-
+def portal_site_settings_view(request):
+    settings_obj = SiteSettings.objects.first()
+    if not settings_obj:
+        settings_obj = SiteSettings.objects.create()
+    
     if request.method == 'POST':
-        password_form = PortalPasswordChangeForm(user=request.user, data=request.POST)
-        if password_form.is_valid():
-            user = password_form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, "Your password has been updated successfully.")
-            return redirect('portal_settings')
-        messages.error(request, "Could not update password. Please check the form and try again.")
+        form = SiteSettingsForm(request.POST, request.FILES, instance=settings_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Site settings updated.')
+            return redirect('portal_site_settings')
+        else:
+            messages.error(request, 'Failed to update settings.')
+    else:
+        form = SiteSettingsForm(instance=settings_obj)
 
-    return render(request, 'portal/settings.html', {
-        'password_form': password_form,
+    return render(request, 'portal/site_settings.html', {
+        'form': form,
     })
 
+@staff_required
+def portal_settings_view(request):
+    if request.method == 'POST':
+        form = PortalPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('portal_settings')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PortalPasswordChangeForm(request.user)
+    return render(request, 'portal/settings.html', {
+        'form': form
+    })
+
+@user_passes_test(lambda u: u.is_staff, login_url='/portal/login/')
+def portal_contributions_list(request):
+    from .models import SupportContribution
+    from django.core.paginator import Paginator
+    contributions = SupportContribution.objects.all().order_by('-submitted_at')
+    
+    paginator = Paginator(contributions, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'portal/support_contributions.html', {
+        'page_obj': page_obj,
+        'page_title': 'Support Contributions'
+    })

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+.hero {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--royal-blue) 100%); color: #fff; padding: 72px 0; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero .container { position: relative; }
+    .hero-badge { display: flex; justify-content: center; gap: 8px; align-items: center; color: var(--cobalt-accent); font-size: 11px; font-weight: 800; letter-spacing: 1.7px; text-transform: uppercase; margin-bottom: 20px; }
+    .hero h1 {
+      margin: 0 auto 22px; font-size: 46px; line-height: 1.2; letter-spacing: -0.03em; max-width: 880px;
+    }
+    .hero p {
+      margin: 0 auto; max-width: 720px; color: #cbd5e1; font-size: 16px; line-height: 1.65;
+    }
+    .gallery-intro { padding: 52px 0 24px; background: var(--bg-light); display: flex; justify-content: space-between; align-items: end; gap: 24px; }
+    .section-badge { color: var(--royal-blue); font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 8px; }
+    .section-title { color: var(--primary-navy); font-size: 30px; line-height: 1.25; letter-spacing: -.025em; }
+    .gallery-count { color: var(--text-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 32px; background: var(--bg-light); padding: 20px 0 60px; }
+    .gallery-card {
+      background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 16px;
+      overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      text-align: left; padding: 0; appearance: none; font: inherit; display: flex; flex-direction: column;
+    }
+    .gallery-card:hover, .gallery-card:focus-visible { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: #bae6fd; outline: none; }
+    .gallery-image-wrapper { overflow: hidden; position: relative; }
+    .gallery-card img {
+      width: 100%; height: 240px; object-fit: cover; transition: transform 0.5s ease;
+    }
+    .gallery-card:hover img { transform: scale(1.05); }
+    .gallery-card-body {
+      padding: 24px; background: #fff; flex: 1; display: flex; flex-direction: column;
+    }
+    .gallery-tag {
+      display: inline-block; background: #e0f2fe; color: var(--royal-blue); border-radius: 20px;
+      padding: 4px 12px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; align-self: flex-start;
+    }
+    .gallery-card h3 {
+      margin: 0; font-size: 1.15rem; color: var(--primary-navy); font-weight: 800; line-height: 1.4;
+    }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(2,6,23,0.82); display: none; align-items: center; justify-content: center;
+      padding: 24px; z-index: 2000;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-card {
+      width: min(980px, 94vw); max-height: 90vh; overflow: auto; background: #fff; border-radius: 14px;
+      box-shadow: var(--shadow-lg); padding: 14px; position: relative;
+    }
+    .modal-close {
+      position: absolute; right: 16px; top: 12px; width: 36px; height: 36px; border: none; border-radius: 50%; background: rgba(255,255,255,.9); font-size: 24px; cursor: pointer;
+      color: var(--primary-navy); z-index: 1;
+    }
+    .lightbox-image {
+      display: block; width: 100%; max-height: 76vh; object-fit: contain; background: #071933; border-radius: 9px;
+    }
+    .lightbox-title { margin: 16px 0 0; color: var(--primary-navy); font-size: 1.1rem; }
+    
+    @media (max-width: 900px) {
+      .footer-content { grid-template-columns: 1fr; }
+      .gallery-intro { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .section-title { font-size: 24px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+      <div class="container">
+        <div class="hero-badge"><i class="fa-solid fa-photo-film"></i> HRD FORUM FIELD ARCHIVE</div>
+        <h1>Stories from the work, captured across Nepal.</h1>
+        <p>Explore moments from fieldwork, awareness programs, rights advocacy events, and protection support activities.</p>
+      </div>
+    </section>
+    <div class="container">
+      <section class="gallery-intro">
+        <div><div class="section-badge">Photo gallery</div><h2 class="section-title">A closer look at our network in action.</h2></div>
+        <span class="gallery-count" id="galleryCount">Loading photos...</span>
+      </section>
+      <section>
+        <div id="galleryGrid" class="gallery-grid"></div>
+      </section>
+
+      <section class="gallery-intro" style="padding-top: 20px;">
+        <div><div class="section-badge">Video links</div><h2 class="section-title">Documentaries & Short Films.</h2></div>
+        <span class="gallery-count" id="videoCount">Loading videos...</span>
+      </section>
+      <section>
+        <div id="videoGrid" class="gallery-grid"></div>
+      </section>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let galleryPhotos = [];
+let videoLinks = [];
+
+    
+
+    async function loadGallery() {
+      try {
+        const res = await fetch('/api/gallery/');
+        if (!res.ok) throw new Error('Gallery API failed');
+        galleryPhotos = await res.json();
+        const grid = document.getElementById('galleryGrid');
+
+        document.getElementById('galleryCount').textContent = `${galleryPhotos.length} ${galleryPhotos.length === 1 ? 'photo' : 'photos'} in the archive`;
+
+        if (!galleryPhotos.length) {
+          grid.innerHTML = '<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; text-align: center; color: #64748b;">No gallery photos are available yet.</div>';
+          return;
+        }
+
+        grid.innerHTML = galleryPhotos.map((photo, index) => `
+          <button class="gallery-card" type="button" data-gallery-index="${index}" aria-label="Open ${photo.title || 'HRD Forum photo'}">
+            <div class="gallery-image-wrapper">
+              <img src="${photo.image_url || ''}" alt="${photo.title || 'HRD Forum photo'}">
+            </div>
+            <div class="gallery-card-body">
+              <span class="gallery-tag">${photo.category || 'Advocacy'}</span>
+              <h3>${photo.title || 'HRD Forum Nepal'}</h3>
+            </div>
+          </button>
+        `).join('');
+        grid.addEventListener('click', (event) => {
+          const card = event.target.closest('[data-gallery-index]');
+          if (card) openLightbox(Number(card.dataset.galleryIndex));
+        });
+      } catch (error) {
+      document.getElementById('galleryCount').textContent = 'Archive unavailable';
+      document.getElementById('galleryGrid').innerHTML = '<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; text-align: center; color: #64748b;">Gallery could not be loaded right now.</div>';
+    }
+  }
+
+  async function loadVideos() {
+    try {
+      const res = await fetch('/api/videos/');
+      if (!res.ok) throw new Error('Videos API failed');
+      videoLinks = await res.json();
+      document.getElementById('videoCount').textContent = videoLinks.length === 1 ? '1 video' : `${videoLinks.length} videos`;
+      const grid = document.getElementById('videoGrid');
+
+      if (!videoLinks.length) {
+        grid.innerHTML = '<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; text-align: center; color: #64748b;">No videos are available yet.</div>';
+        return;
+      }
+
+      grid.innerHTML = videoLinks.map((video, index) => `
+        <a href="${video.embed_url || ''}" target="_blank" rel="noopener noreferrer" class="gallery-card" style="text-decoration: none;">
+          <div class="gallery-image-wrapper" style="background: #f1f5f9; height: 180px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-circle-play" style="font-size: 48px; color: var(--cobalt-accent);"></i>
+          </div>
+          <div class="gallery-card-body">
+            <span class="gallery-tag">${video.category || 'Documentary'}</span>
+            <h3>${video.title || 'HRD Forum Video'}</h3>
+          </div>
+        </a>
+      `).join('');
+    } catch (error) {
+      document.getElementById('videoCount').textContent = 'Archive unavailable';
+      document.getElementById('videoGrid').innerHTML = '<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; text-align: center; color: #64748b;">Videos could not be loaded right now.</div>';
+    }
+  }
+
+  function openLightbox(index) {
+      const photo = galleryPhotos[index];
+      if (!photo) return;
+      document.getElementById('lightboxImage').src = photo.image_url || '';
+      document.getElementById('lightboxTitle').textContent = photo.title || 'HRD Forum Nepal';
+      document.getElementById('lightboxModal').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxModal').classList.remove('active');
+      document.getElementById('lightboxImage').src = '';
+    }
+
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    document.getElementById('lightboxModal').addEventListener('click', (event) => {
+      if (event.target.id === 'lightboxModal') closeLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeLightbox();
+    });
+
+    loadGallery();
+    loadVideos();
+</script>
+{% endblock %}

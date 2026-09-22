@@ -3,7 +3,6 @@ import logging
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import F
@@ -13,7 +12,7 @@ from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
     TeamMember, Collaboration, NewsFlash, UniqueVisitor
-)
+, SiteSettings)
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +102,28 @@ def parse_request_data(request):
 
 def index_page(request):
     _track_visitor(request)
-    return render(request, 'index.html')
+    settings = SiteSettings.objects.first()
+    return render(request, 'index.html', {'settings': settings})
+
+
+def about_page(request):
+    _track_visitor(request)
+    return render(request, 'about_page.html')
+
+
+def gallery_page(request):
+    _track_visitor(request)
+    return render(request, 'gallery_page.html')
+
+def news_detail_page(request, news_id):
+    _track_visitor(request)
+    from django.shortcuts import get_object_or_404
+    news_item = get_object_or_404(News, id=news_id)
+    recent_news = News.objects.exclude(id=news_id).order_by('-published_date')[:3]
+    return render(request, 'news_detail_page.html', {
+        'news': news_item,
+        'recent_news': recent_news
+    })
 
 
 def robots_txt(request):
@@ -215,6 +235,19 @@ def api_news_detail(request, news_id):
     except News.DoesNotExist:
         return JsonResponse({"error": "News article not found"}, status=404)
 
+def api_updates(request):
+    from .models import OrganizationalUpdate
+    updates = OrganizationalUpdate.objects.all().order_by('-date_posted', '-id')
+    data = [{
+        "id": u.id,
+        "title": u.title,
+        "date_str": str(u.date_posted),
+        "document_url": u.document_attachment.url if u.document_attachment else '',
+        "description": u.description,
+        "is_urgent": u.is_urgent,
+    } for u in updates]
+    return JsonResponse(data, safe=False)
+
 def api_resources(request):
     resources = Resource.objects.all().order_by('id')
     data = [{
@@ -318,7 +351,6 @@ def api_collaborations(request):
 
 # PUBLIC SUBMISSIONS
 
-@csrf_exempt
 def request_gated_download(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -349,7 +381,6 @@ def request_gated_download(request):
         "message": f"Thank you, {user_name}. Your download has been authorized!"
     })
 
-@csrf_exempt
 def submit_membership(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -413,7 +444,6 @@ def submit_membership(request):
         "message": "Membership application submitted successfully!"
     }, status=201)
 
-@csrf_exempt
 def submit_incident(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Method not allowed"}, status=405)
@@ -488,3 +518,24 @@ def custom_404_view(request, exception=None):
 
 def custom_500_view(request):
     return render(request, '500.html', status=500)
+
+def api_site_settings(request):
+    settings = SiteSettings.objects.first()
+    if not settings:
+        settings = SiteSettings.objects.create()
+    return JsonResponse({
+        'vision_text': settings.vision_text,
+        'mission_text': settings.mission_text,
+        'hero_image_url': settings.hero_image.url if settings.hero_image else '',
+    })
+
+def support_page_view(request):
+    settings = SiteSettings.objects.first()
+    if request.method == 'POST':
+        from .forms import SupportContributionForm
+        form = SupportContributionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+    return render(request, 'support_us_page.html', {'settings': settings})
