@@ -1,8 +1,14 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "hrd_project/wsgi.py": {
-      "maxDuration": 60
+  "builds": [
+    {
+      "src": "hrd_project/wsgi.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "hrd_project/wsgi.py"
+    }
+  ]
 }
