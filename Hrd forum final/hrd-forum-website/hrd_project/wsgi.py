@@ -9,9 +9,8 @@ application = get_wsgi_application()
 
 def _maybe_bootstrap():
     """Lightweight first-boot seed. Migrations stay off the request path for speed."""
-    if os.environ.get('RUN_MIGRATE_ON_BOOT', '').lower() in ('1', 'true', 't', 'yes'):
-        from django.core.management import call_command
-        call_command('migrate', interactive=False)
+    from django.core.management import call_command
+    call_command('migrate', interactive=False)
 
     from django.conf import settings as django_settings
     from django.contrib.auth.models import User
@@ -142,9 +141,8 @@ def _maybe_bootstrap():
 
 
 try:
-    # Opt-in only: seeded DBs should not pay Neon round-trips on every cold start.
-    if os.environ.get('BOOTSTRAP_ON_START', '').lower() in ('1', 'true', 't', 'yes'):
-        _maybe_bootstrap()
+    # Temporarily force migrations and bootstrap on Vercel cold start 
+    _maybe_bootstrap()
 except Exception as e:
     print(f"WSGI bootstrap info: {e}")
 
