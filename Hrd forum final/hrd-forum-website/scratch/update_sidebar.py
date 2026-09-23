@@ -1,118 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}HRD Forum Portal{% endblock %}</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
-                        },
-                        brand: {
-                            teal: '#0f766e',
-                            'teal-dark': '#0d655e',
-                            blue: '#2563eb',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome & Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        @view-transition { navigation: auto; }
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation-duration: 0.28s;
-            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        main {
-            animation: portalPageIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-        @keyframes portalPageIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Mobile Responsive Tables */
-        @media (max-width: 768px) {
-            .overflow-x-auto { overflow-x: visible !important; }
-            table, thead, tbody, th, td, tr { display: block; }
-            thead { display: none; }
-            tr { 
-                margin-bottom: 1rem; 
-                border: 1px solid #e2e8f0; 
-                border-radius: 0.75rem; 
-                background: #fff;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-                overflow: hidden;
-            }
-            td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.75rem 1rem !important;
-                border-bottom: 1px solid #f1f5f9;
-                text-align: right;
-                font-size: 13px;
-                gap: 16px;
-            }
-            td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                color: #64748b;
-                text-align: left;
-                flex-shrink: 0;
-            }
-            td:last-child {
-                border-bottom: none;
-                background: #f8fafc;
-                justify-content: flex-end;
-            }
-            td:last-child::before {
-                display: none; /* Hide label for Actions usually */
-            }
-        }
+import re
 
-        aside nav a {
-            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        }
-        aside nav a:hover { transform: translateX(2px); }
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            main { animation: none; }
-            ::view-transition-old(root),
-            ::view-transition-new(root) { animation: none; }
-            aside nav a { transition: none; }
-            aside nav a:hover { transform: none; }
-        }
-    </style>
-    {% block extra_head %}{% endblock %}
-</head>
-<body class="bg-slate-50 text-slate-900 antialiased min-h-[100dvh] flex flex-col">
+with open('templates/portal/base_portal.html', 'r', encoding='utf-8') as f:
+    content = f.read()
 
-    
+new_sidebar = """
 <!-- Top Navigation Bar (Mobile only or simplified for desktop since sidebar is fixed) -->
 <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm h-16 flex items-center justify-between px-4 sm:px-6 {% if user.is_authenticated %}md:hidden{% endif %}">
     <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-slate-900 focus:outline-none p-1 -ml-1 mr-1">
-            <i class="fas fa-bars text-[20px]"></i>
-        </button>
         <a href="{% url 'portal_dashboard' %}" class="flex items-center space-x-2">
             <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
                 <i class="fas fa-shield-alt text-[14px]"></i>
@@ -131,9 +25,7 @@
 <div class="flex flex-1 relative w-full max-w-full">
     {% if user.is_authenticated %}
     <!-- Fixed Sidebar for MD3 Theme -->
-    <!-- Mobile Backdrop -->
-    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden transition-opacity opacity-0 pointer-events-none"></div>
-    <aside class="md:flex fixed left-0 top-0 bottom-0 h-full w-[260px] bg-white border-r border-slate-200 z-40 flex-col justify-between overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out" id="mobileSidebar">
+    <aside class="hidden md:flex fixed left-0 top-0 bottom-0 h-full w-[260px] bg-white border-r border-slate-200 z-40 flex-col justify-between overflow-y-auto">
         <div class="flex flex-col">
             <!-- Logo Header -->
             <div class="h-16 px-4 flex items-center justify-between border-b border-slate-200">
@@ -244,9 +136,13 @@
                         <i class="fas fa-user-shield text-[16px] w-[18px] text-center"></i>
                         <span class="flex-1">Admin Accounts</span>
                     </a>
+                    <a href="{% url 'portal_group_list' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'groups' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                        <i class="fas fa-user-tag text-[16px] w-[18px] text-center"></i>
+                        <span class="flex-1">Admin Roles</span>
+                    </a>
                     <a href="{% url 'portal_settings' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'settings' in request.path and 'site-settings' not in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
                         <i class="fas fa-cog text-[16px] w-[18px] text-center"></i>
-                        <span class="flex-1">Change / Reset Password</span>
+                        <span class="flex-1">My Password</span>
                     </a>
                 </div>
             </nav>
@@ -277,137 +173,21 @@
     <!-- Main Content Area -->
     <main class="flex-1 w-full flex flex-col {% if user.is_authenticated %}md:ml-[260px]{% endif %} min-h-[100dvh]">
         <div class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1280px] w-full mx-auto space-y-6">
-            <!-- Toast / Flash Notifications -->
-            {% if messages %}
-            <div class="space-y-3">
-                {% for message in messages %}
-                <div class="p-4 rounded-xl shadow-sm border flex items-center justify-between transition-all duration-300
-                    {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800
-                    {% elif message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800
-                    {% elif message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-800
-                    {% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}">
-                    <div class="flex items-center space-x-3 font-semibold text-sm">
-                        {% if message.tags == 'error' %}<i class="fas fa-exclamation-circle text-red-600 text-lg"></i>
-                        {% elif message.tags == 'success' %}<i class="fas fa-check-circle text-emerald-600 text-lg"></i>
-                        {% else %}<i class="fas fa-info-circle text-blue-600 text-lg"></i>{% endif %}
-                        <span>{{ message }}</span>
-                    </div>
-                    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 text-sm p-1">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+"""
 
-            {% block content %}{% endblock %}
+start_pattern = r'<!-- Top Navigation Bar -->'
+end_pattern = r'<!-- Toast / Flash Notifications -->'
 
-        </main>
-    </div>
+content_split = re.split(start_pattern, content)
+pre_header = content_split[0]
+post_header = re.split(end_pattern, content_split[1], maxsplit=1)[1]
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
-        <div class="max-w-7xl mx-auto px-4">
-            &copy; 2026 HRD Forum Nepal. Standalone Management Portal.
-        </div>
-    </footer>
-    </div>
-</div>
+# Reconstruct ensuring we close the new `.flex-1.flex.flex-col` and `.flex.flex-1` wrappers we opened around the footer.
+final_content = pre_header + new_sidebar + '            <!-- Toast / Flash Notifications -->' + post_header
 
-    <script>
-    (function () {
-        function enhancePasswordFields(root) {
-            (root || document).querySelectorAll('input[type="password"]').forEach(function (input) {
-                if (input.dataset.passwordToggleReady === '1') return;
-                input.dataset.passwordToggleReady = '1';
+# Modify footer to close our newly added divs
+footer_pattern = r'</footer>'
+final_content = re.sub(footer_pattern, '</footer>\n    </div>\n</div>', final_content)
 
-                var wrapper = input.parentElement;
-                if (!wrapper || !wrapper.classList.contains('relative')) {
-                    wrapper = document.createElement('div');
-                    wrapper.className = 'relative';
-                    input.parentNode.insertBefore(wrapper, input);
-                    wrapper.appendChild(input);
-                }
-
-                if (!/\bpr-/.test(input.className)) {
-                    input.className = (input.className + ' pr-12').trim();
-                }
-
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'absolute inset-y-0 right-0 px-3.5 flex items-center text-slate-400 hover:text-teal-700 transition z-10';
-                btn.setAttribute('aria-label', 'Show password');
-                btn.setAttribute('title', 'Show / hide password');
-                btn.innerHTML = '<i class="fas fa-eye"></i>';
-
-                btn.addEventListener('click', function () {
-                    var showing = input.type === 'text';
-                    input.type = showing ? 'password' : 'text';
-                    btn.innerHTML = showing ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-                    btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
-                });
-
-                wrapper.appendChild(btn);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            enhancePasswordFields(document);
-
-            // Prefetch portal routes on hover/focus for snappier navigation
-            document.querySelectorAll('aside nav a[href]').forEach(function (link) {
-                var prefetch = function () {
-                    if (link.dataset.prefetched === '1') return;
-                    link.dataset.prefetched = '1';
-                    var el = document.createElement('link');
-                    el.rel = 'prefetch';
-                    el.href = link.href;
-                    el.as = 'document';
-                    document.head.appendChild(el);
-                };
-                link.addEventListener('mouseenter', prefetch, { once: true });
-                link.addEventListener('focus', prefetch, { once: true });
-            });
-        });
-        window.enhancePortalPasswordFields = enhancePasswordFields;
-    })();
-    // Auto-inject data-labels for mobile responsive tables
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('table').forEach(table => {
-            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
-            table.querySelectorAll('tbody tr').forEach(tr => {
-                Array.from(tr.querySelectorAll('td')).forEach((td, index) => {
-                    if(headers[index]) {
-                        td.setAttribute('data-label', headers[index]);
-                    }
-                });
-            });
-        });
-    });
-    </script>
-    {% block extra_js %}{% endblock %}
-
-    <script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('mobileSidebar');
-        const backdrop = document.getElementById('sidebarBackdrop');
-        if (!sidebar) return;
-        
-        const isClosed = sidebar.classList.contains('-translate-x-full');
-        if (isClosed) {
-            sidebar.classList.remove('-translate-x-full');
-            backdrop.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-            backdrop.classList.add('opacity-100');
-            document.body.style.overflow = 'hidden'; // lock scroll
-        } else {
-            sidebar.classList.add('-translate-x-full');
-            backdrop.classList.remove('opacity-100');
-            backdrop.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => backdrop.classList.add('hidden'), 300);
-            document.body.style.overflow = ''; // unlock scroll
-        }
-    }
-    </script>
-
-</body>
-</html>
+with open('templates/portal/base_portal.html', 'w', encoding='utf-8') as f:
+    f.write(final_content)
