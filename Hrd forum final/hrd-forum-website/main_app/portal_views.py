@@ -1,5 +1,8 @@
 import logging
+from io import BytesIO
+from xml.sax.saxutils import escape
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import user_passes_test
@@ -61,6 +64,116 @@ def _safe_portal_next(request):
     ):
         return candidate
     return None
+
+
+@staff_required
+def portal_submission_pdf(request):
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from .models import SupportContribution
+
+    dataset = request.GET.get('dataset', '')
+    query = request.GET.get('q', '').strip()
+    headers_by_dataset = {
+        'incidents': ['Reporter', 'Province', 'Type', 'Priority', 'Contact', 'Submitted', 'Details'],
+        'memberships': ['Name', 'Email', 'Phone', 'Province', 'Organization', 'Role', 'Status', 'Submitted'],
+        'support': ['Name', 'Phone', 'Email', 'Notes', 'Receipt file', 'Submitted'],
+        'gated_leads': ['Name', 'Email', 'Resource', 'Downloaded'],
+    }
+    if dataset not in headers_by_dataset:
+        raise Http404('Unknown submission export.')
+
+    if dataset == 'incidents':
+        records = Incident.objects.select_related('province').all()
+        priority = request.GET.get('priority', '').strip()
+        if query:
+            records = records.filter(
+                Q(reporter_name__icontains=query) | Q(contact_info__icontains=query) |
+                Q(incident_type__icontains=query) | Q(details__icontains=query)
+            )
+        if priority and priority != 'All':
+            records = records.filter(priority__iexact=priority)
+        records = records.order_by('-created_at')
+        rows = [[r.reporter_name, r.province.name, r.incident_type, r.priority,
+                 r.contact_info, r.created_at.strftime('%Y-%m-%d %H:%M'), r.details]
+                for r in records]
+        filename = 'incident-reports.pdf'
+    elif dataset == 'memberships':
+        records = Membership.objects.select_related('province').all()
+        status = request.GET.get('status', '').strip()
+        if query:
+            records = records.filter(
+                Q(full_name__icontains=query) | Q(email__icontains=query) |
+                Q(organization__icontains=query) | Q(role__icontains=query)
+            )
+        if status and status != 'All':
+            records = records.filter(status__iexact=status)
+        records = records.order_by('-created_at')
+        rows = [[r.full_name, r.email, r.phone or '-', r.province.name,
+                 r.organization or '-', r.role or '-', r.get_status_display(), r.created_at.strftime('%Y-%m-%d %H:%M')]
+                for r in records]
+        filename = 'membership-applications.pdf'
+    elif dataset == 'support':
+        records = SupportContribution.objects.all().order_by('-submitted_at')
+        rows = [[r.name, r.phone, r.email or '-', r.notes or '-',
+                 r.receipt_image.name if r.receipt_image else '-', r.submitted_at.strftime('%Y-%m-%d %H:%M')]
+                for r in records]
+        filename = 'support-contributions.pdf'
+    else:
+        records = GatedDownloadLead.objects.all()
+        if query:
+            records = records.filter(
+                Q(user_name__icontains=query) | Q(user_email__icontains=query) |
+                Q(resource_title__icontains=query)
+            )
+        records = records.order_by('-downloaded_at')
+        rows = [[r.user_name, r.user_email, r.resource_title or '-',
+                 r.downloaded_at.strftime('%Y-%m-%d %H:%M')]
+                for r in records]
+        filename = 'gated-download-leads.pdf'
+
+    buffer = BytesIO()
+    document = SimpleDocTemplate(
+        buffer, pagesize=landscape(A4), rightMargin=12 * mm, leftMargin=12 * mm,
+        topMargin=14 * mm, bottomMargin=14 * mm,
+    )
+    styles = getSampleStyleSheet()
+    cell_style = ParagraphStyle('TableCell', parent=styles['BodyText'], fontName='Helvetica', fontSize=7, leading=9, alignment=TA_LEFT)
+    title = dataset.replace('_', ' ').title()
+    table_data = [[Paragraph(f'<b>{escape(str(value))}</b>', cell_style) for value in headers_by_dataset[dataset]]]
+    table_data.extend([
+        [Paragraph(escape(str(value if value not in (None, '') else '-')).replace('\n', '<br/>'), cell_style) for value in row]
+        for row in rows
+    ])
+    widths = {
+        'incidents': [30, 28, 35, 22, 36, 32, 88],
+        'memberships': [33, 42, 24, 29, 34, 28, 24, 42],
+        'support': [30, 24, 35, 80, 50, 40],
+        'gated_leads': [40, 55, 80, 55],
+    }
+    table = Table(table_data, colWidths=[width * mm for width in widths[dataset]], repeatRows=1, hAlign='LEFT')
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0130BE')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 0.35, colors.HexColor('#C7D8E8')),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F3F8FC')]),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]))
+    story = [Paragraph(f'HRD Forum Nepal - {escape(title)}', styles['Title']),
+             Paragraph(f'{len(rows)} record(s)' + (f' · Filter: {escape(query)}' if query else ''), styles['Normal']),
+             Spacer(1, 8 * mm), table]
+    document.build(story)
+    response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
 
 
 # AUTHENTICATION VIEWS
@@ -1248,6 +1361,7 @@ def portal_gated_leads_list(request):
         'headers': ['User Name', 'Email', 'Resource Title', 'Downloaded At'],
         'fields': ['user_name', 'user_email', 'resource_title', 'downloaded_at'],
         'hide_add_button': True,
+        'export_dataset': 'gated_leads',
     })
 
 

@@ -963,12 +963,19 @@
       .modal-card {
         padding: 18px 16px !important;
         width: 96vw !important;
-        max-height: 92vh !important;
+        max-height: calc(100dvh - 24px) !important;
+        overflow-y: auto;
+        overscroll-behavior: contain;
         border-radius: 12px !important;
       }
+      .modal-backdrop { padding: 12px; overflow-y: auto; align-items: flex-start; }
       .modal-header { margin-bottom: 14px; padding-bottom: 10px; }
       .modal-title { font-size: 15px !important; }
       .form-row { grid-template-columns: 1fr !important; gap: 10px; }
+      .form-control { min-height: 46px; padding: 12px; font-size: 16px; }
+      textarea.form-control { min-height: 110px; }
+      .btn-submit { min-height: 48px; padding: 13px 14px; line-height: 1.35; }
+      .modal-close { flex: 0 0 36px; min-width: 36px; min-height: 36px; }
       .sub-nav-pills { gap: 6px; margin-bottom: 16px; }
       .sub-pill-btn { padding: 6px 12px; font-size: 11px; }
 
@@ -1521,9 +1528,9 @@
         const res = await fetch('/api/stats/');
         if (res.ok) {
           const data = await res.json();
-          setElementText('statProvinces', data.provincial_networks || '7');
-          setElementText('statDefenders', data.monitored_defenders || '1,200+');
-          setElementText('statCases', data.resolved_cases || '150+');
+          setElementText('statProvinces', data.provincial_networks ?? 0);
+          setElementText('statDefenders', data.monitored_defenders || 'Not reported');
+          setElementText('statCases', data.resolved_cases || 'Not reported');
           const visVal = (data.total_visitors || 0).toLocaleString();
           setElementText('totalVisitors', visVal);
           setElementText('footerTotalVisitors', visVal);

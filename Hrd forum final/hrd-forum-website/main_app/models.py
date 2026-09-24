@@ -4,8 +4,8 @@ from django.core.exceptions import ValidationError
 
 class Stats(models.Model):
     provincial_networks = models.PositiveIntegerField(default=7)
-    monitored_defenders = models.PositiveIntegerField(default=1200)
-    resolved_cases = models.PositiveIntegerField(default=150)
+    monitored_defenders = models.PositiveIntegerField(default=0)
+    resolved_cases = models.PositiveIntegerField(default=0)
     total_visitors = models.PositiveIntegerField(default=0)
 
     class Meta:

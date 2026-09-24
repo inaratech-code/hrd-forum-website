@@ -157,14 +157,11 @@ def sitemap_xml(request):
 
 def api_stats(request):
     stats = Stats.objects.first()
-    if not stats:
-        stats = Stats.objects.create(total_visitors=0)
-
     return JsonResponse({
-        "provincial_networks": stats.provincial_networks,
-        "monitored_defenders": str(stats.monitored_defenders),
-        "resolved_cases": str(stats.resolved_cases),
-        "total_visitors": stats.total_visitors,
+        "provincial_networks": Province.objects.count(),
+        "monitored_defenders": str(stats.monitored_defenders) if stats and stats.monitored_defenders else "Not reported",
+        "resolved_cases": str(stats.resolved_cases) if stats and stats.resolved_cases else "Not reported",
+        "total_visitors": UniqueVisitor.objects.count(),
     })
 
 def api_provinces(request):

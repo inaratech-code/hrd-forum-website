@@ -30,6 +30,11 @@
                 <span>Add Record</span>
             </a>
             {% endif %}
+            {% if export_dataset %}
+            <a href="{% url 'portal_submission_pdf' %}?dataset={{ export_dataset }}&amp;q={{ query|urlencode }}" class="inline-flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition">
+                <i class="fas fa-file-pdf"></i><span>Export PDF</span>
+            </a>
+            {% endif %}
         </div>
     </div>
 

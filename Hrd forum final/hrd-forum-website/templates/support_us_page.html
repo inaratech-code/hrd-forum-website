@@ -152,7 +152,20 @@
     @media (max-width: 768px) {
         .support-container {
             grid-template-columns: 1fr;
+            gap: 24px;
+            margin: 32px auto 48px;
+            padding: 0 14px;
         }
+        .support-hero { padding: 38px 0 30px; }
+        .support-hero h1 { font-size: 28px; }
+        .support-hero p { font-size: 15px; }
+        .bank-card, .form-card { padding: 22px 18px; }
+        .support-contact-fields { grid-template-columns: 1fr !important; gap: 0 !important; }
+        .support-container .form-control { min-height: 46px; font-size: 16px; }
+        .support-container textarea.form-control { min-height: 110px; }
+        .support-container .submit-btn { min-height: 48px; }
+        .detail-row { align-items: flex-start; gap: 12px; font-size: 14px; }
+        .detail-row span:last-child { overflow-wrap: anywhere; text-align: right; }
     }
 </style>
 {% endblock %}
@@ -212,7 +225,7 @@
                 <label>Full Name *</label>
                 <input type="text" name="name" class="form-control" required placeholder="John Doe">
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="support-contact-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div class="form-group">
                     <label>Phone Number *</label>
                     <input type="text" name="phone" class="form-control" required placeholder="+977 9800000000">

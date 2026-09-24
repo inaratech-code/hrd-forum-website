@@ -29,9 +29,9 @@ if not Stats.objects.exists():
     # Pass integers to avoid Type/Integrity errors on numeric fields
     Stats.objects.create(
         provincial_networks=7,
-        monitored_defenders=1200,
-        resolved_cases=150,
-        total_visitors=14230
+        monitored_defenders=0,
+        resolved_cases=0,
+        total_visitors=0
     )
 
 if not PopupConfig.objects.exists():

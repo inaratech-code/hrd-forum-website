@@ -17,6 +17,7 @@ urlpatterns = [
     path('portal/login/', portal_views.portal_login_view, name='portal_login'),
     path('portal/logout/', portal_views.portal_logout_view, name='portal_logout'),
     path('portal/', portal_views.portal_dashboard_view, name='portal_dashboard'),
+    path('portal/export/submissions.pdf', portal_views.portal_submission_pdf, name='portal_submission_pdf'),
 
     # Photo Gallery CRUD
     path('portal/gallery/', portal_views.portal_gallery_list, name='portal_gallery_list'),
