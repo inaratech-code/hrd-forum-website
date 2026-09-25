@@ -2043,7 +2043,17 @@
             document.getElementById('popupTitle').innerText = popup.title;
             document.getElementById('popupSubtitle').innerText = popup.subtitle || '';
             const link = document.getElementById('popupLink');
-            if (popup.link_url) link.href = popup.link_url;
+            if (popup.link_url && popup.link_url !== '#') {
+              link.href = popup.link_url;
+              link.onclick = null;
+            } else {
+              link.href = '#membershipModal';
+              link.onclick = (event) => {
+                event.preventDefault();
+                closePopupModal();
+                openMembershipModal();
+              };
+            }
             if (popup.link_text) link.innerText = popup.link_text;
             document.getElementById('popupModal').classList.add('active');
           }
