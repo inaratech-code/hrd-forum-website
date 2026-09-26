@@ -26,8 +26,10 @@ ADMIN_API_TOKEN = os.environ.get('ADMIN_API_TOKEN', 'hrd_session_admin_secure_to
 ADMIN_INITIAL_PASSWORD = os.environ.get('ADMIN_INITIAL_PASSWORD', 'hrdadmin2026')
 
 ALLOWED_HOSTS = [
+    '*',
     'ihrdf.org',
     'www.ihrdf.org',
+    '.vercel.app',
     '.onrender.com',
     'localhost',
     '127.0.0.1',
@@ -36,6 +38,7 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://ihrdf.org',
     'https://www.ihrdf.org',
+    'https://*.vercel.app',
     'https://*.onrender.com',
 ]
 
