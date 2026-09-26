@@ -29,6 +29,8 @@ ALLOWED_HOSTS = [
     '*',
     'ihrdf.org',
     'www.ihrdf.org',
+    'hrdforum.org',
+    'www.hrdforum.org',
     '.vercel.app',
     '.onrender.com',
     'localhost',
@@ -38,6 +40,8 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://ihrdf.org',
     'https://www.ihrdf.org',
+    'https://hrdforum.org',
+    'https://www.hrdforum.org',
     'https://*.vercel.app',
     'https://*.onrender.com',
 ]
@@ -51,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'main_app',
 ]
 
@@ -134,6 +139,52 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Cloudflare R2 (S3-compatible) for uploaded media. Falls back to local MEDIA_ROOT when unset.
+# Database FileField values stay as relative keys (e.g. team/KO.jpg); only storage backend changes.
+R2_ACCOUNT_ID = os.environ.get('R2_ACCOUNT_ID', '').strip()
+R2_ACCESS_KEY_ID = os.environ.get('R2_ACCESS_KEY_ID', '').strip()
+R2_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY', '').strip()
+R2_BUCKET_NAME = os.environ.get('R2_BUCKET_NAME', 'hrd-forum-media').strip()
+R2_PUBLIC_BASE_URL = os.environ.get('R2_PUBLIC_BASE_URL', '').strip().rstrip('/')
+USE_R2_STORAGE = bool(R2_ACCOUNT_ID and R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY)
+
+_STATICFILES_BACKEND = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+if USE_R2_STORAGE:
+    AWS_ACCESS_KEY_ID = R2_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = R2_SECRET_ACCESS_KEY
+    AWS_STORAGE_BUCKET_NAME = R2_BUCKET_NAME
+    AWS_S3_ENDPOINT_URL = f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com'
+    AWS_S3_REGION_NAME = 'auto'
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_ADDRESSING_STYLE = 'path'
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = not bool(R2_PUBLIC_BASE_URL)
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'public, max-age=86400',
+    }
+    if R2_PUBLIC_BASE_URL:
+        AWS_S3_CUSTOM_DOMAIN = R2_PUBLIC_BASE_URL.replace('https://', '').replace('http://', '')
+        MEDIA_URL = f'{R2_PUBLIC_BASE_URL}/'
+    STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        },
+        'staticfiles': {
+            'BACKEND': _STATICFILES_BACKEND,
+        },
+    }
+else:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': _STATICFILES_BACKEND,
+        },
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
