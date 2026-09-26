@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+.hero {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--royal-blue) 100%); color: #fff; padding: 82px 0 88px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero > .container { position: relative; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; font-size: 11.5px;
+      letter-spacing: 1.8px; font-weight: 700; color: var(--cobalt-accent); margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; max-width: 880px; margin: 0 auto 22px; line-height: 1.2; }
+    .hero p { font-size: 16px; color: #cbd5e1; max-width: 720px; margin: 0 auto; line-height: 1.65; }
+
+    .overview { padding: 70px 0; background: #fff; border-bottom: 1px solid var(--border-color); }
+    .overview-inner { max-width: 1060px; margin: 0 auto; }
+    .section-badge { font-size: 11px; font-weight: 800; color: var(--royal-blue); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 8px; }
+    .section-title { font-size: 30px; font-weight: 800; letter-spacing: -0.025em; color: var(--primary-navy); margin-bottom: 18px; line-height: 1.25; }
+    .overview-copy { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+    .vision-mission-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    .vision-mission-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    }
+    .vision-mission-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        color: var(--primary-navy);
+        font-weight: 800;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+    .vision-mission-card h3 i {
+        color: var(--cobalt-accent);
+        font-size: 24px;
+    }
+    .vision-mission-card p {
+        font-size: 15.5px;
+        line-height: 1.75;
+        color: var(--text-body);
+        white-space: pre-line;
+        margin: 0;
+    }
+    .impact-strip { margin-top: 38px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .impact-item { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; box-shadow: var(--shadow-sm); }
+    .impact-item i { color: var(--cobalt-accent); font-size: 20px; margin-bottom: 8px; }
+    .impact-value { display: block; color: var(--primary-navy); font-size: 27px; font-weight: 800; }
+    .impact-label { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+
+    .team-section { padding: 84px 0; background: var(--bg-light); border-bottom: 1px solid var(--border-color); }
+    .partners-section { padding: 84px 0; background: #fff; border-bottom: 1px solid var(--border-color); }
+    .section-subtitle { font-size: 16px; color: var(--text-muted); max-width: 650px; margin-bottom: 48px; line-height: 1.6; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 32px; }
+    .team-member-card {
+      background: #fff; border-radius: 16px; border: 1px solid var(--border-color);
+      overflow: hidden; box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex; flex-direction: column; align-items: center; padding: 40px 24px; text-align: center;
+    }
+    .team-member-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .team-member-image {
+      width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin-bottom: 24px;
+      border: 4px solid #f1f5f9; padding: 4px; background: #fff;
+    }
+    .team-member-info h4 { color: var(--primary-navy); font-size: 18px; margin-bottom: 6px; font-weight: 800; }
+    .team-member-info span { display: block; color: var(--cobalt-accent); font-size: 12.5px; font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.8px; }
+    .team-member-info p { color: var(--text-body); font-size: 14.5px; line-height: 1.6; }
+
+    .partners-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 28px; }
+    .partner-card-modern {
+      background: var(--bg-light); border-radius: 16px; border: 1px solid var(--border-color);
+      padding: 32px; display: flex; align-items: flex-start; gap: 24px; transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .partner-card-modern:hover { background: #fff; box-shadow: var(--shadow-md); border-color: #bae6fd; transform: translateY(-3px); }
+    .partner-logo-modern {
+      width: 72px; height: 72px; border-radius: 12px; object-fit: contain; flex: 0 0 72px;
+      background: #fff; border: 1px solid var(--border-color); padding: 10px;
+    }
+    .partner-info-modern { flex: 1; }
+    .partner-info-modern h4 { color: var(--primary-navy); font-size: 17px; margin-bottom: 8px; font-weight: 800; }
+    .partner-info-modern span { display: inline-block; color: var(--royal-blue); font-size: 12px; font-weight: 700; margin-bottom: 12px; background: #e0f2fe; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .partner-info-modern p { color: var(--text-body); font-size: 14px; line-height: 1.6; }
+
+    
+
+    @media (max-width: 1050px) {
+      
+      .nav-dropdown:hover .dropdown-menu { display: block; }
+      .hero { padding: 62px 0 70px; }
+      .hero h1 { font-size: 34px; }
+      .overview-copy, .summary-grid, .impact-strip, .footer-content { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+      <div class="container">
+        <div class="hero-badge"><i class="fa-solid fa-shield-halved"></i> ABOUT HRD FORUM NEPAL</div>
+        <h1>Protecting rights defenders and strengthening civic space across Nepal.</h1>
+        <p>HRD Forum Nepal connects frontline defenders, journalists, paralegals, and civil society actors with protection, legal support, and advocacy across all seven provinces.</p>
+      </div>
+    </section>
+
+    <section class="overview">
+      <div class="container">
+        <div class="overview-inner">
+          <div class="section-badge">Organizational background</div>
+          <h2 class="section-title">One national network for the people who defend rights.</h2>
+          <div class="overview-copy">
+            <div class="vision-mission-card">
+                <h3><i class="fa-solid fa-eye"></i> Our Vision</h3>
+                <p id="visionText">Loading...</p>
+            </div>
+            <div class="vision-mission-card">
+                <h3><i class="fa-solid fa-bullseye"></i> Our Mission</h3>
+                <p id="missionText">Loading...</p>
+            </div>
+          </div>
+
+          <div class="impact-strip" aria-label="HRD Forum impact metrics">
+            <div class="impact-item"><i class="fa-solid fa-map-location-dot"></i><span class="impact-value" id="statProvinces">7</span><span class="impact-label">Provincial helpdesks</span></div>
+            <div class="impact-item"><i class="fa-solid fa-user-shield"></i><span class="impact-value" id="statDefenders">Not reported</span><span class="impact-label">Monitored defenders</span></div>
+            <div class="impact-item"><i class="fa-solid fa-circle-check"></i><span class="impact-value" id="statCases">Not reported</span><span class="impact-label">Resolved interventions</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="team-section" id="teamSummary">
+      <div class="container">
+        <div class="section-badge">Our Team</div>
+        <h2 class="section-title">People leading the protection work</h2>
+        <p class="section-subtitle">Meet the legal, coordination, and field specialists who turn the Forum’s protection mandate into action.</p>
+        <div class="team-grid" id="teamList">
+          <p>Loading team information...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="partners-section" id="partnerSummary">
+      <div class="container">
+        <div class="section-badge">Collaborations</div>
+        <h2 class="section-title">Partners extending our reach</h2>
+        <p class="section-subtitle">Our institutional and specialist partners add legal, diplomatic, research, and emergency-response capacity.</p>
+        <div class="partners-grid" id="partnerList">
+          <p>Loading collaboration information...</p>
+        </div>
+      </div>
+    </section>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadAboutData() {
+      try {
+        const [statsResponse, teamResponse, collaborationResponse, settingsResponse] = await Promise.all([
+          fetch('/api/stats/'), fetch('/api/team/'), fetch('/api/collaborations/'), fetch('/api/settings/')
+        ]);
+        const stats = await statsResponse.json();
+        const team = await teamResponse.json();
+        const collaborations = await collaborationResponse.json();
+        const settings = await settingsResponse.json();
+
+        // Populate Settings
+        document.getElementById('visionText').innerText = settings.vision_text || 'To establish a society where human rights are respected, protected, and fulfilled for all.';
+        document.getElementById('missionText').innerText = settings.mission_text || 'To protect and empower frontline human rights defenders across Nepal through legal support, capacity building, and national coordination.';
+
+        document.getElementById('statProvinces').textContent = stats.provincial_networks || 7;
+        document.getElementById('statDefenders').textContent = `${Number(stats.monitored_defenders || 0).toLocaleString()}+`;
+        document.getElementById('statCases').textContent = `${Number(stats.resolved_cases || 0).toLocaleString()}+`;
+
+        const executives = (team || []).filter(m => m.category === 'executive');
+        const advisory = (team || []).filter(m => m.category === 'advisory');
+        const general = (team || []).filter(m => m.category === 'general');
+
+        function buildTeamCards(members) {
+            if (!members || members.length === 0) return '<p style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1;">No members listed yet.</p>';
+            return members.map(member =>
+                `<div class="team-member-card">
+                  <img class="team-member-image" src="${member.image_url || '/static/images/logo.jpg'}" alt="${member.name || 'Team member'}">
+                  <div class="team-member-info">
+                    <h4>${member.name}</h4>
+                    <span>${member.designation}</span>
+                    ${member.bio ? `<p>${member.bio}</p>` : ''}
+                  </div>
+                </div>`
+            ).join('');
+        }
+
+        let teamHTML = '';
+        if (executives.length > 0) {
+            teamHTML += `<h3 style="grid-column: 1/-1; color: var(--primary-navy); font-size: 20px; font-weight: 800; margin-top: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color);">Executive & Field Team</h3>`;
+            teamHTML += buildTeamCards(executives);
+        }
+        if (advisory.length > 0) {
+            teamHTML += `<h3 style="grid-column: 1/-1; color: var(--primary-navy); font-size: 20px; font-weight: 800; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color);">Advisory Board</h3>`;
+            teamHTML += buildTeamCards(advisory);
+        }
+        if (general.length > 0) {
+            teamHTML += `<h3 style="grid-column: 1/-1; color: var(--primary-navy); font-size: 20px; font-weight: 800; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color);">General Members</h3>`;
+            teamHTML += buildTeamCards(general);
+        }
+        if (!teamHTML) {
+            teamHTML = '<p style="color: var(--text-muted);">Team information is not available yet.</p>';
+        }
+
+        document.getElementById('teamList').innerHTML = teamHTML;
+
+        document.getElementById('partnerList').innerHTML = (collaborations || []).map(item =>
+          `<div class="partner-card-modern">
+            <img class="partner-logo-modern" src="${item.logo_url || '/static/images/logo.jpg'}" alt="${item.name || 'HRD Forum partner'} logo">
+            <div class="partner-info-modern">
+              <h4>${item.name || 'HRD Forum partner'}</h4>
+              <span>${item.category || 'Partner collaboration'}</span>
+              ${item.blurb ? `<p>${item.blurb}</p>` : ''}
+            </div>
+          </div>`
+        ).join('') || '<p style="color: var(--text-muted);">Collaboration information is not available yet.</p>';
+      } catch (error) {
+        console.error('Failed to load About page data', error);
+      }
+    }
+
+    loadAboutData();
+</script>
+{% endblock %}
