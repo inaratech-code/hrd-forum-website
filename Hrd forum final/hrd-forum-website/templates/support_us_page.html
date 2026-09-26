@@ -182,7 +182,7 @@
     <!-- Left: Bank Details -->
     <div class="bank-card">
         {% if settings.bank_qr_image %}
-        <img src="{{ settings.bank_qr_image.url }}" alt="Bank QR Code" style="width: 220px; height: 220px; object-fit: contain; margin: 0 auto 24px; display: block; border-radius: 12px; border: 1px solid #cbd5e1; padding: 8px;">
+        <img src="{{ settings.bank_qr_image.url }}" alt="Bank QR Code" width="220" height="220" style="width: 220px; height: 220px; object-fit: contain; margin: 0 auto 24px; display: block; border-radius: 12px; border: 1px solid #cbd5e1; padding: 8px;">
         {% else %}
         <div class="qr-placeholder">
             <i class="fa-solid fa-qrcode"></i>

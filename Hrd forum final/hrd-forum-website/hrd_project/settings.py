@@ -14,7 +14,8 @@ except ImportError:
 # Fail-safe secret key retrieval: never default to a hardcoded insecure key in production
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
+_DEBUG_DEFAULT = 'False' if os.environ.get('VERCEL') or os.environ.get('RENDER') else 'True'
+DEBUG = os.environ.get('DEBUG', _DEBUG_DEFAULT).lower() in ('true', '1', 't')
 
 if not SECRET_KEY:
     if DEBUG:
@@ -224,6 +225,8 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 # HSTS & Secure Cookie Enforcements
 if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000  # 1 Year

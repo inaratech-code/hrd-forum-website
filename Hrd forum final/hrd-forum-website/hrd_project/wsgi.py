@@ -13,7 +13,9 @@ def _maybe_bootstrap():
     call_command('migrate', interactive=False)
 
     from django.conf import settings as django_settings
+    from django.contrib.auth.password_validation import validate_password
     from django.contrib.auth.models import User
+    from django.core.exceptions import ImproperlyConfigured, ValidationError
     from main_app.models import (
         Stats, Province, News, Resource, PopupConfig, Gallery,
         TeamMember, Collaboration, Video,
@@ -23,15 +25,18 @@ def _maybe_bootstrap():
     if Stats.objects.exists() and User.objects.filter(username='Superadmin').exists():
         return
 
-    admin_pass = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '').strip()
     if not User.objects.filter(username='Superadmin').exists():
+        admin_pass = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '').strip()
         if not admin_pass:
-            if django_settings.DEBUG:
-                admin_pass = 'Hrdforun@11'  # local/dev only
-            else:
-                raise RuntimeError(
-                    "DJANGO_SUPERUSER_PASSWORD must be set to create the initial admin user in production."
-                )
+            raise ImproperlyConfigured(
+                "Set DJANGO_SUPERUSER_PASSWORD to a strong password before creating the initial admin."
+            )
+        try:
+            validate_password(admin_pass, User(username='Superadmin', email='admin@hrdforum.org'))
+        except ValidationError as exc:
+            raise ImproperlyConfigured(
+                "DJANGO_SUPERUSER_PASSWORD does not meet the configured password policy."
+            ) from exc
         User.objects.create_superuser('Superadmin', 'admin@hrdforum.org', admin_pass)
 
     if not Stats.objects.exists():

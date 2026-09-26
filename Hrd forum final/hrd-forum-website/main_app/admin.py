@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.admin import ModelAdmin, TabularInline
+from django.core.exceptions import ValidationError
 from django.utils.html import mark_safe, escape
 
 from .models import (
@@ -7,6 +9,20 @@ from .models import (
     PopupConfig, Gallery, Video, GatedDownloadLead,
     TeamMember, Collaboration, NewsFlash, UniqueVisitor
 )
+from .security import EXPOSED_LEGACY_ADMIN_PASSWORD
+
+
+class SecureAdminAuthenticationForm(AdminAuthenticationForm):
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        if user.check_password(EXPOSED_LEGACY_ADMIN_PASSWORD):
+            raise ValidationError(
+                'This account uses an exposed legacy password. Reset it before signing in.',
+                code='exposed_legacy_password',
+            )
+
+
+admin.site.login_form = SecureAdminAuthenticationForm
 
 
 @admin.register(Stats)

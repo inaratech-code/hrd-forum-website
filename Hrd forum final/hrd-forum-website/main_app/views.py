@@ -255,7 +255,7 @@ def api_resources(request):
         "category": r.category,
         "format": r.format,
         "file_size": r.file_size,
-        "file_url": r.display_file,
+        "file_url": '' if r.is_gated else r.display_file,
         "is_gated": r.is_gated
     } for r in resources]
     return JsonResponse(data, safe=False)
@@ -357,6 +357,7 @@ def api_collaborations(request):
         "id": item.id,
         "name": item.name,
         "category": item.category,
+        "category_label": item.get_category_display(),
         "logo_url": item.display_logo,
         "blurb": item.blurb,
         "website_url": item.website_url,

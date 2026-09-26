@@ -18,39 +18,52 @@
         <form method="POST" enctype="multipart/form-data" class="space-y-4">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Document Title *</label>
+                <label for="{{ form.title.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Document Title *</label>
                 {{ form.title }}
+                {% if form.title.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.title.errors|join:', ' }}</p>{% endif %}
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Category</label>
+                    <label for="{{ form.category.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Category *</label>
                     {{ form.category }}
+                    {% if form.category.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.category.errors|join:', ' }}</p>{% endif %}
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Format</label>
+                    <label for="{{ form.format.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Format</label>
                     {{ form.format }}
+                    {% if form.format.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.format.errors|join:', ' }}</p>{% endif %}
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Size</label>
+                    <label for="{{ form.file_size.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Size</label>
                     {{ form.file_size }}
+                    {% if form.file_size.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.file_size.errors|join:', ' }}</p>{% endif %}
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Upload</label>
+                <label for="{{ form.file_upload.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">File Upload</label>
                 {{ form.file_upload }}
+                {% if resource.file_upload %}<p class="mt-1 text-xs text-slate-600">Current file: <a class="text-teal-700 underline" href="{{ resource.file_upload.url }}" target="_blank" rel="noopener noreferrer">View uploaded file</a></p>{% endif %}
+                {% if form.file_upload.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.file_upload.errors|join:', ' }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Or File URL</label>
+                <label for="{{ form.file_url.id_for_label }}" class="block text-xs font-bold uppercase text-slate-700 tracking-wider mb-1">Or File URL</label>
                 {{ form.file_url }}
+                {% if form.file_url.errors %}<p class="mt-1 text-xs text-red-700" role="alert">{{ form.file_url.errors|join:', ' }}</p>{% endif %}
             </div>
 
             <div class="flex items-center space-x-3 pt-2">
                 {{ form.is_gated }}
-                <label class="text-xs font-bold text-slate-700">Require Lead Registration Form (Gated Access)</label>
+                <label for="{{ form.is_gated.id_for_label }}" class="text-xs font-bold text-slate-700">Require lead registration before download</label>
             </div>
 
             <div class="pt-6 border-t border-slate-100 flex justify-end space-x-3">

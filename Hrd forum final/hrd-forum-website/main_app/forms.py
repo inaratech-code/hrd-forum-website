@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User, Group
 from .models import (
     Resource, Province, Membership, Incident, News,
@@ -35,16 +37,43 @@ class GalleryForm(forms.ModelForm):
 
 
 class ResourceForm(forms.ModelForm):
+    category = forms.ChoiceField(
+        choices=[
+            ('', 'Select a category'),
+            ('Report', 'Report'),
+            ('Publication', 'Publication'),
+            ('By-Laws', 'By-Laws'),
+            ('Other', 'Other'),
+        ],
+        widget=forms.Select(attrs={'class': SELECT_CLASS}),
+    )
+    format = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'PDF'}),
+    )
+    file_size = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g. 2.5 MB'}),
+    )
+
     class Meta:
         model = Resource
-        fields = ['title', 'category', 'file_upload', 'file_url', 'is_gated']
+        fields = ['title', 'category', 'format', 'file_size', 'file_upload', 'file_url', 'is_gated']
         widgets = {
             'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Document title...'}),
-            'category': forms.Select(attrs={'class': SELECT_CLASS}),
             'file_upload': forms.FileInput(attrs={'class': FILE_CLASS, 'id': 'resource-file-input'}),
             'file_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
             'is_gated': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        current_category = getattr(self.instance, 'category', '')
+        if current_category and current_category not in self.fields['category'].choices:
+            self.fields['category'].choices = [
+                *self.fields['category'].choices,
+                (current_category, f'{current_category} (existing category)'),
+            ]
 
 
 class NewsForm(forms.ModelForm):
@@ -237,6 +266,17 @@ class UserForm(forms.ModelForm):
             'is_superuser': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
             'is_active': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password'].required = self.instance.pk is None
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if password:
+            candidate = User(username=self.cleaned_data.get('username', ''))
+            validate_password(password, candidate)
+        return password
 
     def save(self, commit=True):
         user = super().save(commit=False)

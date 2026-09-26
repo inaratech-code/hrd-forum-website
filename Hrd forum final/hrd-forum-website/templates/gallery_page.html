@@ -117,7 +117,7 @@ let videoLinks = [];
         grid.innerHTML = galleryPhotos.map((photo, index) => `
           <button class="gallery-card" type="button" data-gallery-index="${index}" aria-label="Open ${photo.title || 'HRD Forum photo'}">
             <div class="gallery-image-wrapper">
-              <img src="${photo.image_url || ''}" alt="${photo.title || 'HRD Forum photo'}">
+              <img src="${photo.image_url || ''}" alt="${photo.title || 'HRD Forum photo'}" width="640" height="480" loading="lazy" decoding="async">
             </div>
             <div class="gallery-card-body">
               <span class="gallery-tag">${photo.category || 'Advocacy'}</span>

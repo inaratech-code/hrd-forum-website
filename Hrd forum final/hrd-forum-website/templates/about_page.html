@@ -94,6 +94,8 @@
     .partner-info-modern h4 { color: var(--primary-navy); font-size: 17px; margin-bottom: 8px; font-weight: 800; }
     .partner-info-modern span { display: inline-block; color: var(--royal-blue); font-size: 12px; font-weight: 700; margin-bottom: 12px; background: #e0f2fe; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
     .partner-info-modern p { color: var(--text-body); font-size: 14px; line-height: 1.6; }
+    .partner-website-link { display: inline-block; margin-top: 10px; color: var(--primary-blue); font-size: 13px; font-weight: 700; }
+    .partner-website-link:hover { color: var(--secondary-teal); text-decoration: underline; }
 
     
 
@@ -194,7 +196,7 @@ async function loadAboutData() {
             if (!members || members.length === 0) return '<p style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1;">No members listed yet.</p>';
             return members.map(member =>
                 `<div class="team-member-card">
-                  <img class="team-member-image" src="${member.image_url || '/static/images/logo.jpg'}" alt="${member.name || 'Team member'}">
+                  <img class="team-member-image" src="${member.image_url || '/static/images/logo.jpg'}" alt="${member.name || 'Team member'}" width="110" height="110" loading="lazy" decoding="async">
                   <div class="team-member-info">
                     <h4>${member.name}</h4>
                     <span>${member.designation}</span>
@@ -223,16 +225,51 @@ async function loadAboutData() {
 
         document.getElementById('teamList').innerHTML = teamHTML;
 
-        document.getElementById('partnerList').innerHTML = (collaborations || []).map(item =>
-          `<div class="partner-card-modern">
-            <img class="partner-logo-modern" src="${item.logo_url || '/static/images/logo.jpg'}" alt="${item.name || 'HRD Forum partner'} logo">
-            <div class="partner-info-modern">
-              <h4>${item.name || 'HRD Forum partner'}</h4>
-              <span>${item.category || 'Partner collaboration'}</span>
-              ${item.blurb ? `<p>${item.blurb}</p>` : ''}
-            </div>
-          </div>`
-        ).join('') || '<p style="color: var(--text-muted);">Collaboration information is not available yet.</p>';
+        const partnerList = document.getElementById('partnerList');
+        if (!collaborations || collaborations.length === 0) {
+          partnerList.textContent = 'Collaboration information is not available yet.';
+        } else {
+          partnerList.replaceChildren(...collaborations.map((item) => {
+            const card = document.createElement('article');
+            card.className = 'partner-card-modern';
+            const logo = document.createElement('img');
+            logo.className = 'partner-logo-modern';
+            logo.src = item.logo_url || '/static/images/logo.jpg';
+            logo.alt = `${item.name || 'HRD Forum partner'} logo`;
+            logo.width = 72;
+            logo.height = 72;
+            logo.loading = 'lazy';
+            logo.decoding = 'async';
+            const details = document.createElement('div');
+            details.className = 'partner-info-modern';
+            const name = document.createElement('h4');
+            name.textContent = item.name || 'HRD Forum partner';
+            const category = document.createElement('span');
+            category.textContent = item.category_label || item.category || 'Partner collaboration';
+            details.append(name, category);
+            if (item.blurb) {
+              const blurb = document.createElement('p');
+              blurb.textContent = item.blurb;
+              details.append(blurb);
+            }
+            if (item.website_url) {
+              try {
+                const website = new URL(item.website_url);
+                if (website.protocol === 'http:' || website.protocol === 'https:') {
+                  const link = document.createElement('a');
+                  link.href = website.href;
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  link.className = 'partner-website-link';
+                  link.textContent = `Visit ${website.hostname}`;
+                  details.append(link);
+                }
+              } catch (error) {}
+            }
+            card.append(logo, details);
+            return card;
+          }));
+        }
       } catch (error) {
         console.error('Failed to load About page data', error);
       }

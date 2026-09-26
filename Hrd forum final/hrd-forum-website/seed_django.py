@@ -8,6 +8,8 @@ django.setup()
 
 from django.core.management import call_command
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from main_app.models import (
     Stats, Province, News, Resource, PopupConfig, Gallery, Blog, Video,
     TeamMember, Collaboration
@@ -19,8 +21,15 @@ call_command('migrate')
 
 print("\n--- CREATING DJANGO SUPERUSER ---")
 if not User.objects.filter(username='Superadmin').exists():
-    User.objects.create_superuser('Superadmin', 'admin@hrdforum.org', 'Hrdforun@11')
-    print("Superuser created: username='Superadmin', password='Hrdforun@11'")
+    admin_pass = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '').strip()
+    if not admin_pass:
+        raise ImproperlyConfigured("Set DJANGO_SUPERUSER_PASSWORD before creating the initial admin.")
+    try:
+        validate_password(admin_pass, User(username='Superadmin', email='admin@hrdforum.org'))
+    except ValidationError as exc:
+        raise ImproperlyConfigured("DJANGO_SUPERUSER_PASSWORD does not meet the configured password policy.") from exc
+    User.objects.create_superuser('Superadmin', 'admin@hrdforum.org', admin_pass)
+    print("Superuser created from DJANGO_SUPERUSER_PASSWORD.")
 else:
     print("Superuser 'Superadmin' already exists.")
 

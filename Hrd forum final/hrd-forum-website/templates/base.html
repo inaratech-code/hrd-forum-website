@@ -1336,6 +1336,7 @@
         <button class="sub-pill-btn" id="resFilterReport" onclick="filterResourcesSequence('Report', this)"><i class="fa-solid fa-file-pdf"></i> Protection Reports</button>
         <button class="sub-pill-btn" id="resFilterPub" onclick="filterResourcesSequence('Publication', this)"><i class="fa-solid fa-book-open"></i> Publications</button>
         <button class="sub-pill-btn" id="resFilterBylaws" onclick="filterResourcesSequence('By-Laws', this)"><i class="fa-solid fa-gavel"></i> By-Laws & Governance</button>
+        <button class="sub-pill-btn" id="resFilterOther" onclick="filterResourcesSequence('Other', this)"><i class="fa-solid fa-folder"></i> Other</button>
       </div>
       <div style="flex: 1; overflow-y: auto; padding-right: 6px;">
         <div id="seqSectionReport" style="margin-bottom: 32px;">
@@ -1349,6 +1350,10 @@
         <div id="seqSectionBylaws" style="margin-bottom: 32px;">
           <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">3. By-Laws & Governance</h4>
           <div class="resource-grid-display" id="gridBylaws" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+        <div id="seqSectionOther" style="margin-bottom: 32px;">
+          <h4 style="font-size: 16px; font-weight: 800; color: var(--primary-navy); margin-bottom: 14px;">4. Other Resources</h4>
+          <div class="resource-grid-display" id="gridOther" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
       </div>
     </div>
@@ -1376,7 +1381,7 @@
         </div>
 
         <div id="newsModalImgContainer" style="margin-bottom: 32px; display: none;">
-          <img id="newsModalImg" src="" alt="Article Image" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+          <img id="newsModalImg" src="" alt="Article Image" width="800" height="450" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
         </div>
 
         <div id="newsModalContent" style="font-size: 16px; color: #334155; line-height: 1.8; white-space: pre-line; padding-bottom: 24px;"></div>
@@ -1390,7 +1395,7 @@
     <div class="modal-card" style="max-width: 860px; background: rgba(7, 25, 51, 0.98); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; padding: 24px; position: relative;">
       <button class="modal-close" onclick="closeGalleryLightbox()" aria-label="Close photo viewer" style="color: #ffffff; top: 16px; right: 20px; font-size: 26px;">&times;</button>
       <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 300px; max-height: 68vh; overflow: hidden; border-radius: 10px; background: #000000; margin-bottom: 16px;">
-        <img id="lightboxImg" src="" alt="Gallery Photo" style="max-width: 100%; max-height: 68vh; object-fit: contain; display: block;">
+        <img id="lightboxImg" src="" alt="Gallery Photo" width="1600" height="900" style="max-width: 100%; max-height: 68vh; object-fit: contain; display: block;">
         <button onclick="prevGalleryPhoto()" aria-label="Previous photo" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
         <button onclick="nextGalleryPhoto()" aria-label="Next photo" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
       </div>
@@ -1709,7 +1714,7 @@
       }
       container.innerHTML = items.map(item => `
         <a href="/news/${item.id}/" class="news-item" style="text-decoration: none; color: inherit; display: flex; gap: 16px;">
-          ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}" class="news-thumb">` : ''}
+          ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}" class="news-thumb" width="76" height="60" loading="lazy" decoding="async">` : ''}
           <div style="flex: 1;">
             <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
               <span style="font-size: 10px; background: #f1f5f9; color: var(--primary-navy); padding: 2px 7px; border-radius: 4px; font-weight: 700;">${item.published_date || 'Recent'}</span>
@@ -1782,10 +1787,12 @@
           const reports = resources.filter(r => (r.category || '').toLowerCase().includes('report'));
           const pubs = resources.filter(r => (r.category || '').toLowerCase().includes('pub'));
           const bylaws = resources.filter(r => (r.category || '').toLowerCase().includes('by-law') || (r.category || '').toLowerCase().includes('bylaw'));
+          const other = resources.filter(r => !reports.includes(r) && !pubs.includes(r) && !bylaws.includes(r));
 
           renderResourceList('gridReport', reports, 'Report');
           renderResourceList('gridPublication', pubs, 'Publication');
           renderResourceList('gridBylaws', bylaws, 'By-Laws');
+          renderResourceList('gridOther', other, 'Other');
         }
       } catch (e) {}
     }
@@ -1797,15 +1804,47 @@
         container.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; padding: 12px;">No ${categoryType} documents listed.</div>`;
         return;
       }
-      container.innerHTML = items.map(r => `
-        <div style="background: #ffffff; border: 1px solid var(--border-color); padding: 14px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-          <div>
-            <h5 style="margin: 0 0 3px 0; font-size: 14px; font-weight: 700; color: var(--primary-navy);">${r.title}</h5>
-            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">${r.format || 'PDF'} &bull; ${r.file_size || 'Document'}</span>
-          </div>
-          <button data-id="${r.id}" data-title="${r.title.replace(/"/g, '&quot;')}" onclick="openGatedDownload(this.getAttribute('data-id'), this.getAttribute('data-title'))" class="btn-hero-primary" style="padding: 7px 16px; font-size: 12px;"><i class="fa-solid fa-download"></i> Download</button>
-        </div>
-      `).join('');
+      container.replaceChildren(...items.map((resource) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'background:#fff;border:1px solid var(--border-color);padding:14px 18px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:16px;';
+        const info = document.createElement('div');
+        const title = document.createElement('h5');
+        title.textContent = resource.title || 'Untitled resource';
+        title.style.cssText = 'margin:0 0 3px;font-size:14px;font-weight:700;color:var(--primary-navy);';
+        const metadata = document.createElement('span');
+        metadata.textContent = `${resource.format || 'PDF'} · ${resource.file_size || 'Document'}`;
+        metadata.style.cssText = 'font-size:11px;color:var(--text-muted);font-weight:600;';
+        info.append(title, metadata);
+
+        let action;
+        if (resource.is_gated) {
+          action = document.createElement('button');
+          action.type = 'button';
+          action.className = 'btn-hero-primary';
+          action.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> Register to download';
+          action.setAttribute('aria-label', `Register to download ${resource.title || 'resource'}`);
+          action.addEventListener('click', () => openGatedDownload(resource.id, resource.title || 'Resource'));
+        } else if (resource.file_url) {
+          const target = new URL(resource.file_url, window.location.origin);
+          if (target.protocol === 'http:' || target.protocol === 'https:') {
+            action = document.createElement('a');
+            action.href = target.href;
+            action.target = '_blank';
+            action.rel = 'noopener noreferrer';
+            action.className = 'btn-hero-primary';
+            action.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> Download';
+            action.setAttribute('aria-label', `Download ${resource.title || 'resource'}`);
+          }
+        }
+        if (!action) {
+          action = document.createElement('span');
+          action.textContent = 'File unavailable';
+          action.style.cssText = 'font-size:12px;color:var(--text-muted);';
+        }
+        action.style.cssText += ';padding:7px 16px;font-size:12px;';
+        row.append(info, action);
+        return row;
+      }));
     }
 
     function openGatedDownload(resId, title) {
@@ -1923,7 +1962,7 @@
           if (!grid) return;
           grid.innerHTML = team.map(member => `
             <div class="team-card">
-              <img src="${member.image_url || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80'}" alt="${member.name}" class="team-avatar">
+              <img src="${member.image_url || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80'}" alt="${member.name}" class="team-avatar" width="92" height="92" loading="lazy" decoding="async">
               <h4>${member.name}</h4>
               <span style="font-size: 11px; font-weight: 700; color: #0284c7; background: #e0f2fe; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-bottom: 10px;">${member.designation}</span>
               <p>${member.bio || ''}</p>
@@ -1941,16 +1980,45 @@
           const collabs = await res.json();
           const grid = document.getElementById('collabGridDisplay');
           if (!grid) return;
-          grid.innerHTML = collabs.map(c => `
-            <div class="collab-card">
-              <img src="${c.logo_url || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=300&q=80'}" alt="${c.name}" class="collab-logo">
-              <div>
-                <h5 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 800; color: var(--primary-navy);">${c.name}</h5>
-                <span style="font-size: 10px; font-weight: 700; color: #0d9488; background: #ccfbf1; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px;">${c.category || 'Institutional'}</span>
-                <p style="margin: 0; font-size: 12px; color: var(--text-muted);">${c.blurb || ''}</p>
-              </div>
-            </div>
-          `).join('');
+          grid.replaceChildren(...collabs.map((collaboration) => {
+            const card = document.createElement('article');
+            card.className = 'collab-card';
+            const logo = document.createElement('img');
+            logo.src = collaboration.logo_url || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=300&q=80';
+            logo.alt = `${collaboration.name || 'HRD Forum partner'} logo`;
+            logo.className = 'collab-logo';
+            logo.width = 60;
+            logo.height = 60;
+            logo.loading = 'lazy';
+            logo.decoding = 'async';
+            const details = document.createElement('div');
+            const name = document.createElement('h5');
+            name.textContent = collaboration.name || 'HRD Forum partner';
+            name.style.cssText = 'margin:0 0 4px;font-size:14px;font-weight:800;color:var(--primary-navy);';
+            const category = document.createElement('span');
+            category.textContent = collaboration.category_label || collaboration.category || 'Partner collaboration';
+            category.style.cssText = 'font-size:10px;font-weight:700;color:#0d766e;background:#d9f2ef;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;';
+            const blurb = document.createElement('p');
+            blurb.textContent = collaboration.blurb || '';
+            blurb.style.cssText = 'margin:0;font-size:12px;color:var(--text-muted);';
+            details.append(name, category, blurb);
+            if (collaboration.website_url) {
+              try {
+                const website = new URL(collaboration.website_url);
+                if (website.protocol === 'http:' || website.protocol === 'https:') {
+                  const link = document.createElement('a');
+                  link.href = website.href;
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  link.textContent = `Visit ${website.hostname}`;
+                  link.style.cssText = 'display:inline-block;margin-top:8px;color:var(--primary-blue);font-size:12px;font-weight:700;';
+                  details.append(link);
+                }
+              } catch (error) {}
+            }
+            card.append(logo, details);
+            return card;
+          }));
           animateLoaded(grid);
         }
       } catch (e) {}
@@ -1972,7 +2040,7 @@
           }
           grid.innerHTML = globalGalleryPhotos.map((g, idx) => `
             <div class="gallery-card" onclick="openGalleryLightbox(${idx})">
-              <img src="${g.image_url}" alt="${g.title}" class="gallery-img">
+              <img src="${g.image_url}" alt="${g.title}" class="gallery-img" width="600" height="380" loading="lazy" decoding="async">
               <div class="gallery-info">
                 <span class="gallery-tag">${g.category || 'Advocacy'}</span>
                 <h5>${g.title}</h5>
@@ -2170,15 +2238,18 @@
       const s1 = document.getElementById('seqSectionReport');
       const s2 = document.getElementById('seqSectionPublication');
       const s3 = document.getElementById('seqSectionBylaws');
+      const s4 = document.getElementById('seqSectionOther');
 
       if (cat === 'all') {
-        s1.style.display = 'block'; s2.style.display = 'block'; s3.style.display = 'block';
+        s1.style.display = 'block'; s2.style.display = 'block'; s3.style.display = 'block'; s4.style.display = 'block';
       } else if (cat === 'Report') {
-        s1.style.display = 'block'; s2.style.display = 'none'; s3.style.display = 'none';
+        s1.style.display = 'block'; s2.style.display = 'none'; s3.style.display = 'none'; s4.style.display = 'none';
       } else if (cat === 'Publication') {
-        s1.style.display = 'none'; s2.style.display = 'block'; s3.style.display = 'none';
+        s1.style.display = 'none'; s2.style.display = 'block'; s3.style.display = 'none'; s4.style.display = 'none';
       } else if (cat === 'By-Laws') {
-        s1.style.display = 'none'; s2.style.display = 'none'; s3.style.display = 'block';
+        s1.style.display = 'none'; s2.style.display = 'none'; s3.style.display = 'block'; s4.style.display = 'none';
+      } else if (cat === 'Other') {
+        s1.style.display = 'none'; s2.style.display = 'none'; s3.style.display = 'none'; s4.style.display = 'block';
       }
     }
 

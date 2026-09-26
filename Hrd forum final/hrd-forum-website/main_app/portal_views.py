@@ -22,6 +22,7 @@ from .forms import (
     IncidentForm, PopupConfigForm, BlogForm, VideoForm, TeamMemberForm,
     CollaborationForm, NewsFlashForm, UserForm, GroupForm, PortalPasswordChangeForm
 , SiteSettingsForm)
+from .security import EXPOSED_LEGACY_ADMIN_PASSWORD
 
 logger = logging.getLogger(__name__)
 
@@ -204,7 +205,8 @@ def portal_login_view(request):
             username = resolved
 
         user = authenticate(request, username=username, password=password)
-        if user is not None and (user.is_staff or user.is_superuser):
+        if (user is not None and (user.is_staff or user.is_superuser)
+                and not user.check_password(EXPOSED_LEGACY_ADMIN_PASSWORD)):
             cache.delete(fail_key)
             login(request, user)
             messages.success(request, f"Welcome back, {user.username}! You are logged into HRD Forum Portal.")
@@ -566,6 +568,7 @@ def portal_membership_edit(request, member_id):
 
 
 @staff_required
+@require_POST
 def portal_membership_approve(request, member_id):
     member = get_object_or_404(Membership, id=member_id)
     member.status = 'approved'
@@ -575,6 +578,7 @@ def portal_membership_approve(request, member_id):
 
 
 @staff_required
+@require_POST
 def portal_membership_reject(request, member_id):
     member = get_object_or_404(Membership, id=member_id)
     member.status = 'rejected'

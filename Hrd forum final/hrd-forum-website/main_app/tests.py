@@ -119,6 +119,50 @@ class HRDForumTestCase(TestCase):
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200, f"Failed GET for {url}")
 
+        resources = self.client.get('/api/resources/').json()
+        gated_resource = next(item for item in resources if item['id'] == self.resource.id)
+        self.assertEqual(gated_resource['file_url'], '')
+
+        collaboration = Collaboration.objects.create(
+            name='Partner Organization',
+            category='institutional',
+            blurb='Partner details for the public card.',
+            website_url='https://partner.example.org',
+        )
+        partners = self.client.get('/api/collaborations/').json()
+        partner_data = next(item for item in partners if item['id'] == collaboration.id)
+        self.assertEqual(partner_data['website_url'], 'https://partner.example.org')
+        self.assertEqual(partner_data['category_label'], 'Institutional Collaboration')
+
+    def test_resource_edit_saves_visible_fields_and_access_setting(self):
+        from .forms import ResourceForm
+
+        category_choices = dict(ResourceForm().fields['category'].choices)
+        self.assertIn('Report', category_choices)
+        self.assertIn('Publication', category_choices)
+        self.assertIn('By-Laws', category_choices)
+        self.assertIn('Other', category_choices)
+        legacy_resource = Resource(title='Legacy document', category='Document')
+        self.assertIn('Document', dict(ResourceForm(instance=legacy_resource).fields['category'].choices))
+
+        self.client.force_login(self.staff_user_b)
+        response = self.client.post(
+            f'/portal/resources/{self.resource.id}/edit/',
+            {
+                'title': 'Updated protection guide',
+                'category': 'Report',
+                'format': 'PDF',
+                'file_size': '1.3 MB',
+                'file_url': 'https://example.com/updated-guide.pdf',
+                'is_gated': 'on',
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.resource.refresh_from_db()
+        self.assertEqual(self.resource.title, 'Updated protection guide')
+        self.assertEqual(self.resource.file_size, '1.3 MB')
+        self.assertTrue(self.resource.is_gated)
+
     def test_form_submissions(self):
         """Verify public submission endpoints for membership, incident, and gated downloads."""
         # Membership submission
@@ -205,6 +249,29 @@ class HRDForumTestCase(TestCase):
         self.assertTrue(
             res['Location'].endswith('/portal/') or '/portal/' in res['Location']
         )
+
+    def test_exposed_legacy_admin_password_is_rejected(self):
+        self.superuser_a.set_password('Hrdforun@11')
+        self.superuser_a.save(update_fields=['password'])
+        for login_url in ['/portal/login/', '/admin/login/']:
+            response = self.client.post(
+                login_url,
+                {'username': self.superuser_a.username, 'password': 'Hrdforun@11'},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_membership_decisions_require_post(self):
+        membership = Membership.objects.create(
+            full_name='Pending Defender',
+            email='pending@example.org',
+            province=self.province,
+        )
+        self.client.force_login(self.staff_user_b)
+        response = self.client.get(f'/portal/memberships/{membership.id}/approve/')
+        self.assertEqual(response.status_code, 405)
+        membership.refresh_from_db()
+        self.assertEqual(membership.status, 'pending')
 
     def test_staff_vs_superuser_vertical_authorization(self):
         """Verify staff User B can access operational portal views but is denied access to user/group admin views."""

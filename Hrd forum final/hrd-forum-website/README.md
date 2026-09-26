@@ -43,7 +43,7 @@ With Neon configured, set `DATABASE_URL` in `.env` (see `.env.example`).
 | Variable | Required | Notes |
 |----------|----------|--------|
 | `SECRET_KEY` | Production | Long random string |
-| `DEBUG` | No | Default `True` locally; set `False` in production |
+| `DEBUG` | No | Defaults to `True` locally and `False` on Vercel/Render; set `False` in production |
 | `DATABASE_URL` | Production / Vercel | Neon (or other Postgres) connection string with `sslmode=require` |
 | `DJANGO_SUPERUSER_PASSWORD` | Production first boot | Used by `wsgi.py` to create `Superadmin` if missing |
 | `R2_ACCOUNT_ID` | For uploads to R2 | Cloudflare account id |
@@ -67,7 +67,7 @@ Security notes:
 - Logout is POST + CSRF
 - Production refuses weak default `ADMIN_API_TOKEN` values if set
 
-After first deploy, change the `Superadmin` password if it was ever a shared/default value.
+The old built-in `Superadmin` password is exposed and is now rejected at login. Immediately reset any existing account that used it with `python manage.py changepassword Superadmin` (or another affected username). New bootstrap admin accounts require a strong `DJANGO_SUPERUSER_PASSWORD`; no default password is created.
 
 ## Deploy (Vercel)
 
