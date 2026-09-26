@@ -148,17 +148,37 @@ let videoLinks = [];
         return;
       }
 
-      grid.innerHTML = videoLinks.map((video, index) => `
-        <a href="${video.embed_url || ''}" target="_blank" rel="noopener noreferrer" class="gallery-card" style="text-decoration: none;">
-          <div class="gallery-image-wrapper" style="background: #f1f5f9; height: 180px; display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-circle-play" style="font-size: 48px; color: var(--cobalt-accent);"></i>
-          </div>
-          <div class="gallery-card-body">
-            <span class="gallery-tag">${video.category || 'Documentary'}</span>
-            <h3>${video.title || 'HRD Forum Video'}</h3>
-          </div>
-        </a>
-      `).join('');
+      grid.replaceChildren(...videoLinks.map((video) => {
+        const card = document.createElement('article');
+        card.className = 'gallery-card';
+        const title = video.title || 'HRD Forum Video';
+        if (video.embed_url) {
+          const frame = document.createElement('iframe');
+          frame.className = 'embedded-video';
+          frame.src = video.embed_url;
+          frame.title = `${title} - YouTube video`;
+          frame.loading = 'lazy';
+          frame.referrerPolicy = 'strict-origin-when-cross-origin';
+          frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          frame.allowFullscreen = true;
+          card.append(frame);
+        } else {
+          const unavailable = document.createElement('p');
+          unavailable.className = 'gallery-card-body';
+          unavailable.textContent = 'This video is currently unavailable.';
+          card.append(unavailable);
+        }
+        const body = document.createElement('div');
+        body.className = 'gallery-card-body';
+        const tag = document.createElement('span');
+        tag.className = 'gallery-tag';
+        tag.textContent = video.category || 'Documentary';
+        const heading = document.createElement('h3');
+        heading.textContent = title;
+        body.append(tag, heading);
+        card.append(body);
+        return card;
+      }));
     } catch (error) {
       document.getElementById('videoCount').textContent = 'Archive unavailable';
       document.getElementById('videoGrid').innerHTML = '<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; text-align: center; color: #64748b;">Videos could not be loaded right now.</div>';

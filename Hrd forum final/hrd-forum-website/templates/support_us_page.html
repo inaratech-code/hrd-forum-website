@@ -222,31 +222,31 @@
         <form id="supportForm">
             {% csrf_token %}
             <div class="form-group">
-                <label>Full Name *</label>
-                <input type="text" name="name" class="form-control" required placeholder="John Doe">
+                <label for="supportName">Full Name *</label>
+                <input type="text" id="supportName" name="name" class="form-control" required placeholder="John Doe">
             </div>
             <div class="support-contact-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div class="form-group">
-                    <label>Phone Number *</label>
-                    <input type="text" name="phone" class="form-control" required placeholder="+977 9800000000">
+                    <label for="supportPhone">Phone Number *</label>
+                    <input type="text" id="supportPhone" name="phone" class="form-control" required placeholder="+977 9800000000">
                 </div>
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" class="form-control" placeholder="john@example.com">
+                    <label for="supportEmail">Email Address</label>
+                    <input type="email" id="supportEmail" name="email" class="form-control" placeholder="john@example.com">
                 </div>
             </div>
             <div class="form-group">
-                <label>Upload Receipt/Screenshot *</label>
-                <input type="file" name="receipt_image" class="form-control" required accept="image/*" style="background: #fff; padding: 9px 12px;">
+                <label for="supportReceipt">Upload Receipt/Screenshot *</label>
+                <input type="file" id="supportReceipt" name="receipt_image" class="form-control" required accept="image/*" style="background: #fff; padding: 9px 12px;">
             </div>
             <div class="form-group">
-                <label>Additional Notes (Optional)</label>
-                <textarea name="notes" class="form-control" placeholder="Any message you'd like to leave..."></textarea>
+                <label for="supportNotes">Additional Notes (Optional)</label>
+                <textarea id="supportNotes" name="notes" class="form-control" placeholder="Any message you'd like to leave..."></textarea>
             </div>
             <button type="submit" class="submit-btn" id="submitBtn">
                 <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Submit Details
             </button>
-            <div id="formMessage" style="margin-top: 16px; font-weight: 600; text-align: center; display: none;"></div>
+            <div id="formMessage" role="status" aria-live="polite" aria-atomic="true" style="margin-top: 16px; font-weight: 600; text-align: center; display: none;"></div>
         </form>
     </div>
 </div>

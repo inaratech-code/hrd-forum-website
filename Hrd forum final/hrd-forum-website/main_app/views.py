@@ -1,5 +1,7 @@
 import json
 import logging
+import re
+from urllib.parse import parse_qs, urlparse
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
@@ -296,10 +298,26 @@ def api_blogs(request):
 
 def api_videos(request):
     videos = Video.objects.all().order_by('-published_date')
+    def youtube_embed_url(value):
+        parsed = urlparse(value or '')
+        host = (parsed.hostname or '').lower()
+        video_id = ''
+        if host in {'youtu.be'}:
+            video_id = parsed.path.strip('/').split('/')[0]
+        elif host in {'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com'}:
+            parts = parsed.path.strip('/').split('/')
+            if parsed.path == '/watch':
+                video_id = parse_qs(parsed.query).get('v', [''])[0]
+            elif len(parts) > 1 and parts[0] in {'embed', 'shorts', 'live'}:
+                video_id = parts[1]
+        if not re.fullmatch(r'[A-Za-z0-9_-]{11}', video_id):
+            return ''
+        return f'https://www.youtube-nocookie.com/embed/{video_id}?rel=0&playsinline=1'
+
     data = [{
         "id": v.id,
         "title": v.title,
-        "embed_url": v.embed_url,
+        "embed_url": youtube_embed_url(v.embed_url),
         "category": v.category,
         "date_str": str(v.published_date)
     } for v in videos]
