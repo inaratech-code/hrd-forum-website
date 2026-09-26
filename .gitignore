@@ -9,3 +9,4 @@ __pycache__/
 *.sqlite3
 staticfiles/
 .DS_Store
+hrd_forum.db
