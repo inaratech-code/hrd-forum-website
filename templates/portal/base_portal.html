@@ -168,6 +168,10 @@
                 <!-- Home Page -->
                 <div class="flex flex-col gap-0.5">
                     <span class="px-2 text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">Home Page</span>
+                    <a href="{% url 'portal_home_settings' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'home-settings' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                        <i class="fas fa-desktop text-[16px] w-[18px] text-center"></i>
+                        <span class="flex-1">Landing Page Content & Photo</span>
+                    </a>
                     <a href="{% url 'portal_news_flash_list' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'news-flashes' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
                         <i class="fas fa-bolt text-[16px] w-[18px] text-center"></i>
                         <span class="flex-1">News Flashes (Marquee)</span>
@@ -193,17 +197,21 @@
                 <!-- About Page -->
                 <div class="flex flex-col gap-0.5">
                     <span class="px-2 text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1">About Page</span>
-                    <a href="{% url 'portal_site_settings' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'site-settings' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
-                        <i class="fas fa-globe text-[16px] w-[18px] text-center"></i>
-                        <span class="flex-1">Site Settings</span>
+                    <a href="{% url 'portal_about_settings' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'about-settings' in request.path or 'site-settings' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                        <i class="fas fa-address-card text-[16px] w-[18px] text-center"></i>
+                        <span class="flex-1">About Page Content & Photo</span>
+                    </a>
+                    <a href="{% url 'portal_thematic_list' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'thematics' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                        <i class="fas fa-layer-group text-[16px] w-[18px] text-center"></i>
+                        <span class="flex-1">Thematic Focus Areas</span>
                     </a>
                     <a href="{% url 'portal_team_list' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'team' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
                         <i class="fas fa-users-cog text-[16px] w-[18px] text-center"></i>
-                        <span class="flex-1">Team Members</span>
+                        <span class="flex-1">Team, Advisors & Members</span>
                     </a>
                     <a href="{% url 'portal_collaboration_list' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-[13px] font-medium {% if 'collaborations' in request.path %}bg-blue-50 text-blue-700 font-semibold{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
                         <i class="fas fa-handshake text-[16px] w-[18px] text-center"></i>
-                        <span class="flex-1">Collaborations</span>
+                        <span class="flex-1">Collaborations & Supporters</span>
                     </a>
                 </div>
 

@@ -4,9 +4,12 @@
   <meta name="csrf-token" content="{{ csrf_token }}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HRD Forum Nepal – Human Rights Defenders National Coalition</title>
-  <meta name="description" content="Human Rights Defenders (HRD) Forum Nepal is a national coalition protecting human rights activists, lawyers, and journalists through advocacy, networking, and rapid response.">
-  <meta name="robots" content="index, follow">
+  <title>{% block title %}HRD Forum Nepal – Human Rights Defenders National Coalition{% endblock %}</title>
+  {% block meta_tags %}
+  <meta name="description" content="Human Rights Defenders (HRD) Forum Nepal is a national coalition protecting human rights activists, lawyers, and journalists through advocacy, networking, and rapid response across Nepal.">
+  <meta name="keywords" content="Human Rights Defenders Nepal, HRD Forum, human rights activists, legal protection, civic space, provincial protection helpdesks, frontline defenders, rule of law Nepal">
+  <meta name="author" content="Human Rights Defenders Forum Nepal">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="https://hrdforum.org/">
 
   <meta property="og:type" content="website">
@@ -22,6 +25,7 @@
   <meta name="twitter:title" content="HRD Forum Nepal – Human Rights Defenders Coalition">
   <meta name="twitter:description" content="Protecting human rights watchdogs, paralegals, and journalists across all 7 provinces of Nepal.">
   <meta name="twitter:image" content="https://hrdforum.org/static/images/logo.jpg">
+  {% endblock %}
 
   <script type="application/ld+json">
   {
@@ -314,16 +318,16 @@
     }
 
     /* Ticker Banner */
-    .news-ticker-bar {
-      background: var(--primary-blue);
-      border-bottom: 2px solid #0288D1;
+    #newsTickerBar, .news-ticker-bar, .news-flash-ticker {
+      background: #2085AB;
+      border-bottom: 2px solid #176887;
       color: #ffffff;
       padding: 10px 0;
       font-size: 13px;
     }
     .news-ticker-wrapper { display: flex; align-items: center; gap: 16px; overflow: hidden; }
     .ticker-badge {
-      background: var(--secondary-teal);
+      background: #092347;
       color: #ffffff;
       font-size: 11px;
       font-weight: 800;
@@ -334,7 +338,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       flex-shrink: 0;
-      box-shadow: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
     .ticker-content {
       flex: 1;
@@ -351,10 +355,10 @@
     .ticker-track span {
       display: inline-block;
       margin-right: 40px;
-      color: #e2e8f0;
-      font-weight: 500;
+      color: #ffffff;
+      font-weight: 600;
     }
-    .ticker-track span i { color: #0288D1; margin-right: 6px; }
+    .ticker-track span i { color: #d5ecff; margin-right: 6px; }
     @keyframes marquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -687,9 +691,15 @@
     .modal-backdrop.active .popup-card { transform: translateY(0) scale(1); opacity: 1; }
     #popupModal .popup-header-banner {
       background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-teal) 100%);
-      color: #ffffff; padding: 32px 24px; text-align: center; position: relative;
+      color: #ffffff; padding: 24px 20px; text-align: center; position: relative;
     }
-    #popupModal .popup-header-banner i { font-size: 44px; color: var(--light-blue); margin-bottom: 12px; }
+    #popupModal .popup-header-banner i { font-size: 36px; color: var(--light-blue); margin-bottom: 8px; }
+    .popup-image-wrapper {
+      width: 100%; max-height: 260px; overflow: hidden; background: #0f172a; text-align: center; position: relative;
+    }
+    .popup-image-wrapper img {
+      width: 100%; height: 100%; max-height: 260px; object-fit: cover; display: block;
+    }
     .popup-body { padding: 26px; text-align: center; }
     .popup-body h3 { font-size: 20px; font-weight: 800; color: var(--primary-navy); margin-bottom: 8px; }
     .popup-body p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.55; }
@@ -1142,8 +1152,11 @@
   <div class="modal-backdrop" id="popupModal">
     <div class="popup-card">
       <button class="popup-close-btn" onclick="closePopupModal()" aria-label="Close announcement"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      <div class="popup-image-wrapper" id="popupImageWrapper" style="display: none;">
+        <img id="popupImage" src="" alt="Popup Announcement Photo">
+      </div>
       <div class="popup-header-banner" id="popupBannerHeader">
-        <i class="fa-solid fa-bullhorn"></i>
+        <i class="fa-solid fa-bullhorn" id="popupBannerIcon"></i>
         <h2 style="font-size: 20px; font-weight: 800;" id="popupTitle">Convention Announcement</h2>
       </div>
       <div class="popup-body">
@@ -1202,15 +1215,9 @@
             </select>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="mOrg">Organization</label>
-            <input type="text" id="mOrg" class="form-control" placeholder="NGO / Civil Body Name">
-          </div>
-          <div class="form-group">
-            <label for="mRole">Role / Position</label>
-            <input type="text" id="mRole" class="form-control" placeholder="Human Rights Defender / Legal Aid">
-          </div>
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="mJoiningReason">What is one specific reason you want to join HRD Forum and how can you support us? *</label>
+          <textarea id="mJoiningReason" class="form-control" rows="3" placeholder="Explain your motivation for joining HRD Forum Nepal and how you plan to contribute..." required></textarea>
         </div>
         <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Submit Application</button>
       </form>
@@ -1281,10 +1288,10 @@
       </div>
       <div style="flex: 1; overflow-y: auto; padding-right: 6px;">
         <div id="mediaPhotosTab">
-          <div class="gallery-grid" id="galleryGrid"></div>
+          <div class="gallery-grid" id="modalGalleryGrid"></div>
         </div>
         <div id="mediaVideosTab" style="display: none;">
-          <div class="video-grid" id="videoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px;"></div>
+          <div class="video-grid" id="modalVideoGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px;"></div>
         </div>
       </div>
     </div>
@@ -1390,16 +1397,36 @@
     </div>
   </div>
 
-  <!-- Gallery Lightbox -->
-  <div class="modal-backdrop" id="galleryLightboxModal" onclick="if(event.target === this) closeGalleryLightbox()">
-    <div class="modal-card" style="max-width: 860px; background: rgba(7, 25, 51, 0.98); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; padding: 24px; position: relative;">
-      <button class="modal-close" onclick="closeGalleryLightbox()" aria-label="Close photo viewer" style="color: #ffffff; top: 16px; right: 20px; font-size: 26px;">&times;</button>
-      <div style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 300px; max-height: 68vh; overflow: hidden; border-radius: 10px; background: #000000; margin-bottom: 16px;">
-        <img id="lightboxImg" src="" alt="Gallery Photo" width="1600" height="900" style="max-width: 100%; max-height: 68vh; object-fit: contain; display: block;">
-        <button onclick="prevGalleryPhoto()" aria-label="Previous photo" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-        <button onclick="nextGalleryPhoto()" aria-label="Next photo" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+  <!-- Gallery Lightbox Modal -->
+  <div class="modal-backdrop" id="galleryLightboxModal" onclick="if(event.target === this) closeGalleryLightbox()" role="dialog" aria-modal="true" aria-label="Photo Viewer">
+    <div class="modal-card" style="max-width: 960px; width: 95vw; background: rgba(7, 25, 51, 0.98); border: 1px solid rgba(255,255,255,0.18); color: #ffffff; padding: 20px 24px; position: relative; border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.5);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.12);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="lightboxCategory" style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--light-blue); background: rgba(32, 133, 171, 0.35); border: 1px solid rgba(213, 236, 255, 0.25); padding: 3px 10px; border-radius: 12px; letter-spacing: 0.5px;">Advocacy</span>
+          <span id="lightboxCounter" style="font-size: 12px; color: #94a3b8; font-weight: 600;">Photo 1 of 1</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a id="lightboxDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="Open full resolution in new tab" style="background: rgba(255,255,255,0.1); color: #ffffff; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+          <button class="modal-close" onclick="closeGalleryLightbox()" aria-label="Close photo viewer" style="background: rgba(255,255,255,0.1); border: none; color: #ffffff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; transition: background 0.2s;" onmouseover="this.style.background='rgba(220, 38, 38, 0.6)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
-      <h4 id="lightboxTitle" style="font-size: 16px; font-weight: 700; color: #ffffff;">Photo Title</h4>
+      <div id="lightboxSwipeArea" style="position: relative; display: flex; align-items: center; justify-content: center; min-height: 320px; max-height: 70vh; overflow: hidden; border-radius: 12px; background: #020617; margin-bottom: 14px; user-select: none;">
+        <img id="lightboxImg" src="" alt="Gallery Photo" width="1600" height="900" style="max-width: 100%; max-height: 70vh; object-fit: contain; display: block; transition: opacity 0.2s ease;">
+        <button onclick="prevGalleryPhoto()" aria-label="Previous photo" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: rgba(7, 25, 51, 0.8); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.5); z-index: 5;" onmouseover="this.style.background='var(--secondary-teal)'" onmouseout="this.style.background='rgba(7, 25, 51, 0.8)'">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true" style="font-size: 18px;"></i>
+        </button>
+        <button onclick="nextGalleryPhoto()" aria-label="Next photo" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: rgba(7, 25, 51, 0.8); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.5); z-index: 5;" onmouseover="this.style.background='var(--secondary-teal)'" onmouseout="this.style.background='rgba(7, 25, 51, 0.8)'">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true" style="font-size: 18px;"></i>
+        </button>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <h4 id="lightboxTitle" style="font-size: 16px; font-weight: 700; color: #ffffff; margin: 0;">Photo Title</h4>
+        <span style="font-size: 11.5px; color: #94a3b8;"><i class="fa-regular fa-keyboard" style="margin-right: 4px;"></i> Tip: Use &larr; &rarr; arrows to browse, Esc to close</span>
+      </div>
     </div>
   </div>
 
@@ -1435,21 +1462,41 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Critical above-the-fold data first; defer heavier sections.
-      loadNewsFlashes();
-      loadStats();
-      loadSettings();
-      loadProvinces();
+      // Only request data for components present on the active page
+      if (document.getElementById('tickerTrack') || document.getElementById('newsTickerBar')) {
+        loadNewsFlashes();
+      }
+      if (document.getElementById('statProvinces') || document.getElementById('statDefenders')) {
+        loadStats();
+      }
+      if (document.getElementById('homeHero')) {
+        loadSettings();
+      }
+      if (document.getElementById('provinceGrid') || document.getElementById('leafletMap')) {
+        loadProvinces();
+      }
       checkPopup();
       initSmoothExperience();
 
       const deferHeavy = () => {
-        loadGallery();
-        loadVideos();
-        loadNews();
-        loadResources();
-        loadTeam();
-        loadCollaborations();
+        if (document.getElementById('modalGalleryGrid')) {
+          loadGallery();
+        }
+        if (document.getElementById('videoGrid')) {
+          loadVideos();
+        }
+        if (document.getElementById('newsGrid')) {
+          loadNews();
+        }
+        if (document.getElementById('gridReport') || document.getElementById('gridPublication')) {
+          loadResources();
+        }
+        if (document.getElementById('teamGrid')) {
+          loadTeam();
+        }
+        if (document.getElementById('collabGrid')) {
+          loadCollaborations();
+        }
       };
       if ('requestIdleCallback' in window) {
         requestIdleCallback(deferHeavy, { timeout: 1200 });
@@ -1801,27 +1848,75 @@
       const container = document.getElementById(elementId);
       if (!container) return;
       if (items.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; padding: 12px;">No ${categoryType} documents listed.</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 12.5px; padding: 18px; background: #f8fafc; border-radius: 10px; border: 1px dashed var(--border-color); text-align: center;">No ${categoryType} documents listed.</div>`;
         return;
       }
       container.replaceChildren(...items.map((resource) => {
         const row = document.createElement('div');
-        row.style.cssText = 'background:#fff;border:1px solid var(--border-color);padding:14px 18px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:16px;';
+        row.style.cssText = 'background:#fff;border:1px solid var(--border-color);padding:14px 18px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 3px rgba(15,23,42,0.04);transition:all 0.2s ease;';
+        row.onmouseover = () => { row.style.boxShadow = '0 6px 18px rgba(15,23,42,0.08)'; row.style.borderColor = 'var(--secondary-teal)'; };
+        row.onmouseout = () => { row.style.boxShadow = '0 1px 3px rgba(15,23,42,0.04)'; row.style.borderColor = 'var(--border-color)'; };
+
+        const leftGroup = document.createElement('div');
+        leftGroup.style.cssText = 'display:flex;align-items:center;gap:16px;min-width:0;flex:1;';
+
+        // Publication Cover Photo Thumbnail or Fallback Document Badge
+        if (resource.cover_url) {
+          const coverWrapper = document.createElement('div');
+          coverWrapper.style.cssText = 'position:relative;flex-shrink:0;cursor:pointer;line-height:0;';
+          coverWrapper.title = 'Click to view full cover photo';
+          coverWrapper.onclick = (e) => {
+            e.stopPropagation();
+            if (typeof openGalleryLightbox === 'function') {
+              openGalleryLightbox(0, [{
+                title: resource.title || 'Publication Cover',
+                image_url: resource.cover_url,
+                category: resource.category || 'Publication'
+              }]);
+            } else {
+              window.open(resource.cover_url, '_blank');
+            }
+          };
+
+          const coverImg = document.createElement('img');
+          coverImg.src = resource.cover_url;
+          coverImg.alt = `${resource.title || 'Publication'} cover photo`;
+          coverImg.loading = 'lazy';
+          coverImg.style.cssText = 'width:52px;height:70px;object-fit:cover;border-radius:6px;border:1px solid #cbd5e1;box-shadow:0 3px 8px rgba(0,0,0,0.12);background:#f1f5f9;display:block;';
+          
+          coverWrapper.appendChild(coverImg);
+          leftGroup.appendChild(coverWrapper);
+        } else {
+          const docBadge = document.createElement('div');
+          docBadge.style.cssText = 'width:52px;height:70px;border-radius:6px;background:linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);border:1px solid #cbd5e1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;gap:4px;';
+          docBadge.innerHTML = `
+            <i class="fa-solid fa-file-lines" style="font-size:22px;color:var(--cobalt-accent);"></i>
+            <span style="font-size:9.5px;font-weight:800;color:#475569;letter-spacing:0.5px;text-transform:uppercase;">${resource.format || 'DOC'}</span>
+          `;
+          leftGroup.appendChild(docBadge);
+        }
+
         const info = document.createElement('div');
+        info.style.cssText = 'min-width:0;flex:1;';
         const title = document.createElement('h5');
         title.textContent = resource.title || 'Untitled resource';
-        title.style.cssText = 'margin:0 0 3px;font-size:14px;font-weight:700;color:var(--primary-navy);';
-        const metadata = document.createElement('span');
-        metadata.textContent = `${resource.format || 'PDF'} · ${resource.file_size || 'Document'}`;
-        metadata.style.cssText = 'font-size:11px;color:var(--text-muted);font-weight:600;';
+        title.style.cssText = 'margin:0 0 6px;font-size:14.5px;font-weight:700;color:var(--primary-navy);line-height:1.35;';
+        
+        const metadata = document.createElement('div');
+        metadata.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+        metadata.innerHTML = `
+          <span style="font-size:11.5px;color:var(--text-muted);font-weight:600;"><i class="fa-regular fa-file" style="margin-right:3px;"></i>${resource.format || 'PDF'} · ${resource.file_size || 'Document'}</span>
+          <span style="font-size:10.5px;font-weight:700;background:rgba(32,133,171,0.1);color:var(--cobalt-accent);padding:2px 8px;border-radius:12px;text-transform:uppercase;">${resource.category || categoryType}</span>
+        `;
         info.append(title, metadata);
+        leftGroup.appendChild(info);
 
         let action;
         if (resource.is_gated) {
           action = document.createElement('button');
           action.type = 'button';
           action.className = 'btn-hero-primary';
-          action.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> Register to download';
+          action.innerHTML = '<i class="fa-solid fa-lock" aria-hidden="true" style="margin-right:5px;font-size:11px;"></i> Register to download';
           action.setAttribute('aria-label', `Register to download ${resource.title || 'resource'}`);
           action.addEventListener('click', () => openGatedDownload(resource.id, resource.title || 'Resource'));
         } else if (resource.file_url) {
@@ -1832,7 +1927,7 @@
             action.target = '_blank';
             action.rel = 'noopener noreferrer';
             action.className = 'btn-hero-primary';
-            action.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i> Download';
+            action.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true" style="margin-right:5px;"></i> Download';
             action.setAttribute('aria-label', `Download ${resource.title || 'resource'}`);
           }
         }
@@ -1841,8 +1936,8 @@
           action.textContent = 'File unavailable';
           action.style.cssText = 'font-size:12px;color:var(--text-muted);';
         }
-        action.style.cssText += ';padding:7px 16px;font-size:12px;';
-        row.append(info, action);
+        action.style.cssText += ';padding:8px 18px;font-size:12px;white-space:nowrap;flex-shrink:0;border-radius:8px;';
+        row.append(leftGroup, action);
         return row;
       }));
     }
@@ -1901,8 +1996,7 @@
         email: document.getElementById('mEmail').value,
         phone: document.getElementById('mPhone').value,
         province: document.getElementById('mProvince').value,
-        organization: document.getElementById('mOrg').value,
-        role: document.getElementById('mRole').value
+        joining_reason: document.getElementById('mJoiningReason').value
       };
 
       try {
@@ -2027,43 +2121,115 @@
     let globalGalleryPhotos = [];
     let currentGalleryIndex = 0;
 
+    function getActiveGalleryPhotos() {
+      if (Array.isArray(window.activeLightboxPhotos) && window.activeLightboxPhotos.length > 0) {
+        return window.activeLightboxPhotos;
+      }
+      if (Array.isArray(window.globalGalleryPhotos) && window.globalGalleryPhotos.length > 0) {
+        return window.globalGalleryPhotos;
+      }
+      return globalGalleryPhotos || [];
+    }
+
     async function loadGallery() {
       try {
         const res = await fetch('/api/gallery/');
         if (res.ok) {
           globalGalleryPhotos = await res.json();
-          const grid = document.getElementById('galleryGrid');
-          if (!grid) return;
-          if (globalGalleryPhotos.length === 0) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No gallery photos available yet.</div>`;
-            return;
+          window.globalGalleryPhotos = globalGalleryPhotos;
+          const grid = document.getElementById('modalGalleryGrid');
+          if (grid) {
+            if (globalGalleryPhotos.length === 0) {
+              grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No gallery photos available yet.</div>`;
+            } else {
+              grid.innerHTML = globalGalleryPhotos.map((g, idx) => `
+                <div class="gallery-card" onclick="openGalleryLightbox(${idx})">
+                  <img src="${g.image_url}" alt="${g.title}" class="gallery-img" width="600" height="380" loading="lazy" decoding="async">
+                  <div class="gallery-info">
+                    <span class="gallery-tag">${g.category || 'Advocacy'}</span>
+                    <h5>${g.title}</h5>
+                  </div>
+                </div>
+              `).join('');
+              animateLoaded(grid);
+            }
           }
-          grid.innerHTML = globalGalleryPhotos.map((g, idx) => `
-            <div class="gallery-card" onclick="openGalleryLightbox(${idx})">
-              <img src="${g.image_url}" alt="${g.title}" class="gallery-img" width="600" height="380" loading="lazy" decoding="async">
-              <div class="gallery-info">
-                <span class="gallery-tag">${g.category || 'Advocacy'}</span>
-                <h5>${g.title}</h5>
-              </div>
-            </div>
-          `).join('');
-          animateLoaded(grid);
         }
       } catch (e) {}
     }
 
-    function openGalleryLightbox(index) {
-      if (!globalGalleryPhotos || !globalGalleryPhotos[index]) return;
+    function openGalleryLightbox(index, customList) {
+      if (Array.isArray(customList) && customList.length > 0) {
+        window.activeLightboxPhotos = customList;
+      }
+      const photos = getActiveGalleryPhotos();
+      if (!photos || !photos.length) return;
+      if (index < 0) index = 0;
+      if (index >= photos.length) index = photos.length - 1;
       currentGalleryIndex = index;
-      const photo = globalGalleryPhotos[index];
-      document.getElementById('lightboxImg').src = photo.image_url || '';
-      document.getElementById('lightboxTitle').innerText = photo.title || '';
-      document.getElementById('galleryLightboxModal').classList.add('active');
+      const photo = photos[index];
+      if (!photo) return;
+
+      const img = document.getElementById('lightboxImg');
+      if (img) {
+        img.src = photo.image_url || '';
+        img.alt = photo.title || 'HRD Forum Photo';
+      }
+      const title = document.getElementById('lightboxTitle');
+      if (title) title.innerText = photo.title || '';
+      const cat = document.getElementById('lightboxCategory');
+      if (cat) cat.innerText = photo.category || 'Advocacy';
+      const counter = document.getElementById('lightboxCounter');
+      if (counter) counter.innerText = `Photo ${index + 1} of ${photos.length}`;
+      const dl = document.getElementById('lightboxDownloadBtn');
+      if (dl) dl.href = photo.image_url || '#';
+
+      const modal = document.getElementById('galleryLightboxModal');
+      if (modal) modal.classList.add('active');
     }
 
-    function closeGalleryLightbox() { document.getElementById('galleryLightboxModal').classList.remove('active'); }
-    function prevGalleryPhoto() { if (currentGalleryIndex > 0) openGalleryLightbox(currentGalleryIndex - 1); }
-    function nextGalleryPhoto() { if (currentGalleryIndex < globalGalleryPhotos.length - 1) openGalleryLightbox(currentGalleryIndex + 1); }
+    function closeGalleryLightbox() {
+      const modal = document.getElementById('galleryLightboxModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function prevGalleryPhoto() {
+      const photos = getActiveGalleryPhotos();
+      if (!photos || !photos.length) return;
+      const newIndex = (currentGalleryIndex > 0) ? (currentGalleryIndex - 1) : (photos.length - 1);
+      openGalleryLightbox(newIndex);
+    }
+
+    function nextGalleryPhoto() {
+      const photos = getActiveGalleryPhotos();
+      if (!photos || !photos.length) return;
+      const newIndex = (currentGalleryIndex < photos.length - 1) ? (currentGalleryIndex + 1) : 0;
+      openGalleryLightbox(newIndex);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const swipeArea = document.getElementById('lightboxSwipeArea') || document.getElementById('galleryLightboxModal');
+      if (swipeArea) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        swipeArea.addEventListener('touchstart', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+          }
+        }, { passive: true });
+        swipeArea.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            const diffX = e.changedTouches[0].screenX - touchStartX;
+            const diffY = e.changedTouches[0].screenY - touchStartY;
+            if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+              if (diffX > 0) prevGalleryPhoto();
+              else nextGalleryPhoto();
+            }
+          }
+        }, { passive: true });
+      }
+    });
 
     let globalVideos = [];
     async function loadVideos() {
@@ -2140,8 +2306,36 @@
           const popup = await res.json();
           if (popup.active === 1 && popup.title) {
             document.getElementById('popupTitle').innerText = popup.title;
-            document.getElementById('popupSubtitle').innerText = popup.subtitle || '';
+
+            const subtitleEl = document.getElementById('popupSubtitle');
+            if (popup.subtitle && popup.subtitle.trim() !== '') {
+              subtitleEl.innerText = popup.subtitle;
+              subtitleEl.style.display = 'block';
+            } else {
+              subtitleEl.style.display = 'none';
+            }
+
+            const imgWrapper = document.getElementById('popupImageWrapper');
+            const popupImg = document.getElementById('popupImage');
+            const bannerIcon = document.getElementById('popupBannerIcon');
+
+            if (popup.image_url && popup.image_url.trim() !== '') {
+              popupImg.src = popup.image_url;
+              imgWrapper.style.display = 'block';
+              if (bannerIcon) bannerIcon.style.display = 'none';
+            } else {
+              imgWrapper.style.display = 'none';
+              if (bannerIcon) bannerIcon.style.display = 'inline-block';
+            }
+
             const link = document.getElementById('popupLink');
+            if (popup.link_text && popup.link_text.trim() !== '') {
+              link.innerText = popup.link_text;
+              link.style.display = 'inline-flex';
+            } else {
+              link.style.display = 'none';
+            }
+
             if (popup.link_url && popup.link_url !== '#') {
               link.href = popup.link_url;
               link.onclick = null;
@@ -2153,7 +2347,6 @@
                 openMembershipModal();
               };
             }
-            if (popup.link_text) link.innerText = popup.link_text;
             document.getElementById('popupModal').classList.add('active');
           }
         }

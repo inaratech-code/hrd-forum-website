@@ -10,11 +10,14 @@ from django.core.mail import send_mail
 from django.db.models import F
 from django.utils import timezone
 
+from django.views.decorators.cache import cache_control
+
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Blog, Video, GatedDownloadLead,
-    TeamMember, Collaboration, NewsFlash, UniqueVisitor
-, SiteSettings)
+    TeamMember, Collaboration, NewsFlash, UniqueVisitor,
+    SiteSettings, ThematicSector
+)
 
 logger = logging.getLogger(__name__)
 
@@ -69,26 +72,27 @@ def _get_client_ip(request):
 
 def _track_visitor(request):
     try:
+        # Fast exit: if already tracked during this session, do not perform DB operations
+        if request.session.get('has_visited_hrd', False):
+            return
+
         if not request.session.session_key:
             request.session.save()
 
         ip = _get_client_ip(request)
         session_key = request.session.session_key or ''
-        has_visited = request.session.get('has_visited_hrd', False)
+        visitor, created = UniqueVisitor.objects.get_or_create(
+            ip_address=ip,
+            defaults={'session_key': session_key}
+        )
+        request.session['has_visited_hrd'] = True
 
-        if not has_visited:
-            visitor, created = UniqueVisitor.objects.get_or_create(
-                ip_address=ip,
-                defaults={'session_key': session_key}
-            )
-            request.session['has_visited_hrd'] = True
-
-            if created:
-                stats = Stats.objects.first()
-                if not stats:
-                    Stats.objects.create(total_visitors=1)
-                else:
-                    Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
+        if created:
+            stats = Stats.objects.first()
+            if not stats:
+                Stats.objects.create(total_visitors=1)
+            else:
+                Stats.objects.filter(pk=stats.pk).update(total_visitors=F('total_visitors') + 1)
     except Exception as e:
         logger.warning(f"Visitor tracking failed: {e}")
 
@@ -110,7 +114,14 @@ def index_page(request):
 
 def about_page(request):
     _track_visitor(request)
-    return render(request, 'about_page.html')
+    settings = SiteSettings.objects.first()
+    if not settings:
+        settings = SiteSettings.objects.create()
+    thematics = ThematicSector.objects.all().order_by('order_index', 'id')
+    return render(request, 'about_page.html', {
+        'settings': settings,
+        'thematics': thematics,
+    })
 
 
 def gallery_page(request):
@@ -136,6 +147,28 @@ def robots_txt(request):
         "Disallow: /admin/",
         "Disallow: /api/",
         "",
+        "# Explicitly block automated AI crawlers, scrapers, and data ingestion bots",
+        "User-agent: GPTBot",
+        "Disallow: /",
+        "User-agent: ChatGPT-User",
+        "Disallow: /",
+        "User-agent: CCBot",
+        "Disallow: /",
+        "User-agent: anthropic-ai",
+        "Disallow: /",
+        "User-agent: Claude-Web",
+        "Disallow: /",
+        "User-agent: ClaudeBot",
+        "Disallow: /",
+        "User-agent: PerplexityBot",
+        "Disallow: /",
+        "User-agent: Bytespider",
+        "Disallow: /",
+        "User-agent: Google-Extended",
+        "Disallow: /",
+        "User-agent: Applebot-Extended",
+        "Disallow: /",
+        "",
         "Sitemap: https://hrdforum.org/sitemap.xml",
         "",
     ]
@@ -143,20 +176,52 @@ def robots_txt(request):
 
 
 def sitemap_xml(request):
-    lastmod = timezone.now().date().isoformat()
+    today = timezone.now().date().isoformat()
+    news_items = News.objects.all().order_by('-published_date')[:50]
+    
+    xml_entries = [
+        f"""  <url>
+    <loc>https://hrdforum.org/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>""",
+        f"""  <url>
+    <loc>https://hrdforum.org/about/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>""",
+        f"""  <url>
+    <loc>https://hrdforum.org/gallery/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>""",
+        f"""  <url>
+    <loc>https://hrdforum.org/support/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>"""
+    ]
+    for n in news_items:
+        n_date = n.published_date.isoformat() if n.published_date else today
+        xml_entries.append(f"""  <url>
+    <loc>https://hrdforum.org/news/{n.id}/</loc>
+    <lastmod>{n_date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>""")
+
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://hrdforum.org/</loc>
-    <lastmod>{lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
-"""
+{chr(10).join(xml_entries)}
+</urlset>"""
     return HttpResponse(xml.strip(), content_type="application/xml")
 
 
+@cache_control(max_age=120, public=True)
 def api_stats(request):
     stats = Stats.objects.first()
     return JsonResponse({
@@ -166,6 +231,7 @@ def api_stats(request):
         "total_visitors": UniqueVisitor.objects.count(),
     })
 
+@cache_control(max_age=120, public=True)
 def api_provinces(request):
     provinces = Province.objects.all().order_by('id')
     data = [{
@@ -185,6 +251,7 @@ def api_provinces(request):
     } for p in provinces]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_province_detail(request, prov_id):
     try:
         p = Province.objects.get(pk=prov_id)
@@ -206,6 +273,7 @@ def api_province_detail(request, prov_id):
     except Province.DoesNotExist:
         return JsonResponse({"error": "Province not found"}, status=404)
 
+@cache_control(max_age=120, public=True)
 def api_news(request):
     news_items = News.objects.all().order_by('-published_date')
     data = [{
@@ -219,6 +287,7 @@ def api_news(request):
     } for n in news_items]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_news_detail(request, news_id):
     try:
         n = News.objects.get(pk=news_id)
@@ -234,6 +303,7 @@ def api_news_detail(request, news_id):
     except News.DoesNotExist:
         return JsonResponse({"error": "News article not found"}, status=404)
 
+@cache_control(max_age=120, public=True)
 def api_updates(request):
     from .models import OrganizationalUpdate
     updates = OrganizationalUpdate.objects.all().order_by('-date_posted', '-id')
@@ -247,6 +317,7 @@ def api_updates(request):
     } for u in updates]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_resources(request):
     resources = Resource.objects.all().order_by('id')
     data = [{
@@ -255,11 +326,13 @@ def api_resources(request):
         "category": r.category,
         "format": r.format,
         "file_size": r.file_size,
+        "cover_url": r.display_cover,
         "file_url": '' if r.is_gated else r.display_file,
         "is_gated": r.is_gated
     } for r in resources]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=60, public=True)
 def api_popup(request):
     popup = PopupConfig.objects.filter(active=True).first()
     if popup:
@@ -274,6 +347,7 @@ def api_popup(request):
         })
     return JsonResponse({"active": 0})
 
+@cache_control(max_age=120, public=True)
 def api_gallery(request):
     photos = Gallery.objects.all().order_by('-id')
     data = [{
@@ -284,6 +358,7 @@ def api_gallery(request):
     } for g in photos]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_blogs(request):
     blogs = Blog.objects.all().order_by('-published_date')
     data = [{
@@ -296,6 +371,7 @@ def api_blogs(request):
     } for b in blogs]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_videos(request):
     videos = Video.objects.all().order_by('-published_date')
     def youtube_embed_url(value):
@@ -323,6 +399,7 @@ def api_videos(request):
     } for v in videos]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_news_flashes(request):
     flashes = NewsFlash.objects.filter(active=True).order_by('order_index', '-created_at')
     data = [{
@@ -332,6 +409,7 @@ def api_news_flashes(request):
     } for f in flashes]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_team(request):
     category = request.GET.get('category')
     queryset = TeamMember.objects.all()
@@ -344,10 +422,12 @@ def api_team(request):
         "category": item.category,
         "bio": item.bio,
         "image_url": item.display_image,
+        "linkedin_url": item.linkedin_url or '',
         "order_index": item.order_index
     } for item in queryset]
     return JsonResponse(data, safe=False)
 
+@cache_control(max_age=120, public=True)
 def api_collaborations(request):
     category = request.GET.get('category')
     queryset = Collaboration.objects.all()
@@ -358,6 +438,7 @@ def api_collaborations(request):
         "name": item.name,
         "category": item.category,
         "category_label": item.get_category_display(),
+        "support_level": item.support_level or 'bronze',
         "logo_url": item.display_logo,
         "blurb": item.blurb,
         "website_url": item.website_url,
@@ -408,6 +489,7 @@ def submit_membership(request):
     province_raw = (data.get('province') or '').strip()
     organization = (data.get('organization') or '').strip()
     role = (data.get('role') or '').strip()
+    joining_reason = (data.get('joining_reason') or data.get('reason_and_support') or '').strip()
 
     if not full_name or not email or not province_raw:
         return JsonResponse({"success": False, "error": "Full Name, Email, and Province are required."}, status=400)
@@ -427,7 +509,8 @@ def submit_membership(request):
         phone=phone,
         province=prov_obj,
         organization=organization,
-        role=role
+        role=role,
+        joining_reason=joining_reason
     )
 
     try:
@@ -535,15 +618,49 @@ def custom_404_view(request, exception=None):
 def custom_500_view(request):
     return render(request, '500.html', status=500)
 
+@cache_control(max_age=120, public=True)
 def api_site_settings(request):
     settings = SiteSettings.objects.first()
     if not settings:
         settings = SiteSettings.objects.create()
     return JsonResponse({
+        'about_hero_badge': settings.about_hero_badge,
+        'about_hero_title': settings.about_hero_title,
+        'about_hero_description': settings.about_hero_description,
+        'about_image_url': settings.display_about_image,
+        'about_image_caption': settings.about_image_caption,
+        'about_video_url': settings.about_video_url or '',
+        'profile_badge': settings.profile_badge,
+        'profile_title': settings.profile_title,
+        'profile_text': settings.profile_text,
+        'profile_feature_1_title': settings.profile_feature_1_title,
+        'profile_feature_1_text': settings.profile_feature_1_text,
+        'profile_feature_2_title': settings.profile_feature_2_title,
+        'profile_feature_2_text': settings.profile_feature_2_text,
+        'vision_title': settings.vision_title,
         'vision_text': settings.vision_text,
+        'mission_title': settings.mission_title,
         'mission_text': settings.mission_text,
-        'hero_image_url': settings.hero_image.url if settings.hero_image else '',
+        'hero_image_url': settings.display_hero_image,
+        'home_hero_badge': settings.home_hero_badge,
+        'home_hero_title': settings.home_hero_title,
+        'home_hero_subtitle': settings.home_hero_subtitle,
+        'home_about_badge': settings.home_about_badge,
+        'home_about_title': settings.home_about_title,
+        'home_about_text_1': settings.home_about_text_1,
+        'home_about_text_2': settings.home_about_text_2,
     })
+
+@cache_control(max_age=120, public=True)
+def api_thematic_sectors(request):
+    sectors = ThematicSector.objects.all().order_by('order_index', 'id')
+    return JsonResponse([{
+        'id': s.id,
+        'title': s.title,
+        'description': s.description,
+        'icon': s.icon,
+        'order_index': s.order_index,
+    } for s in sectors], safe=False)
 
 def support_page_view(request):
     settings = SiteSettings.objects.first()

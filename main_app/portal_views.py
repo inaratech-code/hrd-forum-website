@@ -15,13 +15,15 @@ from django.views.decorators.http import require_POST
 from .models import (
     Gallery, Resource, Incident, Membership, News, Province,
     Stats, UniqueVisitor, Blog, Video, TeamMember, Collaboration,
-    NewsFlash, PopupConfig, GatedDownloadLead
-, SiteSettings)
+    NewsFlash, PopupConfig, GatedDownloadLead,
+    SiteSettings, ThematicSector
+)
 from .forms import (
     GalleryForm, ResourceForm, NewsForm, ProvinceForm, MembershipForm,
     IncidentForm, PopupConfigForm, BlogForm, VideoForm, TeamMemberForm,
-    CollaborationForm, NewsFlashForm, UserForm, GroupForm, PortalPasswordChangeForm
-, SiteSettingsForm)
+    CollaborationForm, NewsFlashForm, UserForm, GroupForm, PortalPasswordChangeForm,
+    SiteSettingsForm, ThematicSectorForm, HomePageSettingsForm, AboutPageSettingsForm
+)
 from .security import EXPOSED_LEGACY_ADMIN_PASSWORD
 
 logger = logging.getLogger(__name__)
@@ -1178,6 +1180,79 @@ def portal_collaboration_delete(request, collab_id):
     })
 
 
+# THEMATIC SECTORS CRUD
+
+@staff_required
+def portal_thematic_list(request):
+    sectors = ThematicSector.objects.all()
+    return render(request, 'portal/generic_list.html', {
+        'items': sectors,
+        'query': '',
+        'title': 'Thematic Sectors of Rights Defense',
+        'subtitle': 'Manage thematic focus areas shown on the About page',
+        'add_url': 'portal_thematic_add',
+        'edit_url_name': 'portal_thematic_edit',
+        'delete_url_name': 'portal_thematic_delete',
+        'item_type': 'Thematic Sector',
+    })
+
+@staff_required
+def portal_thematic_add(request):
+    if request.method == 'POST':
+        form = ThematicSectorForm(request.POST)
+        if form.is_valid():
+            sector = form.save()
+            messages.success(request, f"Thematic Sector '{sector.title}' added successfully!")
+            return redirect('portal_thematic_list')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ThematicSectorForm()
+
+    return render(request, 'portal/generic_form.html', {
+        'form': form,
+        'title': 'Add Thematic Sector',
+        'subtitle': 'Define a core human rights domain for the About page',
+        'back_url': 'portal_thematic_list'
+    })
+
+@staff_required
+def portal_thematic_edit(request, sector_id):
+    sector = get_object_or_404(ThematicSector, id=sector_id)
+    if request.method == 'POST':
+        form = ThematicSectorForm(request.POST, instance=sector)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Thematic Sector '{sector.title}' updated successfully!")
+            return redirect('portal_thematic_list')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ThematicSectorForm(instance=sector)
+
+    return render(request, 'portal/generic_form.html', {
+        'form': form,
+        'title': 'Edit Thematic Sector',
+        'subtitle': sector.title,
+        'back_url': 'portal_thematic_list'
+    })
+
+@staff_required
+def portal_thematic_delete(request, sector_id):
+    sector = get_object_or_404(ThematicSector, id=sector_id)
+    if request.method == 'POST':
+        title = sector.title
+        sector.delete()
+        messages.success(request, f"Thematic Sector '{title}' deleted.")
+        return redirect('portal_thematic_list')
+
+    return render(request, 'portal/confirm_delete.html', {
+        'object_title': sector.title,
+        'item_type': 'Thematic Sector',
+        'cancel_url': 'portal_thematic_list'
+    })
+
+
 # NEWS FLASHES / TICKER CRUD
 
 @staff_required
@@ -1274,8 +1349,8 @@ def portal_popup_list(request):
         'query': query,
         'title': 'Homepage Popup Banners',
         'module_slug': 'popups',
-        'headers': ['Title', 'Subtitle', 'Active', 'Link Text'],
-        'fields': ['title', 'subtitle', 'active', 'link_text'],
+        'headers': ['Photo', 'Title', 'Subtitle', 'Active', 'Link Text'],
+        'fields': ['display_image', 'title', 'subtitle', 'active', 'link_text'],
         'add_url': 'portal_popup_add',
         'edit_url_name': 'portal_popup_edit',
         'delete_url_name': 'portal_popup_delete',
@@ -1550,25 +1625,50 @@ def portal_group_delete(request, group_id):
 
 
 @staff_required
-def portal_site_settings_view(request):
+def portal_home_settings_view(request):
     settings_obj = SiteSettings.objects.first()
     if not settings_obj:
         settings_obj = SiteSettings.objects.create()
     
     if request.method == 'POST':
-        form = SiteSettingsForm(request.POST, request.FILES, instance=settings_obj)
+        form = HomePageSettingsForm(request.POST, request.FILES, instance=settings_obj)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Site settings updated.')
-            return redirect('portal_site_settings')
+            messages.success(request, 'Landing page content & hero photo updated successfully.')
+            return redirect('portal_home_settings')
         else:
-            messages.error(request, 'Failed to update settings.')
+            messages.error(request, 'Failed to update landing page settings.')
     else:
-        form = SiteSettingsForm(instance=settings_obj)
+        form = HomePageSettingsForm(instance=settings_obj)
 
-    return render(request, 'portal/site_settings.html', {
+    return render(request, 'portal/home_settings.html', {
         'form': form,
     })
+
+
+@staff_required
+def portal_about_settings_view(request):
+    settings_obj = SiteSettings.objects.first()
+    if not settings_obj:
+        settings_obj = SiteSettings.objects.create()
+    
+    if request.method == 'POST':
+        form = AboutPageSettingsForm(request.POST, request.FILES, instance=settings_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'About page content, showcase photo & details updated successfully.')
+            return redirect('portal_about_settings')
+        else:
+            messages.error(request, 'Failed to update about page settings.')
+    else:
+        form = AboutPageSettingsForm(instance=settings_obj)
+
+    return render(request, 'portal/about_settings.html', {
+        'form': form,
+    })
+
+# Backwards compatibility alias
+portal_site_settings_view = portal_about_settings_view
 
 @staff_required
 def portal_settings_view(request):

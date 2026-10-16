@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from .models import (
     Resource, Province, Membership, Incident, News,
     PopupConfig, Gallery, Blog, Video, TeamMember, 
-    Collaboration, NewsFlash, SiteSettings, SupportContribution
+    Collaboration, NewsFlash, SiteSettings, SupportContribution, ThematicSector
 )
 
 # HELPER INPUT STYLES
@@ -58,11 +58,31 @@ class ResourceForm(forms.ModelForm):
 
     class Meta:
         model = Resource
-        fields = ['title', 'category', 'format', 'file_size', 'file_upload', 'file_url', 'is_gated']
+        fields = ['title', 'category', 'format', 'file_size', 'cover_image', 'cover_image_url', 'file_upload', 'file_url', 'is_gated']
+        labels = {
+            'title': 'Resource / Publication Title',
+            'category': 'Resource Category',
+            'format': 'Document Format (e.g. PDF)',
+            'file_size': 'File Size (e.g. 2.5 MB)',
+            'cover_image': 'Cover Photo / Publication Thumbnail (Upload Image)',
+            'cover_image_url': 'Cover Photo Web URL (Alternative)',
+            'file_upload': 'Document File (PDF / DOCX)',
+            'file_url': 'Document Download URL (Alternative)',
+            'is_gated': 'Gated Access (Require user contact before downloading)'
+        }
+        help_texts = {
+            'cover_image': 'Upload a cover photo, front page, or thumbnail for this publication/resource.',
+            'cover_image_url': 'Or enter a direct image URL if hosted externally.',
+            'file_upload': 'Upload the full document file (PDF, Word, etc.).',
+            'file_url': 'Or provide an external link to access the publication.',
+            'is_gated': 'When checked, visitors must submit their name and email to download.'
+        }
         widgets = {
-            'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Document title...'}),
+            'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g. Annual Human Rights Protection Report 2026'}),
+            'cover_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'resource-cover-input'}),
+            'cover_image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://example.com/cover-image.jpg'}),
             'file_upload': forms.FileInput(attrs={'class': FILE_CLASS, 'id': 'resource-file-input'}),
-            'file_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://...'}),
+            'file_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://example.com/document.pdf'}),
             'is_gated': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
         }
 
@@ -129,14 +149,16 @@ class ProvinceForm(forms.ModelForm):
 class MembershipForm(forms.ModelForm):
     class Meta:
         model = Membership
-        fields = ['full_name', 'email', 'phone', 'province', 'organization', 'role', 'status']
+        fields = ['full_name', 'email', 'phone', 'province', 'joining_reason', 'status']
+        labels = {
+            'joining_reason': 'What is one specific reason you want to join HRD Forum and how can you support us?',
+        }
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': INPUT_CLASS}),
-            'email': forms.EmailInput(attrs={'class': INPUT_CLASS}),
-            'phone': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'full_name': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Your Full Name'}),
+            'email': forms.EmailInput(attrs={'class': INPUT_CLASS, 'placeholder': 'your.email@example.com'}),
+            'phone': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': '+977 9800000000'}),
             'province': forms.Select(attrs={'class': SELECT_CLASS}),
-            'organization': forms.TextInput(attrs={'class': INPUT_CLASS}),
-            'role': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'joining_reason': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4, 'placeholder': 'Explain your reason for joining and how you plan to support HRD Forum...'}),
             'status': forms.Select(attrs={'class': SELECT_CLASS}),
         }
 
@@ -163,15 +185,29 @@ class IncidentForm(forms.ModelForm):
 class PopupConfigForm(forms.ModelForm):
     class Meta:
         model = PopupConfig
-        fields = ['title', 'subtitle', 'link_url', 'link_text', 'active', 'image', 'image_url']
+        fields = ['title', 'subtitle', 'image', 'image_url', 'link_url', 'link_text', 'active']
+        labels = {
+            'title': 'Popup Title',
+            'subtitle': 'Popup Text / Content',
+            'image': 'Upload Photo / Image File',
+            'image_url': 'Photo / Image URL (Alternative)',
+            'link_url': 'Button Link URL',
+            'link_text': 'Button Label',
+            'active': 'Active (Show Popup on Website)',
+        }
+        help_texts = {
+            'image': 'Upload a photo or banner image to display in the popup.',
+            'image_url': 'Or enter a direct URL to an image (e.g. Unsplash, Cloudinary, etc.)',
+            'subtitle': 'Announcement details or text description shown in the popup.',
+        }
         widgets = {
-            'title': forms.TextInput(attrs={'class': INPUT_CLASS}),
-            'subtitle': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 2}),
-            'link_url': forms.TextInput(attrs={'class': INPUT_CLASS}),
-            'link_text': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., National Human Rights Defenders Convention 2026'}),
+            'subtitle': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Enter event details or announcement message...'}),
+            'link_url': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://example.com or #'}),
+            'link_text': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., Register Online Now'}),
             'active': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
             'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'popup-file-input'}),
-            'image_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
+            'image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://images.unsplash.com/...'}),
         }
 
 
@@ -204,12 +240,16 @@ class VideoForm(forms.ModelForm):
 class TeamMemberForm(forms.ModelForm):
     class Meta:
         model = TeamMember
-        fields = ['name', 'designation', 'category', 'bio', 'order_index', 'image', 'image_url']
+        fields = ['name', 'designation', 'category', 'bio', 'linkedin_url', 'order_index', 'image', 'image_url']
+        labels = {
+            'linkedin_url': 'LinkedIn Profile URL',
+        }
         widgets = {
-            'name': forms.TextInput(attrs={'class': INPUT_CLASS}),
-            'designation': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'name': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., Jane Doe'}),
+            'designation': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., Senior Legal Advisor'}),
             'category': forms.Select(attrs={'class': SELECT_CLASS}),
             'bio': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
+            'linkedin_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://www.linkedin.com/in/username'}),
             'order_index': forms.NumberInput(attrs={'class': INPUT_CLASS}),
             'image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'team-file-input'}),
             'image_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
@@ -219,16 +259,21 @@ class TeamMemberForm(forms.ModelForm):
 class CollaborationForm(forms.ModelForm):
     class Meta:
         model = Collaboration
-        fields = ['name', 'category', 'blurb', 'website_url', 'order_index', 'logo', 'logo_url']
+        fields = ['name', 'category', 'support_level', 'blurb', 'website_url', 'order_index', 'logo', 'logo_url']
+        labels = {
+            'support_level': 'Individual Supporter Recognition Level',
+        }
         widgets = {
             'name': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'category': forms.Select(attrs={'class': SELECT_CLASS}),
+            'support_level': forms.Select(attrs={'class': SELECT_CLASS}),
             'blurb': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
             'website_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
             'order_index': forms.NumberInput(attrs={'class': INPUT_CLASS}),
             'logo': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'collab-file-input'}),
             'logo_url': forms.URLInput(attrs={'class': INPUT_CLASS}),
         }
+
 
 
 class NewsFlashForm(forms.ModelForm):
@@ -316,23 +361,125 @@ class GroupForm(forms.ModelForm):
         }
 
 
-class SiteSettingsForm(forms.ModelForm):
+class HomePageSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         fields = [
-            'vision_text', 'mission_text', 
-            'hero_image', 'bank_qr_image',
-            'bank_name', 'bank_account_name', 'bank_account_no', 'bank_branch'
+            'hero_image', 'hero_image_url',
+            'home_hero_badge', 'home_hero_title', 'home_hero_subtitle',
+            'home_about_badge', 'home_about_title', 'home_about_text_1', 'home_about_text_2'
         ]
+        labels = {
+            'hero_image': 'Landing Page Hero Background Image (Upload)',
+            'hero_image_url': 'Landing Page Hero Background Image URL (Alternative)',
+            'home_hero_badge': 'Hero Section Top Tag / Badge',
+            'home_hero_title': 'Hero Section Main Headline',
+            'home_hero_subtitle': 'Hero Section Subtitle / Mission Summary',
+            'home_about_badge': 'Overview Section Top Badge',
+            'home_about_title': 'Overview Section Main Heading',
+            'home_about_text_1': 'Overview Description Paragraph 1',
+            'home_about_text_2': 'Overview Description Paragraph 2',
+        }
         widgets = {
-            'vision_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
-            'mission_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
-            'hero_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'hero-file-input'}),
+            'hero_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'home-hero-file'}),
+            'hero_image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://images.unsplash.com/...'}),
+            'home_hero_badge': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'ESTABLISHED NATIONAL HUMAN RIGHTS COALITION'}),
+            'home_hero_title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Protecting Rights & Empowering Defenders Across Nepal'}),
+            'home_hero_subtitle': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Strengthening 7 provincial helpdesks...'}),
+            'home_about_badge': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'ORGANIZATIONAL BACKGROUND'}),
+            'home_about_title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'About HRD Forum Nepal'}),
+            'home_about_text_1': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
+            'home_about_text_2': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
+        }
+
+
+class AboutPageSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            # About Page - Hero & Showcase Photo
+            'about_hero_badge', 'about_hero_title', 'about_hero_description',
+            'about_image', 'about_image_url', 'about_image_caption', 'about_video_url',
+            # About Page - Profile Section
+            'profile_badge', 'profile_title', 'profile_text',
+            'profile_feature_1_title', 'profile_feature_1_text',
+            'profile_feature_2_title', 'profile_feature_2_text',
+            # About Page - Mission & Vision
+            'vision_title', 'vision_text', 'mission_title', 'mission_text',
+            # Support Us & Bank Details
+            'bank_qr_image', 'bank_name', 'bank_account_name', 'bank_account_no', 'bank_branch'
+        ]
+        labels = {
+            'about_hero_badge': 'About Hero Top Badge (Small uppercase tag)',
+            'about_hero_title': 'About Hero Main Heading (Blue Section)',
+            'about_hero_description': 'About Hero Description (Lead text)',
+            'about_image': 'About Hero Showcase Image (Direct Upload)',
+            'about_image_url': 'About Hero Showcase Image URL (Alternative)',
+            'about_image_caption': 'About Hero Image Card Caption',
+            'about_video_url': 'About Hero Background Video URL (Optional)',
+            'profile_badge': 'Profile Section Badge',
+            'profile_title': 'Profile Section Title',
+            'profile_text': 'Profile Section Main Story / Coalition Text',
+            'profile_feature_1_title': 'Profile Pillar 1 Title',
+            'profile_feature_1_text': 'Profile Pillar 1 Description',
+            'profile_feature_2_title': 'Profile Pillar 2 Title',
+            'profile_feature_2_text': 'Profile Pillar 2 Description',
+            'vision_title': 'Vision Card Heading',
+            'vision_text': 'Vision Statement',
+            'mission_title': 'Mission Card Heading',
+            'mission_text': 'Mission Statement',
+            'bank_qr_image': 'Bank Payment QR Code (Upload Image)',
+            'bank_name': 'Bank Name',
+            'bank_account_name': 'Account Holder Name',
+            'bank_account_no': 'Account Number',
+            'bank_branch': 'Branch Name',
+        }
+        widgets = {
+            'about_hero_badge': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'ABOUT HRD FORUM NEPAL'}),
+            'about_hero_title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Protecting rights defenders and strengthening civic space across Nepal.'}),
+            'about_hero_description': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Coalition lead narrative...'}),
+            'about_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'about-file-input'}),
+            'about_image_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://images.unsplash.com/...'}),
+            'about_image_caption': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'HRD Forum Nepal Field Network'}),
+            'about_video_url': forms.URLInput(attrs={'class': INPUT_CLASS, 'placeholder': 'https://www.youtube.com/embed/... or direct video URL'}),
+            'profile_badge': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Coalition Profile'}),
+            'profile_title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'Profile of HRD Forum Nepal'}),
+            'profile_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 4}),
+            'profile_feature_1_title': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'profile_feature_1_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
+            'profile_feature_2_title': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'profile_feature_2_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
+            'vision_title': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'vision_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
+            'mission_title': forms.TextInput(attrs={'class': INPUT_CLASS}),
+            'mission_text': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3}),
             'bank_qr_image': forms.FileInput(attrs={'class': FILE_CLASS, 'accept': 'image/*', 'id': 'qr-file-input'}),
             'bank_name': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'bank_account_name': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'bank_account_no': forms.TextInput(attrs={'class': INPUT_CLASS}),
             'bank_branch': forms.TextInput(attrs={'class': INPUT_CLASS}),
+        }
+
+
+# Compatibility alias
+SiteSettingsForm = AboutPageSettingsForm
+
+
+class ThematicSectorForm(forms.ModelForm):
+    class Meta:
+        model = ThematicSector
+        fields = ['title', 'description', 'icon', 'order_index']
+        labels = {
+            'title': 'Thematic Sector Title',
+            'description': 'Description & Scope of Protection',
+            'icon': 'FontAwesome Icon Class (e.g. fa-solid fa-gavel)',
+            'order_index': 'Display Order Index',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g. Legal Defense & Rapid Support'}),
+            'description': forms.Textarea(attrs={'class': TEXTAREA_CLASS, 'rows': 3, 'placeholder': 'Description...'}),
+            'icon': forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'fa-solid fa-gavel'}),
+            'order_index': forms.NumberInput(attrs={'class': INPUT_CLASS}),
         }
 
 class SupportContributionForm(forms.ModelForm):

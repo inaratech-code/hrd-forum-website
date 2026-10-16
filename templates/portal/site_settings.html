@@ -1,116 +1,239 @@
 {% extends "portal/base_portal.html" %}
-{% block title %}Site Settings - HRD Forum Portal{% endblock %}
+{% block title %}Site & About Settings - HRD Forum Portal{% endblock %}
 {% block content %}
 <div class="max-w-4xl mx-auto space-y-6">
-    <div>
-        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Global Site Settings</h1>
-        <p class="text-xs text-slate-500 font-medium mt-1">Manage about page, mission, vision, and support text.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-teal-600"></i>
+                <span>Global Site & About Settings</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium mt-1">Manage the About page hero banner, showcase image, coalition profile, mission, vision, and support details.</p>
+        </div>
+        <a href="/about/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-teal-700 text-xs font-bold shadow-sm transition">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>View Live About Page</span>
+        </a>
     </div>
 
     <form method="post" enctype="multipart/form-data" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         {% csrf_token %}
-        <div class="p-6 sm:p-8 space-y-6">
+        <div class="p-6 sm:p-8 space-y-8">
             {% if form.non_field_errors %}
-                <div class="rounded-lg bg-red-50 p-4 border-l-4 border-red-500 mb-6">
-                    <p class="text-sm text-red-700 font-medium">{{ form.non_field_errors }}</p>
+                <div class="rounded-xl bg-red-50 p-4 border-l-4 border-red-500 mb-6">
+                    <p class="text-xs text-red-700 font-semibold">{{ form.non_field_errors }}</p>
                 </div>
             {% endif %}
 
-            <div class="space-y-6">
-                
-                <!-- Group 1: Vision & Mission -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
-                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
-                        <span><i class="fa-solid fa-bullseye text-teal-600 mr-2"></i> Vision & Mission</span>
-                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
-                            Save Group
-                        </button>
-                    </h3>
-                    <div class="grid grid-cols-1 gap-4">
-                        {% for field in form %}
-                            {% if field.name == 'vision_text' or field.name == 'mission_text' %}
-                                <div class="flex flex-col space-y-1.5">
-                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
-                                    {{ field }}
-                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+            <!-- Section 1: About Hero Banner (The Fully Blue Part) & Showcase Image -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 relative">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-image"></i>
+                        </span>
+                        <div>
+                            <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">About Hero Banner (Blue Section) & Showcase Image</h3>
+                            <p class="text-[11px] text-slate-500 font-medium">Controls the top blue section of /about/ where the headline and its dedicated showcase image reside.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Group 2: Banner Images -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
-                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
-                        <span><i class="fa-regular fa-images text-teal-600 mr-2"></i> Page Banners</span>
-                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
-                            Save Group
-                        </button>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {% for field in form %}
-                            {% if field.name == 'hero_image' %}
-                                <div class="flex flex-col space-y-1.5">
-                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
-                                    
-                                    {% if form.instance.hero_image %}
-                                    <div class="mb-2 p-2 bg-slate-100 border border-slate-200 rounded-lg flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-white border border-slate-200">
-                                                <img src="{{ form.instance.hero_image.url }}" alt="Hero" class="w-full h-full object-cover">
-                                            </div>
-                                            <div class="text-xs text-slate-600 font-medium truncate max-w-[200px]">
-                                                {{ form.instance.hero_image.name }}
-                                            </div>
-                                        </div>
-                                        <a href="{{ form.instance.hero_image.url }}" target="_blank" class="text-teal-600 hover:text-teal-700 text-[11px] font-bold">View</a>
-                                    </div>
-                                    {% endif %}
-                                    
-                                    {{ field }}
-                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="md:col-span-2">
+                        <label for="{{ form.about_hero_badge.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.about_hero_badge.label }}</label>
+                        {{ form.about_hero_badge }}
+                        {% if form.about_hero_badge.errors %}<p class="text-[11px] font-bold text-red-600 mt-1">{{ form.about_hero_badge.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="{{ form.about_hero_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.about_hero_title.label }}</label>
+                        {{ form.about_hero_title }}
+                        {% if form.about_hero_title.errors %}<p class="text-[11px] font-bold text-red-600 mt-1">{{ form.about_hero_title.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="{{ form.about_hero_description.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.about_hero_description.label }}</label>
+                        {{ form.about_hero_description }}
+                        {% if form.about_hero_description.errors %}<p class="text-[11px] font-bold text-red-600 mt-1">{{ form.about_hero_description.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Showcase Image Box -->
+                    <div class="md:col-span-2 bg-white border border-slate-200 rounded-xl p-4">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-camera text-teal-600"></i>
+                            <span>Dedicated Hero Showcase Image (Its own part in the blue banner)</span>
+                        </label>
+                        
+                        {% if form.instance.display_about_image %}
+                        <div class="mb-3 p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <img src="{{ form.instance.display_about_image }}" alt="Hero Showcase Image" class="w-36 h-24 object-cover rounded-lg border border-slate-200 shadow-sm flex-shrink-0">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Current Showcase Image</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">This image is rendered in its own dedicated card inside the blue hero section on the About page.</p>
+                                <a href="{{ form.instance.display_about_image }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-bold text-teal-700 hover:underline mt-1.5">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> View Full Image
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="{{ form.about_image.id_for_label }}" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Upload New Image File</label>
+                                {{ form.about_image }}
+                                {% if form.about_image.errors %}<p class="text-[11px] font-bold text-red-600 mt-1">{{ form.about_image.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div>
+                                <label for="{{ form.about_image_url.id_for_label }}" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Or External Image URL</label>
+                                {{ form.about_image_url }}
+                                {% if form.about_image_url.errors %}<p class="text-[11px] font-bold text-red-600 mt-1">{{ form.about_image_url.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="{{ form.about_image_caption.id_for_label }}" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Image Card Caption / Subtitle</label>
+                                {{ form.about_image_caption }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="{{ form.about_video_url.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.about_video_url.label }}</label>
+                        {{ form.about_video_url }}
+                        <p class="text-[11px] text-slate-400 mt-1">Optional direct MP4 video link or YouTube embed to loop subtly in the background.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Coalition Profile Section -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 relative">
+                <div class="flex items-center gap-2.5 border-b border-slate-200 pb-3 mb-5">
+                    <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-users"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Profile of HRD Forum Nepal</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Controls the coalition profile section and the two highlighted operational pillars.</p>
                     </div>
                 </div>
 
-                <!-- Group 3: Bank & Support Details -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 relative">
-                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2 flex justify-between items-center">
-                        <span><i class="fa-solid fa-building-columns text-teal-600 mr-2"></i> Bank Transfer Details</span>
-                        <button type="submit" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded shadow-sm transition-colors">
-                            Save Group
-                        </button>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {% for field in form %}
-                            {% if field.name == 'bank_qr_image' or field.name == 'bank_name' or field.name == 'bank_account_name' or field.name == 'bank_account_no' or field.name == 'bank_branch' %}
-                                <div class="flex flex-col space-y-1.5">
-                                    <label for="{{ field.id_for_label }}" class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ field.label }}</label>
-                                    
-                                    {% if field.name == 'bank_qr_image' and form.instance.bank_qr_image %}
-                                    <div class="mb-2 p-2 bg-slate-100 border border-slate-200 rounded-lg flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-white border border-slate-200">
-                                                <img src="{{ form.instance.bank_qr_image.url }}" alt="QR" class="w-full h-full object-cover">
-                                            </div>
-                                            <div class="text-xs text-slate-600 font-medium truncate max-w-[200px]">
-                                                {{ form.instance.bank_qr_image.name }}
-                                            </div>
-                                        </div>
-                                        <a href="{{ form.instance.bank_qr_image.url }}" target="_blank" class="text-teal-600 hover:text-teal-700 text-[11px] font-bold">View</a>
-                                    </div>
-                                    {% endif %}
-                                    
-                                    {{ field }}
-                                    {% if field.errors %}<p class="text-[11px] font-bold text-red-600">{{ field.errors.0 }}</p>{% endif %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label for="{{ form.profile_badge.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.profile_badge.label }}</label>
+                        {{ form.profile_badge }}
+                    </div>
+                    <div>
+                        <label for="{{ form.profile_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.profile_title.label }}</label>
+                        {{ form.profile_title }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="{{ form.profile_text.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.profile_text.label }}</label>
+                        {{ form.profile_text }}
+                    </div>
+
+                    <!-- Highlight Pillar 1 -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4">
+                        <label for="{{ form.profile_feature_1_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.profile_feature_1_title.label }}</label>
+                        {{ form.profile_feature_1_title }}
+                        <div class="mt-2.5">
+                            <label for="{{ form.profile_feature_1_text.id_for_label }}" class="block text-[11px] font-bold text-slate-500 uppercase mb-1">{{ form.profile_feature_1_text.label }}</label>
+                            {{ form.profile_feature_1_text }}
+                        </div>
+                    </div>
+
+                    <!-- Highlight Pillar 2 -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4">
+                        <label for="{{ form.profile_feature_2_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.profile_feature_2_title.label }}</label>
+                        {{ form.profile_feature_2_title }}
+                        <div class="mt-2.5">
+                            <label for="{{ form.profile_feature_2_text.id_for_label }}" class="block text-[11px] font-bold text-slate-500 uppercase mb-1">{{ form.profile_feature_2_text.label }}</label>
+                            {{ form.profile_feature_2_text }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Strategic Direction (Vision & Mission) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 relative">
+                <div class="flex items-center gap-2.5 border-b border-slate-200 pb-3 mb-5">
+                    <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Mission & Vision</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Statements defining coalition vision and empowerment goals.</p>
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4">
+                        <label for="{{ form.vision_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.vision_title.label }}</label>
+                        {{ form.vision_title }}
+                        <div class="mt-2.5">
+                            <label for="{{ form.vision_text.id_for_label }}" class="block text-[11px] font-bold text-slate-500 uppercase mb-1">{{ form.vision_text.label }}</label>
+                            {{ form.vision_text }}
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-xl p-4">
+                        <label for="{{ form.mission_title.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ form.mission_title.label }}</label>
+                        {{ form.mission_title }}
+                        <div class="mt-2.5">
+                            <label for="{{ form.mission_text.id_for_label }}" class="block text-[11px] font-bold text-slate-500 uppercase mb-1">{{ form.mission_text.label }}</label>
+                            {{ form.mission_text }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Home Banner & Support Details -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 relative">
+                <div class="flex items-center gap-2.5 border-b border-slate-200 pb-3 mb-5">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Support Us & Banking Details</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Bank account numbers and QR code for public support contributions.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.bank_name.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">{{ form.bank_name.label }}</label>
+                        {{ form.bank_name }}
+                    </div>
+                    <div>
+                        <label for="{{ form.bank_account_name.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">{{ form.bank_account_name.label }}</label>
+                        {{ form.bank_account_name }}
+                    </div>
+                    <div>
+                        <label for="{{ form.bank_account_no.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">{{ form.bank_account_no.label }}</label>
+                        {{ form.bank_account_no }}
+                    </div>
+                    <div>
+                        <label for="{{ form.bank_branch.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">{{ form.bank_branch.label }}</label>
+                        {{ form.bank_branch }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="{{ form.bank_qr_image.id_for_label }}" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Bank Payment QR Code</label>
+                        {% if form.instance.bank_qr_image %}
+                        <div class="mb-2 p-2 bg-white border border-slate-200 rounded-lg inline-flex items-center gap-3">
+                            <img src="{{ form.instance.bank_qr_image.url }}" alt="QR" class="w-12 h-12 object-cover rounded">
+                            <span class="text-xs text-slate-600 font-medium">Current QR Code Image</span>
+                        </div>
+                        {% endif %}
+                        {{ form.bank_qr_image }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500 font-medium">Changes apply immediately across the public website.</p>
+                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-teal-700/20 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Save All Settings</span>
+                </button>
             </div>
         </div>
     </form>

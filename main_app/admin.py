@@ -7,7 +7,8 @@ from django.utils.html import mark_safe, escape
 from .models import (
     Stats, Province, News, Resource, Membership, Incident,
     PopupConfig, Gallery, Video, GatedDownloadLead,
-    TeamMember, Collaboration, NewsFlash, UniqueVisitor
+    TeamMember, Collaboration, NewsFlash, UniqueVisitor,
+    SiteSettings, ThematicSector
 )
 from .security import EXPOSED_LEGACY_ADMIN_PASSWORD
 
@@ -63,18 +64,46 @@ class GatedDownloadLeadInline(TabularInline):
 
 @admin.register(Resource)
 class ResourceAdmin(ModelAdmin):
-    list_display = ('title', 'category', 'format', 'file_size', 'is_gated')
-    list_display_links = ('title',)
+    list_display = ('cover_preview', 'title', 'category', 'format', 'file_size', 'is_gated')
+    list_display_links = ('title', 'cover_preview')
     search_fields = ('title',)
     list_filter = ('category', 'format', 'is_gated')
     inlines = [GatedDownloadLeadInline]
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'category', 'format', 'file_size', 'is_gated')
+        }),
+        ('Cover Photo / Thumbnail', {
+            'fields': ('cover_image', 'cover_image_url', 'cover_preview_detail'),
+            'description': 'Upload a cover photo or thumbnail for this publication or resource (e.g. document cover page, book cover).'
+        }),
+        ('Publication Document / File', {
+            'fields': ('file_upload', 'file_url'),
+            'description': 'Upload the document file directly (PDF, DOCX) or specify an external download URL.'
+        }),
+    )
+    readonly_fields = ('cover_preview_detail',)
+
+    def cover_preview(self, obj):
+        img = obj.display_cover
+        if img:
+            return mark_safe(f'<img src="{img}" style="width: 48px; height: 64px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.12);" />')
+        return mark_safe('<span style="color: #94a3b8; font-size: 11px;">No cover</span>')
+    cover_preview.short_description = "Cover Photo"
+
+    def cover_preview_detail(self, obj):
+        img = obj.display_cover
+        if img:
+            return mark_safe(f'<img src="{img}" style="max-width: 200px; max-height: 260px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />')
+        return mark_safe('<span style="color: #94a3b8; font-size: 12px;">No cover photo uploaded yet. Choose an image file above or provide an image URL.</span>')
+    cover_preview_detail.short_description = "Current Cover Photo"
 
 
 @admin.register(Membership)
 class MembershipAdmin(ModelAdmin):
-    list_display = ('full_name', 'email', 'phone', 'province', 'organization', 'role', 'status_badge', 'created_at')
+    list_display = ('full_name', 'email', 'phone', 'province', 'status_badge', 'created_at')
     list_display_links = ('full_name',)
-    search_fields = ('full_name', 'email', 'province__name', 'organization')
+    search_fields = ('full_name', 'email', 'province__name', 'joining_reason')
     list_filter = ('status', 'province', 'created_at')
     date_hierarchy = 'created_at'
     readonly_fields = ('created_at',)
@@ -118,13 +147,22 @@ class PopupConfigAdmin(ModelAdmin):
     list_display = ('thumbnail_preview', 'title', 'active', 'link_text', 'link_url')
     list_display_links = ('title', 'thumbnail_preview')
     list_editable = ('active',)
+    fields = ('title', 'subtitle', 'image', 'photo_preview', 'image_url', 'link_url', 'link_text', 'active')
+    readonly_fields = ('photo_preview',)
 
     def thumbnail_preview(self, obj):
         img = obj.display_image
         if img:
             return mark_safe(f'<img src="{img}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 6px;" />')
         return "-"
-    thumbnail_preview.short_description = "Thumbnail"
+    thumbnail_preview.short_description = "Photo"
+
+    def photo_preview(self, obj):
+        img = obj.display_image if obj else None
+        if img:
+            return mark_safe(f'<img src="{img}" style="max-width: 320px; max-height: 220px; border-radius: 8px; border: 1px solid #ddd; object-fit: cover;" />')
+        return "No photo uploaded or linked"
+    photo_preview.short_description = "Photo Preview"
 
 
 @admin.register(Gallery)
@@ -179,9 +217,9 @@ class GatedDownloadLeadAdmin(ModelAdmin):
 
 @admin.register(TeamMember)
 class TeamMemberAdmin(ModelAdmin):
-    list_display = ('thumbnail_preview', 'name', 'designation', 'category', 'created_at', 'order_index')
+    list_display = ('thumbnail_preview', 'name', 'designation', 'category', 'linkedin_url', 'created_at', 'order_index')
     list_display_links = ('name', 'thumbnail_preview')
-    search_fields = ('name', 'designation', 'bio')
+    search_fields = ('name', 'designation', 'bio', 'linkedin_url')
     list_filter = ('category', 'created_at')
     list_editable = ('order_index',)
 
@@ -195,10 +233,10 @@ class TeamMemberAdmin(ModelAdmin):
 
 @admin.register(Collaboration)
 class CollaborationAdmin(ModelAdmin):
-    list_display = ('thumbnail_preview', 'name', 'category', 'created_at', 'website_url', 'order_index')
+    list_display = ('thumbnail_preview', 'name', 'category', 'support_level', 'created_at', 'website_url', 'order_index')
     list_display_links = ('name', 'thumbnail_preview')
     search_fields = ('name', 'blurb')
-    list_filter = ('category', 'created_at')
+    list_filter = ('category', 'support_level', 'created_at')
     list_editable = ('order_index',)
 
     def thumbnail_preview(self, obj):
@@ -226,3 +264,100 @@ class UniqueVisitorAdmin(ModelAdmin):
     search_fields = ('ip_address', 'session_key')
     list_filter = ('first_visited', 'last_visited')
     readonly_fields = ('ip_address', 'session_key', 'first_visited', 'last_visited')
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(ModelAdmin):
+    fieldsets = (
+        ('Landing Page — Hero Photo & Content Section', {
+            'fields': (
+                'hero_image',
+                'hero_image_url',
+                'home_hero_image_preview',
+                'home_hero_badge',
+                'home_hero_title',
+                'home_hero_subtitle',
+                'home_about_badge',
+                'home_about_title',
+                'home_about_text_1',
+                'home_about_text_2',
+            ),
+            'description': 'Configure the public Landing Page (Homepage) hero background photo, headlines, and homepage overview section.'
+        }),
+        ('About Page — Hero Banner (The Fully Blue Section) & Showcase Image', {
+            'fields': (
+                'about_hero_badge',
+                'about_hero_title',
+                'about_hero_description',
+                'about_image',
+                'about_image_url',
+                'about_image_caption',
+                'about_hero_image_preview',
+                'about_video_url',
+            ),
+            'description': 'Configure the top blue hero banner of the About page. The showcase image has its own dedicated card within the blue section.'
+        }),
+        ('About Page — Profile Section', {
+            'fields': (
+                'profile_badge',
+                'profile_title',
+                'profile_text',
+                'profile_feature_1_title',
+                'profile_feature_1_text',
+                'profile_feature_2_title',
+                'profile_feature_2_text',
+            ),
+            'description': 'Edit the coalition profile story and the two core highlight pillars.'
+        }),
+        ('About Page — Strategic Mission & Vision', {
+            'fields': (
+                'vision_title',
+                'vision_text',
+                'mission_title',
+                'mission_text',
+            ),
+            'description': 'Edit the strategic vision and mission statements.'
+        }),
+        ('Support Us — Bank & Financial Details', {
+            'fields': (
+                'bank_name',
+                'bank_account_name',
+                'bank_account_no',
+                'bank_branch',
+                'bank_qr_image',
+            ),
+            'classes': ('collapse',),
+        }),
+    )
+    readonly_fields = ('home_hero_image_preview', 'about_hero_image_preview')
+
+    def home_hero_image_preview(self, obj):
+        img = obj.display_hero_image
+        if img:
+            return mark_safe(f'<img src="{img}" style="max-width: 320px; max-height: 200px; object-fit: cover; border-radius: 10px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />')
+        return mark_safe('<span style="color: #94a3b8;">No hero background image set (using default navy theme gradient).</span>')
+    home_hero_image_preview.short_description = "Landing Hero Image Preview"
+
+    def about_hero_image_preview(self, obj):
+        img = obj.display_about_image
+        if img:
+            return mark_safe(f'<img src="{img}" style="max-width: 320px; max-height: 220px; object-fit: cover; border-radius: 10px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />')
+        return mark_safe('<span style="color: #94a3b8;">No showcase image set. Default advocacy image will be displayed.</span>')
+    about_hero_image_preview.short_description = "About Showcase Image Preview"
+
+    def has_add_permission(self, request):
+        return False if SiteSettings.objects.exists() else True
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ThematicSector)
+class ThematicSectorAdmin(ModelAdmin):
+    list_display = ('title', 'icon_preview', 'order_index')
+    list_editable = ('order_index',)
+    search_fields = ('title', 'description')
+
+    def icon_preview(self, obj):
+        return mark_safe(f'<i class="{escape(obj.icon)}" style="font-size: 18px; color: #2085AB;"></i> <span style="font-size: 11px; color: #64748b; margin-left: 6px;">{escape(obj.icon)}</span>')
+    icon_preview.short_description = "Icon"
