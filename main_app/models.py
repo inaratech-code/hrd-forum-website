@@ -330,6 +330,14 @@ class SiteSettings(models.Model):
     class Meta:
         verbose_name_plural = 'Site Settings'
 
+    @classmethod
+    def get_settings(cls):
+        """Retrieve the singleton SiteSettings instance, creating it with default values if missing."""
+        obj = cls.objects.first()
+        if not obj:
+            obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
     def save(self, *args, **kwargs):
         self.pk = 1
         super().save(*args, **kwargs)

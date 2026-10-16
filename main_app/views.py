@@ -108,15 +108,13 @@ def parse_request_data(request):
 
 def index_page(request):
     _track_visitor(request)
-    settings = SiteSettings.objects.first()
+    settings = SiteSettings.get_settings()
     return render(request, 'index.html', {'settings': settings})
 
 
 def about_page(request):
     _track_visitor(request)
-    settings = SiteSettings.objects.first()
-    if not settings:
-        settings = SiteSettings.objects.create()
+    settings = SiteSettings.get_settings()
     thematics = ThematicSector.objects.all().order_by('order_index', 'id')
     return render(request, 'about_page.html', {
         'settings': settings,
@@ -620,9 +618,7 @@ def custom_500_view(request):
 
 @cache_control(max_age=120, public=True)
 def api_site_settings(request):
-    settings = SiteSettings.objects.first()
-    if not settings:
-        settings = SiteSettings.objects.create()
+    settings = SiteSettings.get_settings()
     return JsonResponse({
         'about_hero_badge': settings.about_hero_badge,
         'about_hero_title': settings.about_hero_title,
@@ -663,7 +659,7 @@ def api_thematic_sectors(request):
     } for s in sectors], safe=False)
 
 def support_page_view(request):
-    settings = SiteSettings.objects.first()
+    settings = SiteSettings.get_settings()
     if request.method == 'POST':
         from .forms import SupportContributionForm
         form = SupportContributionForm(request.POST, request.FILES)

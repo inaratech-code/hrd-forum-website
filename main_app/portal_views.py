@@ -1626,9 +1626,7 @@ def portal_group_delete(request, group_id):
 
 @staff_required
 def portal_home_settings_view(request):
-    settings_obj = SiteSettings.objects.first()
-    if not settings_obj:
-        settings_obj = SiteSettings.objects.create()
+    settings_obj = SiteSettings.get_settings()
     
     if request.method == 'POST':
         form = HomePageSettingsForm(request.POST, request.FILES, instance=settings_obj)
@@ -1648,9 +1646,7 @@ def portal_home_settings_view(request):
 
 @staff_required
 def portal_about_settings_view(request):
-    settings_obj = SiteSettings.objects.first()
-    if not settings_obj:
-        settings_obj = SiteSettings.objects.create()
+    settings_obj = SiteSettings.get_settings()
     
     if request.method == 'POST':
         form = AboutPageSettingsForm(request.POST, request.FILES, instance=settings_obj)
