@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.http import Http404, HttpResponseRedirect
+from django.views.generic import RedirectView
 from django.views.static import serve as static_serve
 
 
@@ -36,6 +37,7 @@ def serve_media(request, path):
 
 
 urlpatterns = [
+    path('favicon.ico', RedirectView.as_view(url='/static/images/logo.jpg', permanent=True)),
     path('admin/', admin.site.urls),
     path('', include('main_app.urls')),
     re_path(r'^media/(?P<path>.*)$', serve_media),
