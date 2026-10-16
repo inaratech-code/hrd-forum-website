@@ -87,6 +87,12 @@ urlpatterns = [
     path('portal/collaborations/<int:collab_id>/edit/', portal_views.portal_collaboration_edit, name='portal_collaboration_edit'),
     path('portal/collaborations/<int:collab_id>/delete/', portal_views.portal_collaboration_delete, name='portal_collaboration_delete'),
 
+    # Thematic Sectors CRUD
+    path('portal/thematics/', portal_views.portal_thematic_list, name='portal_thematic_list'),
+    path('portal/thematics/add/', portal_views.portal_thematic_add, name='portal_thematic_add'),
+    path('portal/thematics/<int:sector_id>/edit/', portal_views.portal_thematic_edit, name='portal_thematic_edit'),
+    path('portal/thematics/<int:sector_id>/delete/', portal_views.portal_thematic_delete, name='portal_thematic_delete'),
+
     # News Flashes CRUD
     path('portal/news-flashes/', portal_views.portal_news_flash_list, name='portal_news_flash_list'),
     path('portal/news-flashes/add/', portal_views.portal_news_flash_add, name='portal_news_flash_add'),
@@ -115,10 +121,15 @@ urlpatterns = [
     path('portal/groups/<int:group_id>/delete/', portal_views.portal_group_delete, name='portal_group_delete'),
 
     path('portal/settings/', portal_views.portal_settings_view, name='portal_settings'),
-    path('portal/site-settings/', portal_views.portal_site_settings_view, name='portal_site_settings'),
+    path('portal/home-settings/', portal_views.portal_home_settings_view, name='portal_home_settings'),
+    path('portal/about-settings/', portal_views.portal_about_settings_view, name='portal_about_settings'),
+    path('portal/site-settings/', portal_views.portal_about_settings_view, name='portal_site_settings'),
 
     # Public Read API Endpoints (With and without trailing slashes)
     path('api/settings/', views.api_site_settings, name='api_site_settings'),
+    path('api/settings', views.api_site_settings),
+    path('api/thematic-sectors/', views.api_thematic_sectors, name='api_thematic_sectors'),
+    path('api/thematic-sectors', views.api_thematic_sectors),
     path('api/stats/', views.api_stats, name='api_stats'),
     path('api/stats', views.api_stats),
     path('api/provinces/', views.api_provinces, name='api_provinces'),

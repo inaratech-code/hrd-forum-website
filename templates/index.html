@@ -13,13 +13,13 @@
   </div>
 
   <!-- Hero Section -->
-  <section class="hero" id="homeHero" {% if settings and settings.hero_image %}style="background-image: linear-gradient(rgba(7, 25, 51, 0.8), rgba(12, 43, 91, 0.85)), url('{{ settings.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
+  <section class="hero" id="homeHero" {% if settings and settings.display_hero_image %}style="background-image: linear-gradient(rgba(7, 25, 51, 0.8), rgba(12, 43, 91, 0.85)), url('{{ settings.display_hero_image }}'); background-size: cover; background-position: center;"{% endif %}>
     <div class="container">
       <div class="hero-badge">
-        <i class="fa-solid fa-shield-halved"></i> ESTABLISHED NATIONAL HUMAN RIGHTS COALITION
+        <i class="fa-solid fa-shield-halved"></i> {{ settings.home_hero_badge|default:"ESTABLISHED NATIONAL HUMAN RIGHTS COALITION" }}
       </div>
-      <h1>Protecting Rights & Empowering Defenders Across Nepal</h1>
-      <p>Strengthening 7 provincial helpdesks, monitoring frontline defenders, providing 24/7 rapid response legal support, and advocating for civic safety nationwide.</p>
+      <h1>{{ settings.home_hero_title|default:"Protecting Rights & Empowering Defenders Across Nepal" }}</h1>
+      <p>{{ settings.home_hero_subtitle|default:"Strengthening 7 provincial helpdesks, monitoring frontline defenders, providing 24/7 rapid response legal support, and advocating for civic safety nationwide." }}</p>
       <div class="hero-actions">
         <button onclick="openMembershipModal()" class="btn-hero-primary"><i class="fa-solid fa-id-card"></i> Apply for Membership</button>
         <button onclick="openIncidentModal()" class="btn-hero-alert"><i class="fa-solid fa-triangle-exclamation"></i> Report Emergency Incident</button>
@@ -62,15 +62,17 @@
     <div class="container">
       <div class="about-overview-wrapper">
         <div class="about-overview-header">
-          <div class="section-badge">ORGANIZATIONAL BACKGROUND</div>
-          <h2 class="section-title">About HRD Forum Nepal</h2>
+          <div class="section-badge">{{ settings.home_about_badge|default:"ORGANIZATIONAL BACKGROUND" }}</div>
+          <h2 class="section-title">{{ settings.home_about_title|default:"About HRD Forum Nepal" }}</h2>
           <div class="about-overview-paragraphs">
             <p>
-              Human Rights Defenders (HRD) Forum Nepal is a national coalition dedicated to protecting, empowering, and advocating for frontline rights defenders, journalists, paralegals, and civil society activists across Nepal. Established to respond to shrinking civic space and increasing security threats, the Forum operates as a unified shield for those facing retaliation, harassment, or legal intimidation while defending fundamental human rights.
+              {{ settings.home_about_text_1|default:"Human Rights Defenders (HRD) Forum Nepal is a national coalition dedicated to protecting, empowering, and advocating for frontline rights defenders, journalists, paralegals, and civil society activists across Nepal. Established to respond to shrinking civic space and increasing security threats, the Forum operates as a unified shield for those facing retaliation, harassment, or legal intimidation while defending fundamental human rights."|linebreaksbr }}
             </p>
+            {% if settings.home_about_text_2 %}
             <p>
-              Through localized emergency assistance, continuous field monitoring, strategic legal aid, and evidence-based policy advocacy, HRD Forum Nepal bridges grassroots rights defenders with national judicial frameworks and international protection mechanisms. Our network ensures that no defender stands alone in their pursuit of justice and constitutional freedoms across all seven provinces.
+              {{ settings.home_about_text_2|linebreaksbr }}
             </p>
+            {% endif %}
           </div>
         </div>
 

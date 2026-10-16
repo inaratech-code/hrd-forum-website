@@ -83,6 +83,8 @@ class Resource(models.Model):
     file_size = models.CharField(max_length=50, default='2.0 MB')
     file_upload = models.FileField(upload_to='resources/', blank=True, null=True)
     file_url = models.URLField(max_length=500, blank=True, null=True)
+    cover_image = models.ImageField(upload_to='resources/covers/', blank=True, null=True)
+    cover_image_url = models.URLField(max_length=500, blank=True, null=True)
     is_gated = models.BooleanField(default=True)
 
     @property
@@ -90,6 +92,12 @@ class Resource(models.Model):
         if self.file_upload:
             return self.file_upload.url
         return self.file_url or ''
+
+    @property
+    def display_cover(self):
+        if self.cover_image:
+            return self.cover_image.url
+        return self.cover_image_url or ''
 
     def __str__(self):
         return f"{self.title} ({self.format})"
@@ -108,6 +116,7 @@ class Membership(models.Model):
     province = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='memberships')
     organization = models.CharField(max_length=200, blank=True, null=True)
     role = models.CharField(max_length=150, blank=True, null=True)
+    joining_reason = models.TextField(blank=True, default='', verbose_name='Reason to join & support')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -241,6 +250,7 @@ class TeamMember(models.Model):
     bio = models.TextField(blank=True, default='')
     image = models.ImageField(upload_to='team/', blank=True, null=True)
     image_url = models.URLField(max_length=500, blank=True, null=True)
+    linkedin_url = models.URLField(max_length=500, blank=True, default='')
     order_index = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -259,16 +269,63 @@ class TeamMember(models.Model):
 
 
 class SiteSettings(models.Model):
+    # About Page - Blue Hero Banner & Showcase Image
+    about_hero_badge = models.CharField(max_length=150, default='ABOUT HRD FORUM NEPAL', verbose_name='About Hero Badge')
+    about_hero_title = models.CharField(max_length=255, default='Protecting rights defenders and strengthening civic space across Nepal.', verbose_name='About Hero Title')
+    about_hero_description = models.TextField(blank=True, default='HRD Forum Nepal connects frontline defenders, journalists, paralegals, and civil society actors with protection, legal support, and policy advocacy across all 7 provinces.', verbose_name='About Hero Description')
+    about_image = models.ImageField(upload_to='about/', blank=True, null=True, verbose_name='About Hero Showcase Image')
+    about_image_url = models.URLField(max_length=500, blank=True, null=True, verbose_name='About Hero Image URL (Alternative)')
+    about_image_caption = models.CharField(max_length=200, default='HRD Forum Nepal Field Network', blank=True, verbose_name='About Hero Image Caption')
+    about_video_url = models.URLField(max_length=500, blank=True, null=True, verbose_name='About Hero Background Video URL')
+
+    # About Page - Profile Section
+    profile_badge = models.CharField(max_length=150, default='Coalition Profile', verbose_name='Profile Section Badge')
+    profile_title = models.CharField(max_length=255, default='Profile of HRD Forum Nepal')
+    profile_text = models.TextField(blank=True, default='Human Rights Defenders (HRD) Forum Nepal is a national coalition established to respond to shrinking civic space and increasing security risks faced by frontline rights defenders across Nepal.')
+    profile_feature_1_title = models.CharField(max_length=200, default='National Judicial Coordination')
+    profile_feature_1_text = models.TextField(blank=True, default='Bridging local human rights monitors with Supreme Court litigation support, national security funds, and emergency relocation desks.')
+    profile_feature_2_title = models.CharField(max_length=200, default='7 Provincial Protection Desks')
+    profile_feature_2_text = models.TextField(blank=True, default='Operating active focal helpdesks in Koshi, Madhesh, Bagmati HQ, Gandaki, Lumbini, Karnali, and Sudurpashchim provinces.')
+
+    # About Page - Vision & Mission
+    vision_title = models.CharField(max_length=150, default='Our Vision')
     vision_text = models.TextField(blank=True, default='To establish a society where human rights are respected, protected, and fulfilled for all.')
+    mission_title = models.CharField(max_length=150, default='Our Mission')
     mission_text = models.TextField(blank=True, default='To protect and empower frontline human rights defenders across Nepal through legal support, capacity building, and national coordination.')
-    hero_image = models.ImageField(upload_to='hero/', blank=True, null=True)
-    
+
+    # Landing / Home Page Configuration & Hero Photo
+    hero_image = models.ImageField(upload_to='hero/', blank=True, null=True, verbose_name='Home Hero Background Image')
+    hero_image_url = models.URLField(max_length=500, blank=True, null=True, verbose_name='Home Hero Image URL (Alternative)')
+    home_hero_badge = models.CharField(max_length=150, default='ESTABLISHED NATIONAL HUMAN RIGHTS COALITION', verbose_name='Home Hero Badge')
+    home_hero_title = models.CharField(max_length=255, default='Protecting Rights & Empowering Defenders Across Nepal', verbose_name='Home Hero Main Title')
+    home_hero_subtitle = models.TextField(blank=True, default='Strengthening 7 provincial helpdesks, monitoring frontline defenders, providing 24/7 rapid response legal support, and advocating for civic safety nationwide.', verbose_name='Home Hero Subtitle')
+    home_about_badge = models.CharField(max_length=150, default='ORGANIZATIONAL BACKGROUND', verbose_name='Home Overview Badge')
+    home_about_title = models.CharField(max_length=200, default='About HRD Forum Nepal', verbose_name='Home Overview Title')
+    home_about_text_1 = models.TextField(blank=True, default='Human Rights Defenders (HRD) Forum Nepal is a national coalition dedicated to protecting, empowering, and advocating for frontline rights defenders, journalists, paralegals, and civil society activists across Nepal. Established to respond to shrinking civic space and increasing security threats, the Forum operates as a unified shield for those facing retaliation, harassment, or legal intimidation while defending fundamental human rights.', verbose_name='Home Overview Paragraph 1')
+    home_about_text_2 = models.TextField(blank=True, default='Through localized emergency assistance, continuous field monitoring, strategic legal aid, and evidence-based policy advocacy, HRD Forum Nepal bridges grassroots rights defenders with national judicial frameworks and international protection mechanisms. Our network ensures that no defender stands alone in their pursuit of justice and constitutional freedoms across all seven provinces.', verbose_name='Home Overview Paragraph 2')
+
     # Bank Details for Support Us Page
     bank_qr_image = models.ImageField(upload_to='bank/', blank=True, null=True)
     bank_name = models.CharField(max_length=150, default='Nepal Bank Limited')
     bank_account_name = models.CharField(max_length=150, default='HRD Forum Nepal')
     bank_account_no = models.CharField(max_length=100, default='0011223344556677')
     bank_branch = models.CharField(max_length=150, default='Kathmandu Main')
+
+    @property
+    def display_hero_image(self):
+        if self.hero_image:
+            return self.hero_image.url
+        if self.hero_image_url:
+            return self.hero_image_url
+        return ''
+
+    @property
+    def display_about_image(self):
+        if self.about_image:
+            return self.about_image.url
+        if self.about_image_url:
+            return self.about_image_url
+        return 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=900&q=80'
 
     class Meta:
         verbose_name_plural = 'Site Settings'
@@ -279,6 +336,20 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return 'Global Site Settings'
+
+
+class ThematicSector(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    icon = models.CharField(max_length=100, default='fa-solid fa-gavel', help_text='FontAwesome icon class, e.g. fa-solid fa-gavel')
+    order_index = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order_index', 'id']
+        verbose_name_plural = 'Thematic Sectors'
+
+    def __str__(self):
+        return self.title
 
 
 class SupportContribution(models.Model):
@@ -316,9 +387,16 @@ class Collaboration(models.Model):
         ('institutional', 'Institutional Collaboration'),
         ('individual', 'Individual Collaboration'),
     ]
+    TIER_CHOICES = [
+        ('bronze', 'Bronze Level'),
+        ('silver', 'Silver Level'),
+        ('gold', 'Gold Level'),
+        ('platinum', 'Platinum Level'),
+    ]
 
     name = models.CharField(max_length=150)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='institutional')
+    support_level = models.CharField(max_length=20, choices=TIER_CHOICES, default='bronze', blank=True, null=True)
     logo = models.ImageField(upload_to='collaborations/', blank=True, null=True)
     logo_url = models.URLField(max_length=500, blank=True, null=True)
     blurb = models.TextField()

@@ -49,6 +49,27 @@
                             <span class="text-xs font-semibold text-slate-600">{{ field.help_text|default:field.label }}</span>
                         </div>
                     {% else %}
+                        {% if field.name == 'image' and form.instance.display_image %}
+                        <div class="mb-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl inline-block">
+                            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                <i class="fas fa-image text-teal-600"></i> Current Photo Preview:
+                            </p>
+                            <img src="{{ form.instance.display_image }}" class="h-36 max-w-full object-cover rounded-lg border border-slate-200 shadow-sm">
+                        </div>
+                        {% elif field.name == 'cover_image' and form.instance.display_cover %}
+                        <div class="mb-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl inline-block">
+                            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                                <i class="fas fa-image text-teal-600"></i> Current Cover Photo / Thumbnail:
+                            </p>
+                            <img src="{{ form.instance.display_cover }}" class="h-44 max-w-full object-cover rounded-lg border border-slate-200 shadow-sm">
+                        </div>
+                        {% elif field.name == 'file_upload' and form.instance.display_file %}
+                        <div class="mb-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl inline-flex items-center gap-2 text-xs text-slate-700">
+                            <i class="fas fa-file-pdf text-teal-600"></i>
+                            <span class="font-semibold">Uploaded File:</span>
+                            <a href="{{ form.instance.display_file }}" target="_blank" class="text-teal-700 underline truncate max-w-xs font-mono text-[11px]">{{ form.instance.display_file }}</a>
+                        </div>
+                        {% endif %}
                         {{ field }}
                     {% endif %}
 

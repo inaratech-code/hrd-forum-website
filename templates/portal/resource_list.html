@@ -26,6 +26,7 @@
             <table class="w-full text-left text-xs text-slate-700">
                 <thead class="bg-navy-900 text-white font-bold text-[11px] uppercase tracking-wider">
                     <tr>
+                        <th class="py-3.5 px-4">Cover</th>
                         <th class="py-3.5 px-4">Title</th>
                         <th class="py-3.5 px-4">Category</th>
                         <th class="py-3.5 px-4">Format</th>
@@ -36,6 +37,13 @@
                 <tbody class="divide-y divide-slate-100 font-medium">
                     {% for res in resources %}
                     <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4">
+                            {% if res.display_cover %}
+                            <img src="{{ res.display_cover }}" alt="Cover Page" class="w-10 h-14 object-cover rounded border border-slate-200 shadow-sm">
+                            {% else %}
+                            <span class="text-slate-400 text-xs italic"><i class="fas fa-file-pdf text-slate-300"></i> No cover</span>
+                            {% endif %}
+                        </td>
                         <td class="py-3 px-4 font-bold text-slate-900">
                             <a href="{% url 'portal_resource_edit' res.id %}" class="hover:text-teal-700 transition">{{ res.title }}</a>
                         </td>
@@ -63,7 +71,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="py-8 text-center text-slate-400">No resource documents found.</td>
+                        <td colspan="6" class="py-8 text-center text-slate-400">No resource documents found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
